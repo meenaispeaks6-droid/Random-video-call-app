@@ -6,27 +6,22 @@ import { useState, useEffect } from "react";
 export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
   const [message, setMessage] = useState("");
-  const [emoji, setEmoji] = useState("✨");
 
   const funnyMessages = [
-    "Convincing pixels to cooperate...",
-    "Feeding the server hamsters...",
-    "Searching for the 'Any' key...",
-    "Reticulating splines...",
-    "Calculating the meaning of life...",
-    "Downloading more RAM...",
-    "Sharpening the pencils...",
-    "Herding cats into the server room...",
+    "Political debates in progress...",
+    "Donkey's practicing its kick...",
+    "Elephant's bracing for impact...",
+    "Herding democratic animals...",
+    "Loading some heavy kickback...",
+    "Donkey: 1, Elephant: 0...",
+    "Calculating the force of a hoof...",
   ];
-
-  const funnyEmojis = ["✨", "🐢", "🍕", "🚀", "🎩", "🦄", "🥨", "👾"];
 
   useEffect(() => {
     setMessage(funnyMessages[Math.floor(Math.random() * funnyMessages.length)]);
-    setEmoji(funnyEmojis[Math.floor(Math.random() * funnyEmojis.length)]);
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 2000); // Slightly longer to read the message
+    }, 3500); // Longer duration to see the animation
 
     return () => clearTimeout(timer);
   }, []);
@@ -38,86 +33,104 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ 
             opacity: 0,
-            scale: 1.1,
-            filter: "blur(20px)",
-            transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+            transition: { duration: 0.5 } 
           }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a] overflow-hidden"
         >
-            <div className="relative flex flex-col items-center">
-              {/* Minimal High-Speed Pulse + Funny Icon */}
-              <div className="relative w-16 h-16 mb-6">
-                <motion.div
-                  initial={{ scale: 0, rotate: -45, opacity: 0 }}
-                  animate={{ 
-                    scale: [0, 1.2, 1], 
-                    rotate: [0, 45, 0],
-                    opacity: 1 
-                  }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 border-2 border-brand-purple rounded-xl"
-                />
+          <div className="relative flex flex-col items-center">
+            <div className="relative flex items-end justify-center h-48 w-80 mb-8">
+              {/* Donkey */}
+              <motion.div
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: -40, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="relative"
+              >
+                <div className="text-7xl select-none">🫏</div>
                 
-                {/* Floating funny emoji */}
+                {/* Leg Kick Animation */}
                 <motion.div
+                  initial={{ rotate: 0, originX: "0%", originY: "100%" }}
                   animate={{ 
-                    y: [0, -10, 0],
-                    rotate: [0, 10, -10, 0]
+                    rotate: [0, 0, -60, 0],
                   }}
                   transition={{ 
-                    duration: 2, 
+                    duration: 1.5,
                     repeat: Infinity,
-                    ease: "easeInOut" 
+                    times: [0, 0.4, 0.5, 1],
+                    ease: "easeInOut"
                   }}
-                  className="absolute -top-8 -right-8 text-2xl"
+                  className="absolute bottom-4 right-2 text-4xl"
                 >
-                  {emoji}
+                  🦵
                 </motion.div>
+              </motion.div>
 
-                {/* Inner Core */}
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="absolute inset-4 bg-brand-purple rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center text-xs"
-                >
-                  <motion.span
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 0.5, repeat: Infinity }}
-                  >
-                    ⚡
-                  </motion.span>
-                </motion.div>
-              </div>
-
+              {/* Elephant */}
               <motion.div
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="flex flex-col items-center"
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ 
+                  x: [100, 40, 40, 300],
+                  y: [0, 0, 0, -200],
+                  rotate: [0, 0, 0, 720],
+                  opacity: [0, 1, 1, 0]
+                }}
+                transition={{ 
+                  duration: 1.5,
+                  repeat: Infinity,
+                  times: [0, 0.3, 0.5, 1],
+                  ease: "easeInOut"
+                }}
+                className="text-8xl select-none"
               >
-                <h2 className="text-white text-sm font-medium tracking-[0.4em] uppercase">
-                  Funkey
-                </h2>
-                <div className="mt-2 w-12 h-[1px] bg-gradient-to-r from-transparent via-brand-purple to-transparent" />
-                
-                {/* Funny Message */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.6 }}
-                  transition={{ delay: 0.8 }}
-                  className="mt-4 text-[10px] text-white/50 font-mono tracking-wider italic"
-                >
-                  {message}
-                </motion.p>
+                🐘
+              </motion.div>
+
+              {/* Impact Sparkle */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ 
+                  scale: [0, 1.5, 0],
+                  opacity: [0, 1, 0]
+                }}
+                transition={{ 
+                  duration: 1.5,
+                  repeat: Infinity,
+                  times: [0, 0.5, 0.6],
+                }}
+                className="absolute left-1/2 bottom-12 text-3xl"
+              >
+                💥
               </motion.div>
             </div>
 
-          {/* Ambient Flare */}
+            <motion.div
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="flex flex-col items-center"
+            >
+              <h2 className="text-white text-sm font-medium tracking-[0.4em] uppercase">
+                Kicking Off...
+              </h2>
+              <div className="mt-2 w-24 h-[1px] bg-gradient-to-r from-transparent via-brand-purple to-transparent" />
+              
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                transition={{ delay: 0.8 }}
+                className="mt-4 text-[12px] text-white/70 font-mono tracking-wider italic"
+              >
+                {message}
+              </motion.p>
+            </motion.div>
+          </div>
+
+          {/* Background Glow */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.1 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-brand-purple rounded-full blur-[120px] pointer-events-none"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-purple rounded-full blur-[120px] pointer-events-none"
           />
         </motion.div>
       )}
