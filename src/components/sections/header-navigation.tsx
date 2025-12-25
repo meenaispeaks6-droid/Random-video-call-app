@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 
-const HeaderNavigation = () => {
+export default function HeaderNavigation() {
   const [mode, setMode] = useState<"solo" | "duo">("solo");
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
