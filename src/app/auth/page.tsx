@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export default function AuthPage() {
+function AuthContent() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -148,5 +148,17 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-brand-purple flex items-center justify-center">
+        <Loader2 className="animate-spin text-white" size={48} />
+      </div>
+    }>
+      <AuthContent />
+    </Suspense>
   );
 }
