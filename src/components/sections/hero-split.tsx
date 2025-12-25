@@ -220,7 +220,7 @@ const HeroSplit = () => {
             }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           >
-            🙊
+            ✨
           </motion.div>
 
           {/* Peeking Surprise - Click me! */}
