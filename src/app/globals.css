@@ -50,12 +50,18 @@
   --radius-md: 32px;
   --radius-sm: 16px;
 
-  --animate-float: float 6s ease-in-out infinite;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-  }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
