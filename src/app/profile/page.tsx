@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Loader2, User, Globe, Calendar, ArrowRight, Check, VenusMars } from "lucide-react";
+import { Loader2, User, Globe, Calendar, ArrowRight, Check, VenusAndMars } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
