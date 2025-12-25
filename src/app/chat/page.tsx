@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import HeaderNavigation from "@/components/sections/header-navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,7 +26,7 @@ interface ChatPartner {
   online?: boolean;
 }
 
-export default function ChatPage() {
+function ChatContent() {
   const { user } = useAuth();
   const supabase = createClient();
   const searchParams = useSearchParams();
@@ -413,5 +413,17 @@ export default function ChatPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen bg-[#0F0F0F] text-white flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#FFFF00] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <ChatContent />
+    </Suspense>
   );
 }
