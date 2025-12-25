@@ -169,12 +169,17 @@ const HeroSplit = () => {
               </button>
             </div>
 
-            {/* Location Label */}
-            {partnerLocation && (
-              <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                <span className="text-white text-sm font-medium">📍 {partnerLocation}</span>
-              </div>
-            )}
+              {/* Location Label */}
+              {partnerLocation ? (
+                <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+                  <label id="locationLabel" className="text-white text-sm font-medium">🌍 {partnerLocation}</label>
+                </div>
+              ) : (
+                <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+                  <label id="locationLabel" className="text-white text-sm font-medium">🌍 Detecting location...</label>
+                </div>
+              )}
+
           </div>
         )}
       </div>
