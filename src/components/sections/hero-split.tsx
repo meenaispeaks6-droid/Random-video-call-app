@@ -5,8 +5,12 @@ import Image from 'next/image';
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 const HeroSplit = () => {
+  const { user } = useAuth();
   const {
     status,
     localStream,
@@ -23,6 +27,20 @@ const HeroSplit = () => {
   } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error("Login failed: " + error.message);
+    }
+  };
 
   useEffect(() => {
     const onlineUsersRef = ref(db, 'onlineUsers');
