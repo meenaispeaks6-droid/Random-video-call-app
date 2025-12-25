@@ -27,12 +27,15 @@ const HeroSplit = () => {
   } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleGoogleLogin = async () => {
+    setIsLoggingIn(true);
     try {
       await signInWithGoogle();
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
+      setIsLoggingIn(false);
     }
   };
 
