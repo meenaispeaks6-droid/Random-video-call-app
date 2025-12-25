@@ -23,7 +23,6 @@ export const useVideoChat = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Auto-detect country/city
   const detectLocation = useCallback(async () => {
     try {
       const res = await fetch("https://ipapi.co/json/");
@@ -43,12 +42,11 @@ export const useVideoChat = () => {
     }
   }, [userId]);
 
-  // Add user to online pool on mount
   useEffect(() => {
     const userRef = ref(db, `onlineUsers/${userId}`);
     set(userRef, {
       status: "waiting",
-      gender: "not-selected",
+      gender: "Both",
       country: "detecting...",
       city: "detecting..."
     });
@@ -71,11 +69,14 @@ export const useVideoChat = () => {
       pcRef.current.close();
       pcRef.current = null;
     }
+    if (matchId) {
+        await remove(ref(db, `signals/${matchId}`));
+    }
     setPartnerId(null);
     setMatchId(null);
     setRemoteStream(null);
     setStatus('waiting');
-  }, []);
+  }, [matchId]);
 
   const findMatch = useCallback(async () => {
     setStatus('waiting');
@@ -92,59 +93,38 @@ export const useVideoChat = () => {
     );
 
     if (waitingUsers.length === 0) {
-      // Logic from user: alert("Koi online user available nahi 😔");
-      // But we'll just keep waiting in a loop or until someone matches with us
       return;
     }
 
-    // 50/50 gender balancing logic (as requested by previous interactions or implied)
     let partnerUserId: string;
     if (genderFilter === 'Both') {
-      const currentGenderSnap = await get(ref(db, `onlineUsers/${userId}/gender`));
-      const currentGender = currentGenderSnap.val();
-      const oppositeGender = currentGender === 'Male' ? 'Female' : 'Male';
-      const preferredUsers = waitingUsers.filter(id => users[id].gender === oppositeGender);
-      
-      if (preferredUsers.length > 0) {
-        partnerUserId = preferredUsers[Math.floor(Math.random() * preferredUsers.length)];
-      } else {
-        partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
-      }
+      partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
     } else {
       partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
     }
 
     const newMatchId = "match_" + userId + "_" + partnerUserId;
 
-    // Mark both users as in-call
-    await update(ref(db, "onlineUsers/" + userId), { status: "in-call" });
-    await update(ref(db, "onlineUsers/" + partnerUserId), { status: "in-call" });
+    await update(ref(db, "onlineUsers/" + userId), { status: "in-call", matchId: newMatchId });
+    await update(ref(db, "onlineUsers/" + partnerUserId), { status: "in-call", matchId: newMatchId });
 
     setMatchId(newMatchId);
     setPartnerId(partnerUserId);
     setStatus('in-call');
   }, [userId, genderFilter]);
 
-  // Listen for incoming matches where we are the receiver
   useEffect(() => {
-    const userRef = ref(db, `onlineUsers/${userId}/status`);
+    const userRef = ref(db, `onlineUsers/${userId}`);
     const unsubscribe = onValue(userRef, async (snapshot) => {
-      const statusValue = snapshot.val();
-      if (statusValue === 'in-call' && status !== 'in-call') {
-        // Someone matched with us. We need to find the matchId.
-        // We look for signals that include our userId
-        const signalsRef = ref(db, "signals");
-        const signalsSnap = await get(signalsRef);
-        const allSignals = signalsSnap.val();
-        if (allSignals) {
-          const mId = Object.keys(allSignals).find(id => id.includes(userId) && allSignals[id].offer);
-          if (mId) {
-            const parts = mId.split('_');
-            const otherId = parts[1] === userId ? parts[2] : parts[1];
-            setMatchId(mId);
-            setPartnerId(otherId);
-            setStatus('in-call');
-          }
+      const data = snapshot.val();
+      if (data && data.status === 'in-call' && status !== 'in-call') {
+        const mId = data.matchId;
+        if (mId) {
+          const parts = mId.split('_');
+          const otherId = parts[1] === userId ? parts[2] : parts[1];
+          setMatchId(mId);
+          setPartnerId(otherId);
+          setStatus('in-call');
         }
       }
     });
@@ -175,7 +155,6 @@ export const useVideoChat = () => {
       }
     };
 
-    // Listen for ICE Candidates from partner
     onChildAdded(ref(db, "signals/" + currentMatchId + "/iceCandidates"), (snapshot) => {
       const candidate = snapshot.val();
       if (candidate) {
@@ -214,39 +193,21 @@ export const useVideoChat = () => {
   }, [status, matchId, partnerId, startCall]);
 
   const nextMatch = async () => {
-    if (pcRef.current) pcRef.current.close();
-    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
-    if (partnerId) {
-      await update(ref(db, "onlineUsers/" + partnerId), { status: "waiting" });
-    }
-    if (matchId) {
-      await remove(ref(db, "signals/" + matchId));
-    }
     await cleanupCall();
     findMatch();
   };
 
   const blockUser = async () => {
-    if (pcRef.current) pcRef.current.close();
     if (partnerId) {
       await remove(ref(db, "onlineUsers/" + partnerId));
-    }
-    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
-    if (matchId) {
-      await remove(ref(db, "signals/" + matchId));
     }
     await cleanupCall();
     findMatch();
   };
 
   const reportUser = async () => {
-    if (pcRef.current) pcRef.current.close();
     if (partnerId) {
       await remove(ref(db, "onlineUsers/" + partnerId));
-    }
-    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
-    if (matchId) {
-      await remove(ref(db, "signals/" + matchId));
     }
     await cleanupCall();
     findMatch();
