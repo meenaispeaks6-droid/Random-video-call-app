@@ -40,6 +40,7 @@ export const useVideoChat = () => {
         await update(userRef, {
           lastActive: Date.now(),
           gender: genderFilter,
+          location: "Global", // Default location
           // Only update status if it's not already in-call
           ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
         });
@@ -51,13 +52,29 @@ export const useVideoChat = () => {
     updatePresence();
     const interval = setInterval(updatePresence, 10000);
 
+    // Sync status from database (in case someone else matches us)
+    const unsubStatus = onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
+        if (status !== 'in-call') {
+          console.log("Matched by another user!", data.partnerId);
+          setPartnerId(data.partnerId);
+          setMatchId(data.matchId);
+          setStatus('in-call');
+        }
+      } else if (data && data.status === 'waiting' && status === 'in-call') {
+        // Partner probably disconnected or skipped
+        console.log("Status reset to waiting by DB");
+        cleanupCall(false);
+      }
+    });
+
     return () => {
       clearInterval(interval);
-      // Optional: don't remove immediately on refresh to allow reconnection, 
-      // but for matchmaking, we should probably set to offline or remove
+      unsubStatus();
       remove(userRef).catch(() => {});
     };
-  }, [userId, status, genderFilter]);
+  }, [userId, status, genderFilter, cleanupCall]);
 
   const cleanupListeners = useCallback(() => {
     console.log("Cleaning up listeners...", unsubsRef.current.length);
