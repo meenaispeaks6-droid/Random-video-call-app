@@ -358,17 +358,25 @@ const HeroSplit = () => {
           </>
         ) : (
           <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
-            {/* Remote Video - Fullscreen */}
-            <video 
-              id="remoteVideo"
-              ref={remoteVideoRef}
-              autoPlay 
-              playsInline 
-              className="w-full h-full object-cover"
-            />
+            {/* Remote Video - 50% */}
+            <div className="flex-1 relative overflow-hidden border-b border-white/10">
+              <video 
+                id="remoteVideo"
+                ref={remoteVideoRef}
+                autoPlay 
+                playsInline 
+                className="w-full h-full object-cover"
+              />
+              {/* Partner Location Label */}
+              <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
+                <span className="text-white text-xs font-medium">
+                  🌍 {partnerLocation || "Detecting..."}
+                </span>
+              </div>
+            </div>
 
-            {/* Local Video - Floating */}
-            <div className="absolute bottom-24 right-4 w-32 h-44 rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl z-20">
+            {/* Local Video - 50% */}
+            <div className="flex-1 relative overflow-hidden">
               <video 
                 id="localVideo"
                 ref={localVideoRef}
@@ -377,38 +385,36 @@ const HeroSplit = () => {
                 muted
                 className="w-full h-full object-cover mirror"
               />
+              <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                <span className="text-white text-xs font-medium">You</span>
+              </div>
             </div>
 
-            {/* Call Controls Overlay */}
-            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 z-30">
+            {/* Call Controls Overlay - Floating over the split */}
+            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-3 z-30">
               <button 
                 id="nextBtn"
                 onClick={nextMatch}
-                className="flex-1 max-w-[100px] h-[54px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-extrabold text-[12px] uppercase transition-colors"
+                className="flex-1 max-w-[120px] h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-black text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
               >
-                Next/Skip
+                Next
               </button>
               <button 
                 id="blockBtn"
                 onClick={blockUser}
-                className="flex-1 max-w-[100px] h-[54px] bg-gray-800 hover:bg-gray-900 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
+                className="w-[50px] h-[50px] bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-[16px] flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 border border-white/10"
+                title="Block User"
               >
-                Block
+                🚫
               </button>
               <button 
                 id="reportBtn"
                 onClick={reportUser}
-                className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
+                className="w-[50px] h-[50px] bg-red-600/20 hover:bg-red-600/40 backdrop-blur-md rounded-[16px] flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 border border-red-600/20"
+                title="Report User"
               >
-                Report
+                🚩
               </button>
-            </div>
-
-            {/* Location Label */}
-            <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-              <label id="locationLabel" className="text-white text-sm font-medium">
-                🌍 {partnerLocation || "Detecting location..."}
-              </label>
             </div>
           </div>
         )}
