@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { Video, Sparkles, Zap, Shield, MessageSquare } from 'lucide-react';
 
 const Introduction = () => {
   const [mounted, setMounted] = useState(false);
