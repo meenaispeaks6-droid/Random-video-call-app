@@ -221,11 +221,10 @@ export const useVideoChat = () => {
       }
     };
 
-    if (!db) return;
+    const database = db;
+    if (!database) return;
 
-    if (!db) return;
-
-    const iceRef = ref(db, `signals/${mId}/iceCandidates`);
+    const iceRef = ref(database, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
       if (data && data.senderId !== userId) {
@@ -245,13 +244,13 @@ export const useVideoChat = () => {
       console.log("Role: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      await set(ref(db, `signals/${mId}/offer`), {
+      await set(ref(database, `signals/${mId}/offer`), {
         type: offer.type,
         sdp: offer.sdp,
         senderId: userId
       });
 
-      const answerRef = ref(db, `signals/${mId}/answer`);
+      const answerRef = ref(database, `signals/${mId}/answer`);
       const unsubAnswer = onValue(answerRef, async (snap) => {
         const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'have-local-offer') {
@@ -265,14 +264,14 @@ export const useVideoChat = () => {
       unsubsRef.current.push(unsubAnswer);
     } else {
       console.log("Role: CALLEE");
-      const offerRef = ref(db, `signals/${mId}/offer`);
+      const offerRef = ref(database, `signals/${mId}/offer`);
       const unsubOffer = onValue(offerRef, async (snap) => {
         const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'stable') {
           await pc.setRemoteDescription(new RTCSessionDescription(data));
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-          await set(ref(db, `signals/${mId}/answer`), {
+          await set(ref(database, `signals/${mId}/answer`), {
             type: answer.type,
             sdp: answer.sdp,
             senderId: userId
