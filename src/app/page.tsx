@@ -1,3 +1,5 @@
+"use client";
+
 import HeaderNavigation from "@/components/sections/header-navigation";
 import HeroSplit from "@/components/sections/hero-split";
 import Introduction from "@/components/sections/introduction";
