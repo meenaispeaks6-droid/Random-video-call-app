@@ -140,15 +140,15 @@ const FeaturesGrid = () => {
 
   return (
     <section className="bg-brand-purple py-[100px] md:py-[120px] relative overflow-hidden">
-      {/* Background Section Title Watermark */}
-      <motion.div 
-        initial={{ x: -100, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 0.03 }}
-        viewport={{ once: true }}
-        className="absolute top-[20%] left-[-5%] text-[120px] md:text-[180px] font-black uppercase text-white select-none pointer-events-none whitespace-nowrap"
-      >
-        MEET PEOPLE MEET PEOPLE
-      </motion.div>
+        {/* Background Section Title Watermark */}
+        <motion.div 
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 0.03 }}
+          viewport={{ once: true }}
+          className="absolute top-[20%] left-[-5%] text-[120px] md:text-[180px] font-black uppercase text-white select-none pointer-events-none whitespace-nowrap"
+        >
+          FUNKEY FUNKEY
+        </motion.div>
 
       <div className="container px-6 relative z-10 mx-auto">
         <motion.h2 
