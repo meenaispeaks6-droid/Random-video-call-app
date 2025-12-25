@@ -16,23 +16,11 @@ const HeroSplit = () => {
           <h1 className="text-white text-[48px] md:text-[60px] font-[900] tracking-tight uppercase leading-none mb-4">
             Funkey
           </h1>
-          <p className="text-white text-[20px] md:text-[24px] font-[600] mb-12 opacity-90 max-w-[300px] leading-tight">
-            Make new friends face-to-face
-          </p>
+            <p className="text-white text-[20px] md:text-[24px] font-[600] mb-8 opacity-90 max-w-[300px] leading-tight">
+              Make new friends face-to-face
+            </p>
+          </div>
 
-          <a 
-            href="#" 
-            className="block transition-transform hover:scale-105 active:scale-95 mt-8 border-2 border-white/20 rounded-[20px] p-1 bg-white/5 backdrop-blur-sm"
-          >
-            <Image 
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/google-play-badge-us_3x-7.png"
-              alt="Get it on Google Play"
-              width={180}
-              height={54}
-              className="h-[54px] w-auto"
-            />
-          </a>
-        </div>
 
         {/* Top Header Placeholder (Nav) */}
         <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center w-full">
