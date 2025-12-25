@@ -140,25 +140,17 @@ const Introduction = () => {
               </div>
 
               <motion.div 
-                className="relative z-10 w-full aspect-video bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] flex items-center justify-center shadow-2xl overflow-hidden group"
+                className="relative z-10 w-full aspect-[4/5] bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] flex items-center justify-center shadow-2xl overflow-hidden group"
                 style={{ transform: "translateZ(50px)" }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative flex flex-col items-center gap-6">
-                  <div className="w-24 h-24 rounded-full bg-yellow-400 flex items-center justify-center text-black shadow-[0_0_40px_rgba(255,255,0,0.3)]">
-                    <Video size={48} />
-                  </div>
-                  <div className="flex gap-2">
-                    {[...Array(3)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        animate={{ opacity: [0.3, 1, 0.3] }}
-                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                        className="w-2 h-2 rounded-full bg-white"
-                      />
-                    ))}
-                  </div>
-                </div>
+                <Image 
+                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/Gemini_Generated_Image_6fothz6fothz6fot-resized-1766684312919.webp?width=8000&height=8000&resize=contain"
+                  alt="Funkey App Preview"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </motion.div>
 
                 <motion.div 
