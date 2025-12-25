@@ -5,7 +5,8 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles } from 'lucide-react';
+import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles, Heart, MessageSquare } from 'lucide-react';
+import Link from 'next/link';
 
 const Magnetic = ({ children }: { children: React.ReactNode }) => {
   const mouseX = useMotionValue(0);
@@ -52,7 +53,7 @@ const CursorTrail = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999]">
-      {dots.map((dot, i) => (
+      {dots.map((dot, i) => (dot && (
         <motion.div
           key={dot.id}
           initial={{ scale: 1, opacity: 0.5 }}
@@ -61,7 +62,7 @@ const CursorTrail = () => {
           className="absolute w-2 h-2 bg-yellow-400 rounded-full"
           style={{ left: dot.x, top: dot.y, transform: 'translate(-50%, -50%)' }}
         />
-      ))}
+      )))}
     </div>
   );
 };
@@ -79,7 +80,11 @@ const HeroSplit = () => {
     setGenderFilter,
     localVideoRef,
     remoteVideoRef,
-    partnerLocation
+    partnerLocation,
+    likePartner,
+    isLiked,
+    isMutualMatch,
+    partnerId
   } = useVideoChat();
 
     const [onlineCount, setOnlineCount] = useState(63267);
@@ -373,6 +378,39 @@ const HeroSplit = () => {
                 )}
               </AnimatePresence>
 
+              <AnimatePresence>
+                {isMutualMatch && (
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-purple/80 backdrop-blur-xl"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 0.5, repeat: Infinity }}
+                      className="text-8xl mb-8"
+                    >
+                      ❤️
+                    </motion.div>
+                    <h2 className="text-white text-5xl font-black uppercase tracking-tighter italic mb-4">It's a Match!</h2>
+                    <p className="text-white/80 font-bold mb-8 uppercase tracking-widest text-sm">You are now friends</p>
+                    <Link
+                      href={`/chat?partnerId=${partnerId}`}
+                      className="bg-[#FFFF00] text-black px-8 py-4 rounded-[1.5rem] font-black uppercase tracking-tighter flex items-center gap-3 hover:scale-105 transition-transform"
+                    >
+                      <MessageSquare size={20} />
+                      Send Message
+                    </Link>
+                    <button
+                      onClick={nextMatch}
+                      className="mt-6 text-white/40 font-bold uppercase tracking-widest text-xs hover:text-white transition-colors"
+                    >
+                      Or keep vibing
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
                 <span className="text-white text-xs font-medium">
                   🌍 {partnerLocation || "Detecting..."}
@@ -401,6 +439,19 @@ const HeroSplit = () => {
                 className="flex-1 max-w-[120px] h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-black text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
               >
                 Next
+              </button>
+              <button 
+                onClick={likePartner}
+                disabled={isLiked}
+                className={cn(
+                  "w-[50px] h-[50px] backdrop-blur-md rounded-[16px] flex items-center justify-center transition-all hover:scale-110 active:scale-90 border",
+                  isLiked 
+                    ? "bg-red-500 text-white border-red-500" 
+                    : "bg-white/10 text-white/40 hover:text-red-500 border-white/10"
+                )}
+                title="Like Partner"
+              >
+                <Heart size={24} fill={isLiked ? "currentColor" : "none"} strokeWidth={2.5} />
               </button>
               <button 
                 id="blockBtn"
@@ -432,3 +483,8 @@ const HeroSplit = () => {
 };
 
 export default HeroSplit;
+
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(' ');
+}
+
