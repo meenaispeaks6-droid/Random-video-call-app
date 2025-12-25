@@ -141,26 +141,39 @@ const HeroSplit = () => {
             </div>
 
             {/* Call Controls Overlay */}
-            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-3 z-30">
+            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 z-30">
+              <button 
+                onClick={() => window.location.reload()}
+                className="flex-1 max-w-[100px] h-[54px] bg-white/10 hover:bg-white/20 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
+              >
+                Home
+              </button>
               <button 
                 onClick={nextMatch}
-                className="flex-1 max-w-[120px] h-[54px] bg-[#FFFF00] rounded-[16px] flex items-center justify-center text-black font-extrabold text-sm uppercase"
+                className="flex-1 max-w-[100px] h-[54px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-extrabold text-[12px] uppercase transition-colors"
               >
                 Next
               </button>
               <button 
-                onClick={() => nextMatch()} // Just skip/report for now
-                className="flex-1 max-w-[120px] h-[54px] bg-red-600 rounded-[16px] flex items-center justify-center text-white font-extrabold text-sm uppercase"
+                onClick={() => nextMatch()}
+                className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
               >
                 Report
               </button>
               <button 
                 onClick={blockUser}
-                className="flex-1 max-w-[120px] h-[54px] bg-gray-800 rounded-[16px] flex items-center justify-center text-white font-extrabold text-sm uppercase"
+                className="flex-1 max-w-[100px] h-[54px] bg-gray-800 hover:bg-gray-900 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
               >
                 Block
               </button>
             </div>
+
+            {/* Location Label */}
+            {partnerLocation && (
+              <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+                <span className="text-white text-sm font-medium">📍 {partnerLocation}</span>
+              </div>
+            )}
           </div>
         )}
       </div>
