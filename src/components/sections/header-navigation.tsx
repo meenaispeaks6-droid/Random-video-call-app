@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User, Settings, Mail, X } from "lucide-react";
+import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User, Settings, Mail, X, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
