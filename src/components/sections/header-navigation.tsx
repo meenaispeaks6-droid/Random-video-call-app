@@ -168,6 +168,3 @@ const HeaderNavigation = () => {
 };
 
 export default HeaderNavigation;
-
-
-export default HeaderNavigation;
