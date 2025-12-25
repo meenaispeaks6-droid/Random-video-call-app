@@ -109,6 +109,11 @@ export const useVideoChat = () => {
       }
     }
 
+    if (!db) {
+      console.warn("Firebase Database not initialized");
+      return;
+    }
+
     const userRef = ref(db, `onlineUsers/${userId}`);
     await update(userRef, { status: "waiting", matchId: null, partnerId: null });
 
