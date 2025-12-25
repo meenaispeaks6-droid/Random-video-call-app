@@ -3,10 +3,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { toast } from "sonner";
-import { Loader2, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function AuthPage() {
@@ -40,6 +38,22 @@ export default function AuthPage() {
     } catch (error: any) {
       toast.error(error.message);
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error("Login failed: " + error.message);
       setLoading(false);
     }
   };
@@ -111,20 +125,7 @@ export default function AuthPage() {
           </div>
 
           <button
-            onClick={async () => {
-              setLoading(true);
-              try {
-                const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                toast.success("Welcome " + user.displayName + " 😎");
-                router.push("/");
-              } catch (error: any) {
-                toast.error("Login failed: " + error.message);
-              } finally {
-                setLoading(false);
-              }
-            }}
+            onClick={handleGoogleLogin}
             disabled={loading}
             className="w-full bg-white/5 border border-white/10 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3"
           >
