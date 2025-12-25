@@ -107,15 +107,18 @@ export default function HeaderNavigation() {
           >
             SOLO
           </button>
-          <button
-            onClick={() => setMode("duo")}
-            className={cn(
-              "flex-1 text-[13px] font-bold z-10 transition-colors duration-300",
-              mode === "duo" ? "text-black" : "text-white"
-            )}
-          >
-            DUO
-          </button>
+            <button
+              onClick={() => setMode("duo")}
+              className={cn(
+                "flex-1 text-[13px] font-bold z-10 transition-colors duration-300 relative",
+                mode === "duo" ? "text-black" : "text-white"
+              )}
+            >
+              DUO
+              <span className="absolute -top-3 -right-2 bg-brand-yellow text-black text-[8px] px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                Not yet
+              </span>
+            </button>
           <div
             className={cn(
               "absolute top-1 bottom-1 w-[66px] bg-[#FFFF00] rounded-full transition-all duration-300 ease-in-out",
