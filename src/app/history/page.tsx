@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import HeaderNavigation from "@/components/sections/header-navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 import { Clock, User, MessageSquare, Trash2, Search, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
