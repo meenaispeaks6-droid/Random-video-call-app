@@ -139,17 +139,29 @@ function SuccessMessage() {
 }
 
 export default function PremiumPage() {
+  const { session, user } = useAuth();
+  const router = useRouter();
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoadingIntent, setIsLoadingIntent] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
   const handleUpgradeClick = async () => {
+    if (!session) {
+      setAuthError(true);
+      setTimeout(() => setAuthError(false), 5000);
+      return;
+    }
+
     setIsLoadingIntent(true);
     try {
       const response = await fetch("/api/create-payment-intent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`
+        },
       });
       const data = await response.json();
       if (data.clientSecret) {
