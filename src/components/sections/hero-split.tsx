@@ -28,8 +28,8 @@ const HeroSplit = () => {
   const [isBananaRain, setIsBananaRain] = useState(false);
 
   // 3D Tilt Values
-  const x = motionValue(0);
-  const y = motionValue(0);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const rotateX = useTransform(y, [-300, 300], [15, -15]);
   const rotateY = useTransform(x, [-300, 300], [-15, 15]);
   const springConfig = { damping: 20, stiffness: 150 };
