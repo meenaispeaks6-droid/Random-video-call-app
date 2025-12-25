@@ -135,19 +135,26 @@ const HeroSplit = () => {
                 </button>
 
                 {/* Google Login for non-authenticated users */}
-                {!user && (
-                  <button
-                    onClick={handleGoogleLogin}
-                    className="w-full h-[54px] bg-white/5 border border-white/10 hover:bg-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-all text-white font-bold"
-                  >
-                    <img 
-                      src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-                      className="w-5 h-5" 
-                      alt="Google" 
-                    />
-                    Simple Google Login
-                  </button>
-                )}
+                  {!user && (
+                    <button
+                      onClick={handleGoogleLogin}
+                      disabled={isLoggingIn}
+                      className="w-full h-[54px] bg-white/5 border border-white/10 hover:bg-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-all text-white font-bold disabled:opacity-50"
+                    >
+                      {isLoggingIn ? (
+                        <Loader2 className="animate-spin" size={20} />
+                      ) : (
+                        <>
+                          <img 
+                            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                            className="w-5 h-5" 
+                            alt="Google" 
+                          />
+                          Simple Google Login
+                        </>
+                      )}
+                    </button>
+                  )}
               </div>
 
           </>
