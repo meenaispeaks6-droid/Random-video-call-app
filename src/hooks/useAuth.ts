@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, User } from "firebase/auth";
+import { 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  signOut as firebaseSignOut, 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  User 
+} from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 
 export interface AuthUser {
@@ -55,10 +62,22 @@ export function useAuth() {
     }
   };
 
+  const signUpWithEmail = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
+    return createUserWithEmailAndPassword(auth, email, pass);
+  };
+
+  const signInWithEmail = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase Auth not initialized");
+    return signInWithEmailAndPassword(auth, email, pass);
+  };
+
   return {
     user,
     loading,
     signOut,
     signInWithGoogle,
+    signUpWithEmail,
+    signInWithEmail,
   };
 }
