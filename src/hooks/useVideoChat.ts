@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { ref, onValue, set, push, onChildAdded, remove, update, get, runTransaction, Unsubscribe } from 'firebase/database';
 import { useAuth } from './useAuth';
+import { createClient } from '@/lib/supabase/client';
 
 const ICE_SERVERS = {
   iceServers: [
@@ -13,6 +14,7 @@ const ICE_SERVERS = {
 
 export const useVideoChat = () => {
   const { user: authUser } = useAuth();
+  const supabase = createClient();
   const [userId] = useState(() => authUser?.id || `user_${Math.random().toString(36).substr(2, 9)}`);
   const [status, setStatus] = useState<'idle' | 'waiting' | 'in-call'>('idle');
   const [partnerId, setPartnerId] = useState<string | null>(null);
@@ -22,6 +24,8 @@ export const useVideoChat = () => {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [genderFilter, setGenderFilter] = useState<'Both' | 'Male' | 'Female'>('Both');
   const [partnerLocation, setPartnerLocation] = useState<string | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isMutualMatch, setIsMutualMatch] = useState(false);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -88,6 +92,8 @@ export const useVideoChat = () => {
     setIsInitiator(false);
     setRemoteStream(null);
     setStatus('waiting');
+    setIsLiked(false);
+    setIsMutualMatch(false);
     iceQueueRef.current = [];
   }, [userId, cleanupListeners, partnerId, matchId, isInitiator]);
 
@@ -370,6 +376,34 @@ export const useVideoChat = () => {
     }
   }, [status, partnerId]);
 
+  const likePartner = async () => {
+    if (!partnerId || !userId || isLiked) return;
+    
+    setIsLiked(true);
+    
+    try {
+      // 1. Record like in Supabase
+      await supabase.from('likes').upsert({ user_id: userId, target_id: partnerId });
+      
+      // 2. Check if partner liked us
+      const { data: partnerLike } = await supabase
+        .from('likes')
+        .select('*')
+        .eq('user_id', partnerId)
+        .eq('target_id', userId)
+        .single();
+        
+      if (partnerLike) {
+        setIsMutualMatch(true);
+        // 3. Record friendship
+        const [u1, u2] = [userId, partnerId].sort();
+        await supabase.from('friends').upsert({ user_1: u1, user_2: u2 });
+      }
+    } catch (e) {
+      console.error("Failed to like partner", e);
+    }
+  };
+
   return {
     userId,
     status,
@@ -384,6 +418,9 @@ export const useVideoChat = () => {
     genderFilter,
     setGenderFilter: applyGenderFilter,
     localVideoRef,
-    remoteVideoRef
+    remoteVideoRef,
+    likePartner,
+    isLiked,
+    isMutualMatch
   };
 };
