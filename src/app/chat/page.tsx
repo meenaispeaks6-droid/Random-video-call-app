@@ -95,7 +95,7 @@ export default function ChatPage() {
 
   const fetchPartners = async () => {
     try {
-      // Get unique partners from chat_history
+      // 1. Get partners from chat_history
       const { data: historyData, error: historyError } = await supabase
         .from("chat_history")
         .select("partner_id, partner_name, partner_avatar")
@@ -103,8 +103,29 @@ export default function ChatPage() {
 
       if (historyError) throw historyError;
 
-      // Group by partner_id
+      // 2. Get partners from friends table
+      const { data: friendsRaw, error: fError } = await supabase
+        .from('friends')
+        .select('*')
+        .or(`user_1.eq.${user?.id},user_2.eq.${user?.id}`);
+
+      if (fError) throw fError;
+
+      const friendIds = friendsRaw.map(f => f.user_1 === user?.id ? f.user_2 : f.user_1);
+      let friendProfiles: any[] = [];
+      
+      if (friendIds.length > 0) {
+        const { data: profiles, error: pError } = await supabase
+          .from('profiles')
+          .select('id, name, country')
+          .in('id', friendIds);
+        if (!pError) friendProfiles = profiles;
+      }
+
+      // Group into unique partners
       const uniquePartners: Record<string, ChatPartner> = {};
+      
+      // Add from history first
       historyData?.forEach((item) => {
         if (item.partner_id && !uniquePartners[item.partner_id]) {
           uniquePartners[item.partner_id] = {
@@ -116,13 +137,25 @@ export default function ChatPage() {
         }
       });
 
+      // Add from friends (might overwrite or add new ones)
+      friendProfiles.forEach((profile) => {
+        if (!uniquePartners[profile.id]) {
+          uniquePartners[profile.id] = {
+            id: profile.id,
+            name: profile.name || "Friend",
+            avatar: "",
+            online: true,
+          };
+        }
+      });
+
       const partnerList = Object.values(uniquePartners);
       setPartners(partnerList);
 
       if (initialPartnerId) {
         const partner = partnerList.find((p) => p.id === initialPartnerId);
         if (partner) setSelectedPartner(partner);
-      } else if (partnerList.length > 0) {
+      } else if (partnerList.length > 0 && !selectedPartner) {
         setSelectedPartner(partnerList[0]);
       }
     } catch (err) {
