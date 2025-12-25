@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { User, Session } from "@supabase/supabase-js";
 import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -10,6 +10,27 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check for redirect result
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          const idToken = await result.user.getIdToken();
+          
+          const { data, error } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: idToken,
+          });
+
+          if (error) throw error;
+        }
+      } catch (error) {
+        console.error("Firebase redirect result error:", error);
+      }
+    };
+
+    handleRedirectResult();
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -37,18 +58,10 @@ export function useAuth() {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
-      
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: idToken,
-      });
-
-      if (error) throw error;
-      return data;
+      // Use redirect instead of popup to avoid iframe restrictions
+      await signInWithRedirect(auth, provider);
     } catch (error) {
-      console.error("Firebase/Supabase auth error:", error);
+      console.error("Firebase sign in error:", error);
       throw error;
     }
   };
