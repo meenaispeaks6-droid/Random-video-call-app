@@ -3,29 +3,29 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
-const funkeyMessages = [
-  "Matching your vibe",
-  "Connecting to the world",
-  "Initializing streams",
-  "Preparing your space",
-  "Ready to go",
+const messages = [
+  "harmonizing",
+  "syncing",
+  "elevating",
+  "refining",
+  "curating",
 ];
 
 export function LoadingScreen() {
-  const [messageIndex, setMessageIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const messageInterval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % funkeyMessages.length);
-    }, 1200);
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 1000);
 
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 4500);
+    }, 4000);
 
     return () => {
-      clearInterval(messageInterval);
+      clearInterval(interval);
       clearTimeout(timer);
     };
   }, []);
@@ -37,73 +37,79 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ 
             opacity: 0,
-            scale: 1.1,
-            filter: "blur(20px)",
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
+            transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } 
           }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-brand-purple overflow-hidden"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a0a0a] overflow-hidden"
         >
-          {/* Subtle Ambient Glow */}
-          <div className="absolute inset-0 overflow-hidden">
-            <motion.div 
-              animate={{ 
+          {/* Animated Gradient Background */}
+          <div className="absolute inset-0">
+            <motion.div
+              animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3],
+                opacity: [0.15, 0.25, 0.15],
               }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-yellow/10 rounded-full blur-[120px]" 
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#7c3aed] rounded-full blur-[120px]"
+            />
+            <motion.div
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.1, 0.2, 0.1],
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#f59e0b] rounded-full blur-[150px]"
             />
           </div>
 
           <div className="relative z-10 flex flex-col items-center">
-            {/* Minimal Logo / Text */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center"
-            >
-              <motion.h1 
-                animate={{ 
-                  textShadow: [
-                    "0 0 20px rgba(255,255,255,0)",
-                    "0 0 40px rgba(255,220,100,0.4)",
-                    "0 0 20px rgba(255,255,255,0)"
-                  ]
+            {/* Morphing Blob */}
+            <div className="relative w-32 h-32 mb-12">
+              <motion.div
+                animate={{
+                  borderRadius: ["40% 60% 70% 30% / 40% 50% 60% 50%", "50% 50% 20% 80% / 25% 80% 20% 75%", "40% 60% 70% 30% / 40% 50% 60% 50%"],
+                  rotate: [0, 180, 360],
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-7xl font-black tracking-tighter text-white uppercase mb-4"
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-tr from-[#7c3aed] to-[#f59e0b] blur-sm opacity-80"
+              />
+              <motion.div
+                animate={{
+                  borderRadius: ["50% 50% 20% 80% / 25% 80% 20% 75%", "40% 60% 70% 30% / 40% 50% 60% 50%", "50% 50% 20% 80% / 25% 80% 20% 75%"],
+                  rotate: [360, 180, 0],
+                }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-white/10 backdrop-blur-3xl border border-white/20"
+              />
+            </div>
+
+            <div className="flex flex-col items-center">
+              <motion.h2 
+                initial={{ letterSpacing: "0.5em", opacity: 0 }}
+                animate={{ letterSpacing: "0.2em", opacity: 1 }}
+                className="text-white text-xs font-light uppercase mb-6 tracking-[0.5em]"
               >
                 Funkey
-              </motion.h1>
-              
-              <div className="h-6 overflow-hidden flex items-center justify-center">
+              </motion.h2>
+
+              <div className="h-4 overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.p
-                    key={messageIndex}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-white/40 text-sm font-medium tracking-widest uppercase"
+                    key={index}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-[#888] text-[10px] uppercase tracking-[0.3em] font-medium"
                   >
-                    {funkeyMessages[messageIndex]}
+                    {messages[index]}
                   </motion.p>
                 </AnimatePresence>
               </div>
-            </motion.div>
-
-            {/* Simple Progress Line */}
-            <div className="mt-12 w-48 h-[2px] bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: "0%", x: "-100%" }}
-                animate={{ width: "100%", x: "0%" }}
-                transition={{ duration: 4, ease: "easeInOut" }}
-                className="h-full bg-brand-yellow"
-              />
             </div>
           </div>
 
-          {/* Grain Overlay for Texture */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] contrast-150 brightness-150" style={{
+          {/* Grain */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay" style={{
             backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")'
           }} />
         </motion.div>
