@@ -25,6 +25,10 @@ const HeroSplit = () => {
   const [onlineCount, setOnlineCount] = useState(63267);
 
   useEffect(() => {
+    if (!db) {
+      console.warn("Firebase Database not initialized. Using static online count.");
+      return;
+    }
     const onlineUsersRef = ref(db, 'onlineUsers');
     const unsubscribe = onValue(onlineUsersRef, (snapshot) => {
       const users = snapshot.val();
@@ -33,7 +37,7 @@ const HeroSplit = () => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [db]);
 
   return (
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
