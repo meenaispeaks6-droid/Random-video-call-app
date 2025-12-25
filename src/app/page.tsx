@@ -6,10 +6,12 @@ import Introduction from "@/components/sections/introduction";
 import FeaturesGrid from "@/components/sections/features-grid";
 import FAQAccordion from "@/components/sections/faq-accordion";
 import FooterDownload from "@/components/sections/footer-download";
+import { AuthModal } from "@/components/auth-modal";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-brand-purple">
+      <AuthModal />
       <HeaderNavigation />
       <HeroSplit />
       <Introduction />
