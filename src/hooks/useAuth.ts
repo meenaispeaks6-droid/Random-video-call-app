@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+// Forcing re-evaluation
 import { 
   onAuthStateChanged, 
   signInWithPopup, 
