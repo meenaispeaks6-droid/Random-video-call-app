@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 const HeroSplit = () => {
-  const { user } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
   const {
     status,
     localStream,
@@ -30,17 +30,21 @@ const HeroSplit = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
+      await signInWithGoogle();
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      const hasWelcomed = sessionStorage.getItem('hasWelcomed');
+      if (!hasWelcomed) {
+        toast.success(`Login Success 🎉 Welcome ${user.user_metadata?.full_name || user.email}`);
+        sessionStorage.setItem('hasWelcomed', 'true');
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     const onlineUsersRef = ref(db, 'onlineUsers');
