@@ -26,12 +26,19 @@ export const useVideoChat = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
+  const [partnerLocation, setPartnerLocation] = useState<string | null>(null);
+
   // Initialize User in Firebase
   useEffect(() => {
     const userRef = ref(db, `onlineUsers/${userId}`);
+    // Simple mock location for now
+    const locations = ['Rohini, India', 'Mumbai, India', 'New York, USA', 'London, UK', 'Tokyo, Japan'];
+    const location = locations[Math.floor(Math.random() * locations.length)];
+    
     set(userRef, {
       status: 'idle',
       gender: userGender,
+      location,
       lastSeen: Date.now(),
     });
 
