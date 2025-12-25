@@ -35,18 +35,6 @@ const HeroSplit = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (localVideoRef.current && localStream) {
-      localVideoRef.current.srcObject = localStream;
-    }
-  }, [localStream, localVideoRef]);
-
-  useEffect(() => {
-    if (remoteVideoRef.current && remoteStream) {
-      remoteVideoRef.current.srcObject = remoteStream;
-    }
-  }, [remoteStream, remoteVideoRef]);
-
   return (
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
       {/* Left Column: Purple Branding Area */}
