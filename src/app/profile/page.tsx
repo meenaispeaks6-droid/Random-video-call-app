@@ -125,7 +125,7 @@ export default function ProfilePage() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-white/80 ml-1">Gender</label>
             <div className="relative">
-              <VenusMars className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+              <VenusAndMars className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
               <select
                 value={formData.gender}
                 onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
