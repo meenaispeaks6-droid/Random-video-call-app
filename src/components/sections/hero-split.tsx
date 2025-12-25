@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { Video, Zap, Shield, Globe, Flag, Ban } from 'lucide-react';
 
 const Magnetic = ({ children }: { children: React.ReactNode }) => {
   const mouseX = useMotionValue(0);
