@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { db } from '@/lib/firebase';
-import { ref, onValue, set, push, onChildAdded, remove, update, get, runTransaction, off } from 'firebase/database';
+import { ref, onValue, set, push, onChildAdded, remove, update, get, runTransaction, Unsubscribe } from 'firebase/database';
 import { useAuth } from './useAuth';
 
 const ICE_SERVERS = {
@@ -24,20 +24,16 @@ export const useVideoChat = () => {
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const listenersRef = useRef<(() => void)[]>([]);
+  const unsubsRef = useRef<Unsubscribe[]>([]);
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
 
   const cleanupListeners = useCallback(() => {
-    listenersRef.current.forEach(unsub => unsub());
-    listenersRef.current = [];
-    
-    if (matchId) {
-      off(ref(db, `signals/${matchId}/offer`));
-      off(ref(db, `signals/${matchId}/answer`));
-      off(ref(db, `signals/${matchId}/iceCandidates`));
-    }
-  }, [matchId]);
+    console.log("Cleaning up listeners...", unsubsRef.current.length);
+    unsubsRef.current.forEach(unsub => unsub());
+    unsubsRef.current = [];
+  }, []);
 
   const cleanupCall = useCallback(async (informPartner = true) => {
     console.log("Cleaning up call, informPartner:", informPartner);
@@ -50,11 +46,6 @@ export const useVideoChat = () => {
     if (pcRef.current) {
       pcRef.current.close();
       pcRef.current = null;
-    }
-
-    // Stop remote tracks
-    if (remoteStream) {
-      remoteStream.getTracks().forEach(track => track.stop());
     }
 
     if (currentMatchId) {
@@ -77,7 +68,7 @@ export const useVideoChat = () => {
       }
     }
 
-    // Always reset our own status to waiting when skipping
+    // Reset our own status
     try {
       await update(ref(db, `onlineUsers/${userId}`), {
         status: 'waiting',
@@ -92,18 +83,19 @@ export const useVideoChat = () => {
     setMatchId(null);
     setRemoteStream(null);
     setStatus('waiting');
-  }, [matchId, partnerId, userId, cleanupListeners, remoteStream]);
+    iceQueueRef.current = [];
+  }, [matchId, partnerId, userId, cleanupListeners]);
 
   const detectLocation = useCallback(async () => {
     try {
       const res = await fetch("https://ipapi.co/json/");
       const data = await res.json();
-      const locationLabel = `${data.city}, ${data.country_name}`;
+      const locationLabel = `${data.city || 'Somewhere'}, ${data.country_name || 'Earth'}`;
       
       const userRef = ref(db, `onlineUsers/${userId}`);
       await update(userRef, {
-        country: data.country_name,
-        city: data.city,
+        country: data.country_name || "Unknown",
+        city: data.city || "Unknown",
         location: locationLabel
       });
       return locationLabel;
@@ -119,7 +111,7 @@ export const useVideoChat = () => {
     set(userRef, {
       status: "idle",
       gender: "Both",
-      location: "detecting...",
+      location: "Detecting...",
       lastActive: Date.now()
     });
 
@@ -141,7 +133,7 @@ export const useVideoChat = () => {
     };
   }, [userId, detectLocation]);
 
-  // Listen for our own status changes (incoming matches or partner skipping)
+  // Listen for our own status changes
   useEffect(() => {
     const userRef = ref(db, `onlineUsers/${userId}`);
     const unsubscribe = onValue(userRef, (snapshot) => {
@@ -150,21 +142,21 @@ export const useVideoChat = () => {
 
       if (data.status === 'in-call' && data.matchId && data.partnerId) {
         if (data.matchId !== matchId) {
-          console.log("Matched with:", data.partnerId);
+          console.log("Inbound match found!", data.partnerId);
           setMatchId(data.matchId);
           setPartnerId(data.partnerId);
           setStatus('in-call');
         }
       } else if (data.status === 'waiting' && status === 'in-call') {
-        console.log("Partner ended the call.");
-        cleanupCall(false); // Don't inform partner, they already ended it
+        console.log("Partner left call.");
+        cleanupCall(false);
       }
     });
     return () => unsubscribe();
   }, [userId, matchId, status, cleanupCall]);
 
   const findMatch = useCallback(async () => {
-    console.log("Starting matchmaking...");
+    console.log("Finding match...");
     setStatus('waiting');
     
     if (!localStreamRef.current) {
@@ -173,8 +165,8 @@ export const useVideoChat = () => {
         localStreamRef.current = stream;
         setLocalStream(stream);
       } catch (err) {
-        console.error("Camera access denied", err);
-        alert("Please enable camera/microphone access to start video chat.");
+        console.error("Media error:", err);
+        alert("Camera and Microphone access are required.");
         setStatus('idle');
         return;
       }
@@ -186,19 +178,19 @@ export const useVideoChat = () => {
     const snap = await get(ref(db, "onlineUsers"));
     const users = snap.val() || {};
 
-    const waitingUsers = Object.keys(users).filter(id =>
+    const candidates = Object.keys(users).filter(id =>
       id !== userId && 
       users[id].status === "waiting" &&
       (genderFilter === 'Both' || users[id].gender === genderFilter) &&
-      (Date.now() - users[id].lastActive < 30000)
+      (Date.now() - users[id].lastActive < 45000)
     );
 
-    if (waitingUsers.length === 0) {
-      console.log("No waiting users found. Waiting for someone to pick me.");
+    if (candidates.length === 0) {
+      console.log("No candidates, waiting...");
       return;
     }
 
-    const targetId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+    const targetId = candidates[Math.floor(Math.random() * candidates.length)];
     const newMatchId = `match_${[userId, targetId].sort().join('_')}`;
 
     const targetRef = ref(db, `onlineUsers/${targetId}`);
@@ -213,7 +205,7 @@ export const useVideoChat = () => {
     });
 
     if (result.committed) {
-      console.log("Successfully matched with:", targetId);
+      console.log("Matched with:", targetId);
       await update(userRef, { 
         status: "in-call", 
         matchId: newMatchId, 
@@ -223,20 +215,18 @@ export const useVideoChat = () => {
       setPartnerId(targetId);
       setStatus('in-call');
     } else {
-      console.log("Transaction failed, target no longer waiting.");
-      setTimeout(findMatch, 1000);
+      console.log("Match race lost, retrying...");
+      setTimeout(findMatch, 1500);
     }
   }, [userId, genderFilter]);
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string) => {
-    console.log("Setting up PeerConnection for match:", mId);
+    console.log("Initializing RTCPeerConnection:", mId);
     
-    if (pcRef.current) {
-      pcRef.current.close();
-    }
-
+    if (pcRef.current) pcRef.current.close();
     const pc = new RTCPeerConnection(ICE_SERVERS);
     pcRef.current = pc;
+    iceQueueRef.current = [];
 
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => {
@@ -244,43 +234,45 @@ export const useVideoChat = () => {
       });
     }
 
-    pc.ontrack = (event) => {
-      console.log("Received remote track");
-      setRemoteStream(event.streams[0]);
+    pc.ontrack = (e) => {
+      console.log("Remote track received");
+      setRemoteStream(e.streams[0]);
     };
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
+    pc.onicecandidate = (e) => {
+      if (e.candidate) {
         push(ref(db, `signals/${mId}/iceCandidates`), {
-          candidate: event.candidate.toJSON(),
+          candidate: e.candidate.toJSON(),
           senderId: userId
         });
       }
     };
 
     pc.oniceconnectionstatechange = () => {
-      console.log("ICE connection state:", pc.iceConnectionState);
-      if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
-        // Only cleanup if we are still supposedly in a call
-        if (status === 'in-call') {
-          cleanupCall();
-        }
+      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
+        if (status === 'in-call') cleanupCall();
       }
     };
 
+    // Correct ICE candidate handling with queue
     const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
       if (data && data.senderId !== userId) {
-        pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => console.error("Error adding ICE candidate", e));
+        const candidate = new RTCIceCandidate(data.candidate);
+        if (pc.remoteDescription) {
+          pc.addIceCandidate(candidate).catch(err => console.error("ICE error:", err));
+        } else {
+          iceQueueRef.current.push(data.candidate);
+        }
       }
     });
-    listenersRef.current.push(() => off(iceRef, 'child_added', unsubIce));
+    unsubsRef.current.push(unsubIce);
 
     const isCaller = userId < pId;
 
     if (isCaller) {
-      console.log("Acting as Caller");
+      console.log("Mode: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
       await set(ref(db, `signals/${mId}/offer`), {
@@ -290,18 +282,23 @@ export const useVideoChat = () => {
       });
 
       const answerRef = ref(db, `signals/${mId}/answer`);
-      const unsubAnswer = onValue(answerRef, async (snapshot) => {
-        const data = snapshot.val();
+      const unsubAnswer = onValue(answerRef, async (snap) => {
+        const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'have-local-offer') {
           await pc.setRemoteDescription(new RTCSessionDescription(data));
+          // Process queued ICE candidates
+          while (iceQueueRef.current.length) {
+            const cand = iceQueueRef.current.shift();
+            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(err => console.error("Queued ICE error:", err));
+          }
         }
       });
-      listenersRef.current.push(() => off(answerRef, 'value', unsubAnswer));
+      unsubsRef.current.push(unsubAnswer);
     } else {
-      console.log("Acting as Callee");
+      console.log("Mode: CALLEE");
       const offerRef = ref(db, `signals/${mId}/offer`);
-      const unsubOffer = onValue(offerRef, async (snapshot) => {
-        const data = snapshot.val();
+      const unsubOffer = onValue(offerRef, async (snap) => {
+        const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'stable') {
           await pc.setRemoteDescription(new RTCSessionDescription(data));
           const answer = await pc.createAnswer();
@@ -311,9 +308,14 @@ export const useVideoChat = () => {
             sdp: answer.sdp,
             senderId: userId
           });
+          // Process queued ICE candidates
+          while (iceQueueRef.current.length) {
+            const cand = iceQueueRef.current.shift();
+            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(err => console.error("Queued ICE error:", err));
+          }
         }
       });
-      listenersRef.current.push(() => off(offerRef, 'value', unsubOffer));
+      unsubsRef.current.push(unsubOffer);
     }
   }, [userId, cleanupCall, status]);
 
@@ -323,23 +325,22 @@ export const useVideoChat = () => {
     }
   }, [status, matchId, partnerId, setupPeerConnection]);
 
+  // Handle Video Element Assignment
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream, status]); // Re-run when status changes (video mounts)
+
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream) {
+      remoteVideoRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream, status]); // Re-run when status changes (video mounts)
+
   const nextMatch = async () => {
     await cleanupCall(true);
     findMatch();
-  };
-
-  const blockUser = async () => {
-    if (partnerId) {
-      console.log("Blocking user:", partnerId);
-    }
-    await nextMatch();
-  };
-
-  const reportUser = async () => {
-    if (partnerId) {
-       console.log("Reporting user:", partnerId);
-    }
-    await nextMatch();
   };
 
   const applyGenderFilter = (gender: 'Both' | 'Male' | 'Female') => {
@@ -349,12 +350,9 @@ export const useVideoChat = () => {
 
   useEffect(() => {
     if (status === 'in-call' && partnerId) {
-      const partnerRef = ref(db, `onlineUsers/${partnerId}`);
-      get(partnerRef).then(snap => {
+      get(ref(db, `onlineUsers/${partnerId}`)).then(snap => {
         const data = snap.val();
-        if (data) {
-          setPartnerLocation(data.location || "Unknown");
-        }
+        if (data) setPartnerLocation(data.location || "Earth");
       });
     } else {
       setPartnerLocation(null);
@@ -370,8 +368,8 @@ export const useVideoChat = () => {
     remoteStream,
     startMatchmaking: findMatch,
     nextMatch,
-    blockUser,
-    reportUser,
+    blockUser: nextMatch,
+    reportUser: nextMatch,
     genderFilter,
     setGenderFilter: applyGenderFilter,
     localVideoRef,
