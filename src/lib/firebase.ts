@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "placeholder",
@@ -18,5 +18,6 @@ const app = getApps().length === 0 && firebaseConfig.apiKey !== "placeholder"
 
 const db = app ? getDatabase(app, "https://funkey-a2ae0-default-rtdb.asia-southeast1.firebasedatabase.app") : null;
 const auth = app ? getAuth(app) : null;
+const googleProvider = new GoogleAuthProvider();
 
-export { db, auth };
+export { db, auth, googleProvider };
