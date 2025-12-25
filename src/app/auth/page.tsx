@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -15,6 +15,14 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const { signInWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get('error');
+
+  React.useEffect(() => {
+    if (urlError) {
+      toast.error(urlError);
+    }
+  }, [urlError]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
