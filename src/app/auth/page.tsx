@@ -56,8 +56,7 @@ function AuthContent() {
     setLoading(true);
     try {
       await signInWithGoogle();
-      toast.success("Successfully signed in!");
-      router.push("/");
+      // Page will redirect to Firebase
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
       setLoading(false);
