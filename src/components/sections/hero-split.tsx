@@ -283,18 +283,18 @@ const HeroSplit = () => {
             </motion.div>
           </motion.div>
 
-          {/* Mouse Following Funkey */}
-          <motion.div
-            className="absolute text-3xl pointer-events-none z-30 opacity-30 hidden lg:block"
-            animate={{ 
-              x: mousePos.x / 12 - 60, 
-              y: mousePos.y / 12 - 60,
-              rotate: (mousePos.x - (typeof window !== 'undefined' ? window.innerWidth : 0) / 2) / 40
-            }}
-            transition={{ type: "spring", stiffness: 40, damping: 25 }}
-          >
-            🐵
-          </motion.div>
+            {/* Mouse Following Funkey */}
+            <motion.div
+              className="absolute text-3xl pointer-events-none z-30 opacity-30 hidden lg:block"
+              animate={{ 
+                x: mousePos.x / 12 - 60, 
+                y: mousePos.y / 12 - 60,
+                rotate: (mousePos.x - (typeof window !== 'undefined' ? window.innerWidth : 0) / 2) / 40
+              }}
+              transition={{ type: "spring", stiffness: 40, damping: 25 }}
+            >
+              ✨
+            </motion.div>
         </div>
 
       {/* Right Column: Video Chat Area */}
