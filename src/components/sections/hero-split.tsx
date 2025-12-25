@@ -25,6 +25,12 @@ const HeroSplit = () => {
 
   const [onlineCount, setOnlineCount] = useState(63267);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isBananaRain, setIsBananaRain] = useState(false);
+
+  const triggerBananaRain = () => {
+    setIsBananaRain(true);
+    setTimeout(() => setIsBananaRain(false), 3000);
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
