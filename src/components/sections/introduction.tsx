@@ -56,7 +56,6 @@ const Introduction = () => {
 
           {/* Left Side: Content Text */}
           <div className="flex-1 space-y-12 relative z-10">
-            {/* Block 1 */}
             <motion.div 
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -72,21 +71,20 @@ const Introduction = () => {
               </p>
             </motion.div>
 
-              {/* Block 2 */}
-              <motion.div 
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="space-y-4"
-              >
-                <h3 className="text-white font-display text-2xl font-bold leading-tight flex items-center gap-3">
-                  <span className="text-[#FFFF00]">✨</span> Premium Video Chat Experience
-                </h3>
-                <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
-                  Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s the perfect platform for those who enjoy spontaneous chats or want to talk to strangers in a safe environment.
-                </p>
-              </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="space-y-4"
+            >
+              <h3 className="text-white font-display text-2xl font-bold leading-tight flex items-center gap-3">
+                <span className="text-[#FFFF00]">✨</span> Premium Video Chat Experience
+              </h3>
+              <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
+                Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s the perfect platform for those who enjoy spontaneous chats or want to talk to strangers in a safe environment.
+              </p>
+            </motion.div>
           </div>
 
           {/* Right Side: Visual Preview */}
@@ -104,13 +102,11 @@ const Introduction = () => {
               transformStyle: "preserve-3d" 
             }}
           >
-            {/* Background Layered Elements (Blurred cards) */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="absolute w-[80%] h-[70%] bg-blue-500/10 rounded-3xl blur-2xl transform -translate-x-12 rotate-[-6deg]"></div>
               <div className="absolute w-[80%] h-[70%] bg-purple-500/10 rounded-3xl blur-2xl transform translate-x-12 rotate-[6deg]"></div>
             </div>
 
-            {/* Main Mockup Image */}
             <motion.div 
               className="relative z-10 w-full"
               style={{ transform: "translateZ(50px)" }}
@@ -125,7 +121,6 @@ const Introduction = () => {
               />
             </motion.div>
 
-            {/* Floating Elements on Image */}
             <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -146,7 +141,6 @@ const Introduction = () => {
         </motion.div>
       </div>
 
-      {/* Background Watermark Text */}
       <div className="absolute bottom-[-60px] left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] select-none whitespace-nowrap z-0">
         <span className="text-[180px] font-black font-display uppercase tracking-tighter">
           Funkey Funkey Funkey Funkey
