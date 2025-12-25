@@ -165,6 +165,4 @@ export default function HeaderNavigation() {
       </div>
     </header>
   );
-};
-
-export default HeaderNavigation;
+}
