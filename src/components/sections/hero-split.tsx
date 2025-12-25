@@ -309,46 +309,50 @@ const HeroSplit = () => {
               </div>
             </div>
 
-            {/* Interaction Controls */}
-            <div className="w-full max-w-[340px] space-y-6">
-              {status === 'waiting' && (
-                <div className="text-white text-center mb-4 animate-pulse">
-                  Searching for a match...
-                </div>
-              )}
-              
-              {/* Gender Filter Button */}
-              <button 
-                onClick={() => {
-                  const next = genderFilter === 'Both' ? 'Male' : genderFilter === 'Male' ? 'Female' : 'Both';
-                  setGenderFilter(next);
-                }}
-                className="w-full h-[64px] bg-[#1C1243] hover:bg-[#251955] border border-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-colors active:scale-95 group"
-              >
-                <span className="text-2xl">
-                  {genderFilter === 'Both' ? '👨‍👩‍👦' : genderFilter === 'Male' ? '👨' : '👩'}
-                </span>
-                <span className="text-white font-bold text-lg">{genderFilter}</span>
-              </button>
+              {/* Interaction Controls */}
+              <div className="w-full max-w-[340px] space-y-6">
+                {status === 'waiting' && (
+                  <div className="text-white text-center mb-4 animate-pulse">
+                    Searching for a match...
+                  </div>
+                )}
+                
+                {/* Gender Filter Button */}
+                <Magnetic>
+                  <button 
+                    onClick={() => {
+                      const next = genderFilter === 'Both' ? 'Male' : genderFilter === 'Male' ? 'Female' : 'Both';
+                      setGenderFilter(next);
+                    }}
+                    className="w-full h-[64px] bg-[#1C1243] hover:bg-[#251955] border border-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-colors active:scale-95 group"
+                  >
+                    <span className="text-2xl">
+                      {genderFilter === 'Both' ? '👨‍👩‍👦' : genderFilter === 'Male' ? '👨' : '👩'}
+                    </span>
+                    <span className="text-white font-bold text-lg">{genderFilter}</span>
+                  </button>
+                </Magnetic>
 
                 {/* Primary Action Button */}
-                <button 
-                  id="startBtn"
-                  onClick={startMatchmaking}
-                  disabled={status === 'waiting'}
-                  className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
-                >
-                  <Image 
-                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/icon-24-start_3x-w-15.png"
-                    alt=""
-                    width={24}
-                    height={24}
-                    className="invert"
-                  />
-                  <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
-                    {status === 'waiting' ? 'Matching...' : 'Start'}
-                  </span>
+                <Magnetic>
+                  <button 
+                    id="startBtn"
+                    onClick={startMatchmaking}
+                    disabled={status === 'waiting'}
+                    className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
+                  >
+                    <Image 
+                      src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/icon-24-start_3x-w-15.png"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="invert"
+                    />
+                    <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
+                      {status === 'waiting' ? 'Matching...' : 'Start'}
+                    </span>
                   </button>
+                </Magnetic>
               </div>
 
           </>
