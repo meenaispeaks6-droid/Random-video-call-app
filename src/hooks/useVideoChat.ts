@@ -311,11 +311,13 @@ export const useVideoChat = () => {
 
   const applyGenderFilter = (gender: 'Both' | 'Male' | 'Female') => {
     setGenderFilter(gender);
-    update(ref(db, "onlineUsers/" + userId), { gender });
+    if (db) {
+      update(ref(db, "onlineUsers/" + userId), { gender });
+    }
   };
 
   useEffect(() => {
-    if (status === 'in-call' && partnerId) {
+    if (status === 'in-call' && partnerId && db) {
       get(ref(db, `onlineUsers/${partnerId}`)).then(snap => {
         const data = snap.val();
         if (data) setPartnerLocation(data.location || "Earth");
