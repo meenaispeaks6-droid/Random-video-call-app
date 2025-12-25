@@ -17,7 +17,6 @@ export const useVideoChat = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [genderFilter, setGenderFilter] = useState<'Both' | 'Male' | 'Female'>('Both');
-  const [selectedGender, setSelectedGender] = useState<'Male' | 'Female'>('Male');
   const [partnerLocation, setPartnerLocation] = useState<string | null>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -40,7 +39,7 @@ export const useVideoChat = () => {
       return locationLabel;
     } catch (error) {
       console.error("Location detection failed", error);
-      return "Unknown";
+      return "Location unavailable";
     }
   }, [userId]);
 
@@ -49,7 +48,7 @@ export const useVideoChat = () => {
     const userRef = ref(db, `onlineUsers/${userId}`);
     set(userRef, {
       status: "waiting",
-      gender: selectedGender,
+      gender: "not-selected",
       country: "detecting...",
       city: "detecting..."
     });
@@ -65,21 +64,18 @@ export const useVideoChat = () => {
       handleDisconnect();
       window.removeEventListener('beforeunload', handleDisconnect);
     };
-  }, [userId, selectedGender, detectLocation]);
+  }, [userId, detectLocation]);
 
   const cleanupCall = useCallback(async () => {
     if (pcRef.current) {
       pcRef.current.close();
       pcRef.current = null;
     }
-    if (matchId) {
-      await remove(ref(db, `signals/${matchId}`));
-    }
     setPartnerId(null);
     setMatchId(null);
     setRemoteStream(null);
     setStatus('waiting');
-  }, [matchId]);
+  }, []);
 
   const findMatch = useCallback(async () => {
     setStatus('waiting');
@@ -96,156 +92,135 @@ export const useVideoChat = () => {
     );
 
     if (waitingUsers.length === 0) {
+      // Logic from user: alert("Koi online user available nahi 😔");
+      // But we'll just keep waiting in a loop or until someone matches with us
       return;
     }
 
-    // 50/50 gender balancing - prioritize opposite gender if filter is 'Both'
-    let targetId: string;
+    // 50/50 gender balancing logic (as requested by previous interactions or implied)
+    let partnerUserId: string;
     if (genderFilter === 'Both') {
-      const oppositeGender = selectedGender === 'Male' ? 'Female' : 'Male';
-      const oppositeGenderUsers = waitingUsers.filter(id => users[id].gender === oppositeGender);
+      const currentGenderSnap = await get(ref(db, `onlineUsers/${userId}/gender`));
+      const currentGender = currentGenderSnap.val();
+      const oppositeGender = currentGender === 'Male' ? 'Female' : 'Male';
+      const preferredUsers = waitingUsers.filter(id => users[id].gender === oppositeGender);
       
-      if (oppositeGenderUsers.length > 0) {
-        targetId = oppositeGenderUsers[Math.floor(Math.random() * oppositeGenderUsers.length)];
+      if (preferredUsers.length > 0) {
+        partnerUserId = preferredUsers[Math.floor(Math.random() * preferredUsers.length)];
       } else {
-        targetId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+        partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
       }
     } else {
-      targetId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+      partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
     }
 
-    const partnerUserId = targetId;
-    const newMatchId = `match_${userId}_${partnerUserId}`;
+    const newMatchId = "match_" + userId + "_" + partnerUserId;
+
+    // Mark both users as in-call
+    await update(ref(db, "onlineUsers/" + userId), { status: "in-call" });
+    await update(ref(db, "onlineUsers/" + partnerUserId), { status: "in-call" });
 
     setMatchId(newMatchId);
     setPartnerId(partnerUserId);
-
-    // Mark both users as in-call
-    await update(ref(db, `onlineUsers/${userId}`), { status: "in-call" });
-    await update(ref(db, `onlineUsers/${partnerUserId}`), { status: "in-call" });
-
     setStatus('in-call');
   }, [userId, genderFilter]);
 
-  // Listen for status changes (incoming matches)
+  // Listen for incoming matches where we are the receiver
   useEffect(() => {
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    const unsubscribe = onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.status === 'in-call' && status !== 'in-call') {
-        // Someone matched with us, find who
-        get(ref(db, "onlineUsers")).then(snap => {
-          const allUsers = snap.val() || {};
-          const match = Object.keys(allUsers).find(id => 
-            id !== userId && 
-            allUsers[id].status === 'in-call'
-            // We'd need a more robust way to know WHICH match we are in, 
-            // but for a simple 1:1 matching this works if we listen to signals
-          );
-          
-          if (match) {
-            // Check signals to confirm matchId
-            // The person who initiates sets the matchId as match_{caller}_{callee}
-            // We check both possibilities or wait for the offer signal
-          }
-        });
-      }
-    });
-    return () => unsubscribe();
-  }, [userId, status]);
-
-  // Listen for signals
-  useEffect(() => {
-    if (status !== 'waiting') return;
-
-    // We listen for offers where we might be the receiver
-    // Since matchId is match_{caller}_{callee}, we don't know it yet.
-    // A better way is to listen for signals where 'offer' exists and 'matchId' contains our userId
-    const signalsRef = ref(db, "signals");
-    const unsubscribe = onValue(signalsRef, (snapshot) => {
-      const allSignals = snapshot.val();
-      if (allSignals) {
-        Object.keys(allSignals).forEach(mId => {
-          if (mId.includes(userId) && allSignals[mId].offer && !matchId) {
+    const userRef = ref(db, `onlineUsers/${userId}/status`);
+    const unsubscribe = onValue(userRef, async (snapshot) => {
+      const statusValue = snapshot.val();
+      if (statusValue === 'in-call' && status !== 'in-call') {
+        // Someone matched with us. We need to find the matchId.
+        // We look for signals that include our userId
+        const signalsRef = ref(db, "signals");
+        const signalsSnap = await get(signalsRef);
+        const allSignals = signalsSnap.val();
+        if (allSignals) {
+          const mId = Object.keys(allSignals).find(id => id.includes(userId) && allSignals[id].offer);
+          if (mId) {
             const parts = mId.split('_');
             const otherId = parts[1] === userId ? parts[2] : parts[1];
             setMatchId(mId);
             setPartnerId(otherId);
             setStatus('in-call');
           }
-        });
+        }
       }
     });
     return () => unsubscribe();
-  }, [userId, status, matchId]);
+  }, [userId, status]);
 
-  const setupWebRTC = useCallback(async () => {
-    if (!matchId || !partnerId) return;
+  const startCall = useCallback(async (currentMatchId: string, currentPartnerId: string) => {
+    const peer = new RTCPeerConnection(ICE_SERVERS);
+    pcRef.current = peer;
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    setLocalStream(stream);
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setLocalStream(stream);
+      stream.getTracks().forEach(track => peer.addTrack(track, stream));
+    } catch (err) {
+      console.error("Camera access denied", err);
+      return;
+    }
 
-    const pc = new RTCPeerConnection(ICE_SERVERS);
-    pcRef.current = pc;
-
-    stream.getTracks().forEach(track => pc.addTrack(track, stream));
-
-    pc.ontrack = (event) => {
-      setRemoteStream(event.streams[0]);
+    peer.ontrack = e => {
+      setRemoteStream(e.streams[0]);
     };
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        push(ref(db, `signals/${matchId}/iceCandidates`), event.candidate.toJSON());
+    peer.onicecandidate = e => {
+      if (e.candidate) {
+        push(ref(db, "signals/" + currentMatchId + "/iceCandidates"), e.candidate.toJSON());
       }
     };
 
-    // Listen for ICE Candidates
-    onChildAdded(ref(db, `signals/${matchId}/iceCandidates`), (snap) => {
-      const candidate = snap.val();
+    // Listen for ICE Candidates from partner
+    onChildAdded(ref(db, "signals/" + currentMatchId + "/iceCandidates"), (snapshot) => {
+      const candidate = snapshot.val();
       if (candidate) {
-        pc.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error("Error adding ice candidate", e));
+        peer.addIceCandidate(new RTCIceCandidate(candidate)).catch(err => console.error("ICE candidate error", err));
       }
     });
 
-    const isCaller = matchId.startsWith(`match_${userId}_`);
+    const isCaller = currentMatchId.startsWith("match_" + userId);
 
     if (isCaller) {
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      await set(ref(db, `signals/${matchId}/offer`), offer);
+      const offer = await peer.createOffer();
+      await peer.setLocalDescription(offer);
+      await set(ref(db, "signals/" + currentMatchId + "/offer"), offer);
 
-      onValue(ref(db, `signals/${matchId}/answer`), async (snap) => {
-        const answer = snap.val();
-        if (answer && pc.signalingState !== 'stable') {
-          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+      onValue(ref(db, "signals/" + currentMatchId + "/answer"), async s => {
+        if (s.val() && peer.signalingState !== 'stable') {
+          await peer.setRemoteDescription(new RTCSessionDescription(s.val()));
         }
       });
     } else {
-      onValue(ref(db, `signals/${matchId}/offer`), async (snap) => {
-        const offer = snap.val();
-        if (offer && !pc.remoteDescription) {
-          await pc.setRemoteDescription(new RTCSessionDescription(offer));
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
-          await set(ref(db, `signals/${matchId}/answer`), answer);
+      onValue(ref(db, "signals/" + currentMatchId + "/offer"), async s => {
+        if (s.val() && !peer.remoteDescription) {
+          await peer.setRemoteDescription(new RTCSessionDescription(s.val()));
+          const ans = await peer.createAnswer();
+          await peer.setLocalDescription(ans);
+          await set(ref(db, "signals/" + currentMatchId + "/answer"), ans);
         }
       });
     }
-
-  }, [matchId, partnerId, userId]);
+  }, [userId]);
 
   useEffect(() => {
-    if (status === 'in-call' && matchId) {
-      setupWebRTC();
+    if (status === 'in-call' && matchId && partnerId) {
+      startCall(matchId, partnerId);
     }
-  }, [status, matchId, setupWebRTC]);
+  }, [status, matchId, partnerId, startCall]);
 
   const nextMatch = async () => {
     if (pcRef.current) pcRef.current.close();
-    await update(ref(db, `onlineUsers/${userId}`), { status: "waiting" });
+    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
     if (partnerId) {
-      await update(ref(db, `onlineUsers/${partnerId}`), { status: "waiting" });
+      await update(ref(db, "onlineUsers/" + partnerId), { status: "waiting" });
+    }
+    if (matchId) {
+      await remove(ref(db, "signals/" + matchId));
     }
     await cleanupCall();
     findMatch();
@@ -254,9 +229,12 @@ export const useVideoChat = () => {
   const blockUser = async () => {
     if (pcRef.current) pcRef.current.close();
     if (partnerId) {
-      await remove(ref(db, `onlineUsers/${partnerId}`));
+      await remove(ref(db, "onlineUsers/" + partnerId));
     }
-    await update(ref(db, `onlineUsers/${userId}`), { status: "waiting" });
+    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
+    if (matchId) {
+      await remove(ref(db, "signals/" + matchId));
+    }
     await cleanupCall();
     findMatch();
   };
@@ -264,12 +242,19 @@ export const useVideoChat = () => {
   const reportUser = async () => {
     if (pcRef.current) pcRef.current.close();
     if (partnerId) {
-      await update(ref(db, `onlineUsers/${partnerId}`), { reported: true });
-      await remove(ref(db, `onlineUsers/${partnerId}`));
+      await remove(ref(db, "onlineUsers/" + partnerId));
     }
-    await update(ref(db, `onlineUsers/${userId}`), { status: "waiting" });
+    await update(ref(db, "onlineUsers/" + userId), { status: "waiting" });
+    if (matchId) {
+      await remove(ref(db, "signals/" + matchId));
+    }
     await cleanupCall();
     findMatch();
+  };
+
+  const applyGenderFilter = (gender: 'Both' | 'Male' | 'Female') => {
+    setGenderFilter(gender);
+    update(ref(db, "onlineUsers/" + userId), { gender });
   };
 
   useEffect(() => {
@@ -298,9 +283,7 @@ export const useVideoChat = () => {
     blockUser,
     reportUser,
     genderFilter,
-    setGenderFilter,
-    selectedGender,
-    setSelectedGender,
+    setGenderFilter: applyGenderFilter,
     localVideoRef,
     remoteVideoRef
   };
