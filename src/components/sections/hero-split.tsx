@@ -84,7 +84,7 @@ const HeroSplit = () => {
   
     const [onlineCount, setOnlineCount] = useState(63267);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [isBananaRainEffect, setIsBananaRainEffect] = useState(false);
+    const [isBananaRain, setIsBananaRain] = useState(false);
   
     // 3D Tilt Values
     const x = useMotionValue(0);
@@ -96,8 +96,8 @@ const HeroSplit = () => {
     const springRotateY = useSpring(rotateY, springConfig);
   
     const triggerBananaRain = () => {
-      setIsBananaRainEffect(true);
-      setTimeout(() => setIsBananaRainEffect(false), 3000);
+      setIsBananaRain(true);
+      setTimeout(() => setIsBananaRain(false), 3000);
     };
 
   const handleMouseMove = (e: React.MouseEvent | MouseEvent) => {
