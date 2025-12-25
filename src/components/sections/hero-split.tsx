@@ -7,6 +7,37 @@ import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 
+const Magnetic = ({ children }: { children: React.ReactNode }) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+  const springY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY, currentTarget } = e;
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    const x = clientX - (left + width / 2);
+    const y = clientY - (top + height / 2);
+    mouseX.set(x * 0.4);
+    mouseY.set(y * 0.4);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ x: springX, y: springY }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 const HeroSplit = () => {
   const {
     status,
