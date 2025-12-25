@@ -7,7 +7,7 @@ const Introduction = () => {
       <div className="container mx-auto max-w-[1280px]">
         {/* Section Heading */}
         <h2 className="mb-12 text-center text-white font-display text-[28px] md:text-[40px] font-extrabold tracking-tight uppercase leading-[1.2]">
-          OMEGLE VIDEO CHAT & TALK TO STRANGERS
+          VIDEO CHAT & TALK TO STRANGERS
         </h2>
 
         {/* Main Glassmorphism Card */}
