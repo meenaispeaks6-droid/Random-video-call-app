@@ -40,51 +40,74 @@ export function LoadingScreen() {
           }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a] overflow-hidden"
         >
-          <div className="relative flex flex-col items-center">
-            {/* Minimal High-Speed Pulse */}
-            <div className="relative w-16 h-16 mb-4">
-              <motion.div
-                initial={{ scale: 0, rotate: -45, opacity: 0 }}
-                animate={{ 
-                  scale: [0, 1.2, 1], 
-                  rotate: [0, 45, 0],
-                  opacity: 1 
-                }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 border-2 border-brand-purple rounded-xl"
-              />
-              <motion.div
-                initial={{ scale: 0, rotate: 45, opacity: 0 }}
-                animate={{ 
-                  scale: [0, 1.1, 1], 
-                  rotate: [45, -45, 0],
-                  opacity: 0.5 
-                }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 border border-white/20 rounded-xl"
-              />
-              
-              {/* Inner Core */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="absolute inset-4 bg-brand-purple rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.4)]"
-              />
-            </div>
+            <div className="relative flex flex-col items-center">
+              {/* Minimal High-Speed Pulse + Funny Icon */}
+              <div className="relative w-16 h-16 mb-6">
+                <motion.div
+                  initial={{ scale: 0, rotate: -45, opacity: 0 }}
+                  animate={{ 
+                    scale: [0, 1.2, 1], 
+                    rotate: [0, 45, 0],
+                    opacity: 1 
+                  }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 border-2 border-brand-purple rounded-xl"
+                />
+                
+                {/* Floating funny emoji */}
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0],
+                    rotate: [0, 10, -10, 0]
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    ease: "easeInOut" 
+                  }}
+                  className="absolute -top-8 -right-8 text-2xl"
+                >
+                  ✨
+                </motion.div>
 
-            <motion.div
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-col items-center"
-            >
-              <h2 className="text-white text-sm font-medium tracking-[0.4em] uppercase">
-                Funkey
-              </h2>
-              <div className="mt-2 w-12 h-[1px] bg-gradient-to-r from-transparent via-brand-purple to-transparent" />
-            </motion.div>
-          </div>
+                {/* Inner Core */}
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="absolute inset-4 bg-brand-purple rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center text-xs"
+                >
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                  >
+                    ⚡
+                  </motion.span>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="flex flex-col items-center"
+              >
+                <h2 className="text-white text-sm font-medium tracking-[0.4em] uppercase">
+                  Funkey
+                </h2>
+                <div className="mt-2 w-12 h-[1px] bg-gradient-to-r from-transparent via-brand-purple to-transparent" />
+                
+                {/* Funny Message */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.6 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-4 text-[10px] text-white/50 font-mono tracking-wider italic"
+                >
+                  {message}
+                </motion.p>
+              </motion.div>
+            </div>
 
           {/* Ambient Flare */}
           <motion.div
