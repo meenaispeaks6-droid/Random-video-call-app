@@ -86,6 +86,15 @@ const HeroSplit = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isBananaRainEffect, setIsBananaRainEffect] = useState(false);
   
+    // 3D Tilt Values
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+    const rotateX = useTransform(y, [-300, 300], [15, -15]);
+    const rotateY = useTransform(x, [-300, 300], [-15, 15]);
+    const springConfig = { damping: 20, stiffness: 150 };
+    const springRotateX = useSpring(rotateX, springConfig);
+    const springRotateY = useSpring(rotateY, springConfig);
+  
     const triggerBananaRain = () => {
       setIsBananaRainEffect(true);
       setTimeout(() => setIsBananaRainEffect(false), 3000);
