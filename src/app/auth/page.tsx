@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -16,36 +16,43 @@ function AuthContent() {
   const { signInWithGoogle, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const supabase = createClient();
   const urlError = searchParams.get('error');
 
-    React.useEffect(() => {
-      if (user && !authLoading) {
+  React.useEffect(() => {
+    if (urlError) {
+      toast.error(urlError);
+    }
+  }, [urlError]);
+
+  React.useEffect(() => {
+    if (user && !authLoading) {
+      router.push("/profile");
+    }
+  }, [user, authLoading, router]);
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        if (error) throw error;
+        toast.success("Check your email for the confirmation link!");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        toast.success("Successfully signed in!");
         router.push("/profile");
       }
-    }, [user, authLoading, router]);
-
-    const handleAuth = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setLoading(true);
-
-      try {
-        if (isSignUp) {
-          const { error } = await supabase.auth.signUp({
-            email,
-            password,
-          });
-          if (error) throw error;
-          toast.success("Check your email for the confirmation link!");
-        } else {
-          const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-          if (error) throw error;
-          toast.success("Successfully signed in!");
-          router.push("/profile");
-        }
-      } catch (error: any) {
+    } catch (error: any) {
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -56,7 +63,6 @@ function AuthContent() {
     setLoading(true);
     try {
       await signInWithGoogle();
-      // Page will redirect to Firebase
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
       setLoading(false);
@@ -134,7 +140,7 @@ function AuthContent() {
             disabled={loading}
             className="w-full bg-white/5 border border-white/10 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3"
           >
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" className="w-5 h-5" alt="Google" />
             Google
           </button>
         </div>
