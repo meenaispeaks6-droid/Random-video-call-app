@@ -217,10 +217,25 @@ export const useVideoChat = () => {
     nextMatch();
   };
 
+  useEffect(() => {
+    if (status === 'in-call' && partnerId) {
+      const partnerRef = ref(db, `onlineUsers/${partnerId}`);
+      get(partnerRef).then(snap => {
+        const data = snap.val();
+        if (data && data.location) {
+          setPartnerLocation(data.location);
+        }
+      });
+    } else {
+      setPartnerLocation(null);
+    }
+  }, [status, partnerId]);
+
   return {
     userId,
     status,
     partnerId,
+    partnerLocation,
     localStream,
     remoteStream,
     startMatchmaking,
