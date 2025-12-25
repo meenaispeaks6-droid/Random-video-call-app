@@ -27,17 +27,32 @@ const HeroSplit = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isBananaRain, setIsBananaRain] = useState(false);
 
+  // 3D Tilt Values
+  const x = motionValue(0);
+  const y = motionValue(0);
+  const rotateX = useTransform(y, [-300, 300], [15, -15]);
+  const rotateY = useTransform(x, [-300, 300], [-15, 15]);
+  const springConfig = { damping: 20, stiffness: 150 };
+  const springRotateX = useSpring(rotateX, springConfig);
+  const springRotateY = useSpring(rotateY, springConfig);
+
   const triggerBananaRain = () => {
     setIsBananaRain(true);
     setTimeout(() => setIsBananaRain(false), 3000);
   };
 
+  const handleMouseMove = (e: React.MouseEvent | MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement)?.getBoundingClientRect?.() || { left: 0, top: 0, width: typeof window !== 'undefined' ? window.innerWidth : 1000, height: typeof window !== 'undefined' ? window.innerHeight : 1000 };
+    const mouseX = e.clientX - rect.left - rect.width / 2;
+    const mouseY = e.clientY - rect.top - rect.height / 2;
+    x.set(mouseX);
+    y.set(mouseY);
+    setMousePos({ x: e.clientX, y: e.clientY });
+  };
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove as any);
+    return () => window.removeEventListener('mousemove', handleMouseMove as any);
   }, []);
 
   useEffect(() => {
