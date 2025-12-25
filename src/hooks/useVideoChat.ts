@@ -17,6 +17,7 @@ export const useVideoChat = () => {
   const [status, setStatus] = useState<'idle' | 'waiting' | 'in-call'>('idle');
   const [partnerId, setPartnerId] = useState<string | null>(null);
   const [matchId, setMatchId] = useState<string | null>(null);
+  const [isInitiator, setIsInitiator] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [genderFilter, setGenderFilter] = useState<'Both' | 'Male' | 'Female'>('Both');
@@ -48,7 +49,7 @@ export const useVideoChat = () => {
       pcRef.current = null;
     }
 
-    if (currentMatchId && db) {
+    if (currentMatchId && db && isInitiator) {
       try {
         await remove(ref(db, `signals/${currentMatchId}`));
       } catch (e) {
@@ -61,7 +62,8 @@ export const useVideoChat = () => {
         await update(ref(db, `onlineUsers/${currentPartnerId}`), {
           status: 'waiting',
           matchId: null,
-          partnerId: null
+          partnerId: null,
+          isInitiator: false
         });
       } catch (e) {
         console.error("Failed to reset partner status", e);
@@ -73,7 +75,8 @@ export const useVideoChat = () => {
         await update(ref(db, `onlineUsers/${userId}`), {
           status: 'waiting',
           matchId: null,
-          partnerId: null
+          partnerId: null,
+          isInitiator: false
         });
       } catch (e) {
         console.error("Failed to reset own status", e);
@@ -82,10 +85,11 @@ export const useVideoChat = () => {
 
     setPartnerId(null);
     setMatchId(null);
+    setIsInitiator(false);
     setRemoteStream(null);
     setStatus('waiting');
     iceQueueRef.current = [];
-  }, [userId, cleanupListeners, partnerId, matchId]);
+  }, [userId, cleanupListeners, partnerId, matchId, isInitiator]);
 
   // Heartbeat & Status Sync - Moved AFTER cleanupCall
   useEffect(() => {
@@ -116,6 +120,7 @@ export const useVideoChat = () => {
           console.log("Matched by another user!", data.partnerId);
           setPartnerId(data.partnerId);
           setMatchId(data.matchId);
+          setIsInitiator(!!data.isInitiator);
           setStatus('in-call');
         }
       } else if (data && data.status === 'waiting' && status === 'in-call') {
@@ -156,10 +161,16 @@ export const useVideoChat = () => {
     }
 
     const userRef = ref(db, `onlineUsers/${userId}`);
+    
+    // Check if we were already matched before searching
+    const selfSnap = await get(userRef);
+    if (selfSnap.val()?.status === 'in-call') return;
+
     await update(userRef, { 
       status: "waiting", 
       matchId: null, 
       partnerId: null,
+      isInitiator: false,
       lastActive: Date.now() 
     });
 
@@ -180,7 +191,7 @@ export const useVideoChat = () => {
     }
 
     const targetId = candidates[Math.floor(Math.random() * candidates.length)];
-    const newMatchId = `match_${[userId, targetId].sort().join('_')}_${Date.now()}`;
+    const newMatchId = `match_${[userId, targetId].sort().join('_')}`;
 
     const targetRef = ref(db, `onlineUsers/${targetId}`);
     try {
@@ -189,6 +200,7 @@ export const useVideoChat = () => {
           currentData.status = "in-call";
           currentData.matchId = newMatchId;
           currentData.partnerId = userId;
+          currentData.isInitiator = false; // They are the callee
           return currentData;
         }
         return undefined;
@@ -199,10 +211,12 @@ export const useVideoChat = () => {
         await update(userRef, { 
           status: "in-call", 
           matchId: newMatchId, 
-          partnerId: targetId 
+          partnerId: targetId,
+          isInitiator: true // We are the caller
         });
         setMatchId(newMatchId);
         setPartnerId(targetId);
+        setIsInitiator(true);
         setStatus('in-call');
       } else {
         console.log("Transaction failed (race), retrying search...");
@@ -222,8 +236,8 @@ export const useVideoChat = () => {
     return () => clearInterval(interval);
   }, [status, partnerId, findMatch]);
 
-  const setupPeerConnection = useCallback(async (mId: string, pId: string) => {
-    console.log("Setting up WebRTC for match:", mId);
+  const setupPeerConnection = useCallback(async (mId: string, pId: string, initiator: boolean) => {
+    console.log("Setting up WebRTC for match:", mId, "Initiator:", initiator);
     
     cleanupListeners();
     if (pcRef.current) {
@@ -263,6 +277,11 @@ export const useVideoChat = () => {
 
     if (!db) return;
 
+    // Clear signals if initiator
+    if (initiator) {
+      await remove(ref(db, `signals/${mId}`));
+    }
+
     const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
@@ -277,9 +296,7 @@ export const useVideoChat = () => {
     });
     unsubsRef.current.push(unsubIce);
 
-    const isCaller = userId < pId;
-
-    if (isCaller) {
+    if (initiator) {
       console.log("Role: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
@@ -327,9 +344,9 @@ export const useVideoChat = () => {
 
   useEffect(() => {
     if (status === 'in-call' && matchId && partnerId) {
-      setupPeerConnection(matchId, partnerId);
+      setupPeerConnection(matchId, partnerId, isInitiator);
     }
-  }, [status, matchId, partnerId, setupPeerConnection]);
+  }, [status, matchId, partnerId, isInitiator, setupPeerConnection]);
 
   useEffect(() => {
     if (localVideoRef.current && localStream) {
