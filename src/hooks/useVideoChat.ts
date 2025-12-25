@@ -29,53 +29,6 @@ export const useVideoChat = () => {
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
 
-  // Heartbeat to keep user active in matchmaking pool
-  useEffect(() => {
-    if (!db) return;
-    
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    
-    const updatePresence = async () => {
-      try {
-        await update(userRef, {
-          lastActive: Date.now(),
-          gender: genderFilter,
-          location: "Global", // Default location
-          // Only update status if it's not already in-call
-          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
-        });
-      } catch (e) {
-        console.error("Presence update failed", e);
-      }
-    };
-
-    updatePresence();
-    const interval = setInterval(updatePresence, 10000);
-
-    // Sync status from database (in case someone else matches us)
-    const unsubStatus = onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
-        if (status !== 'in-call') {
-          console.log("Matched by another user!", data.partnerId);
-          setPartnerId(data.partnerId);
-          setMatchId(data.matchId);
-          setStatus('in-call');
-        }
-      } else if (data && data.status === 'waiting' && status === 'in-call') {
-        // Partner probably disconnected or skipped
-        console.log("Status reset to waiting by DB");
-        cleanupCall(false);
-      }
-    });
-
-    return () => {
-      clearInterval(interval);
-      unsubStatus();
-      remove(userRef).catch(() => {});
-    };
-  }, [userId, status, genderFilter, cleanupCall]);
-
   const cleanupListeners = useCallback(() => {
     console.log("Cleaning up listeners...", unsubsRef.current.length);
     unsubsRef.current.forEach(unsub => unsub());
@@ -85,7 +38,6 @@ export const useVideoChat = () => {
   const cleanupCall = useCallback(async (informPartner = true) => {
     console.log("Cleaning up call, informPartner:", informPartner);
     
-    // Use refs to avoid dependency on matchId/partnerId in the callback identity
     const currentPartnerId = partnerId;
     const currentMatchId = matchId;
 
@@ -116,7 +68,6 @@ export const useVideoChat = () => {
       }
     }
 
-    // Reset our own status in DB
     if (db) {
       try {
         await update(ref(db, `onlineUsers/${userId}`), {
@@ -134,10 +85,53 @@ export const useVideoChat = () => {
     setRemoteStream(null);
     setStatus('waiting');
     iceQueueRef.current = [];
-  }, [userId, cleanupListeners, partnerId, matchId]); // Keep these for now but matchId/partnerId are needed to know who to inform
+  }, [userId, cleanupListeners, partnerId, matchId]);
+
+  // Heartbeat & Status Sync - Moved AFTER cleanupCall
+  useEffect(() => {
+    if (!db) return;
+    
+    const userRef = ref(db, `onlineUsers/${userId}`);
+    
+    const updatePresence = async () => {
+      try {
+        await update(userRef, {
+          lastActive: Date.now(),
+          gender: genderFilter,
+          location: "Global",
+          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
+        });
+      } catch (e) {
+        console.error("Presence update failed", e);
+      }
+    };
+
+    updatePresence();
+    const interval = setInterval(updatePresence, 10000);
+
+    const unsubStatus = onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
+        if (status !== 'in-call') {
+          console.log("Matched by another user!", data.partnerId);
+          setPartnerId(data.partnerId);
+          setMatchId(data.matchId);
+          setStatus('in-call');
+        }
+      } else if (data && data.status === 'waiting' && status === 'in-call') {
+        console.log("Status reset to waiting by DB");
+        cleanupCall(false);
+      }
+    });
+
+    return () => {
+      clearInterval(interval);
+      unsubStatus();
+      remove(userRef).catch(() => {});
+    };
+  }, [userId, status, genderFilter, cleanupCall]);
 
   const findMatch = useCallback(async () => {
-    // Avoid multiple concurrent searches
     if (status === 'in-call') return;
     
     console.log("Searching for match...");
@@ -177,7 +171,7 @@ export const useVideoChat = () => {
       id !== userId && 
       users[id].status === "waiting" &&
       (genderFilter === 'Both' || users[id].gender === genderFilter) &&
-      (now - (users[id].lastActive || 0) < 60000) // Relaxed to 60s
+      (now - (users[id].lastActive || 0) < 60000)
     );
 
     if (candidates.length === 0) {
@@ -220,17 +214,13 @@ export const useVideoChat = () => {
     }
   }, [userId, genderFilter, status]);
 
-  // Polling for matches
   useEffect(() => {
     if (status !== 'waiting' || partnerId) return;
-    
     const interval = setInterval(() => {
       findMatch();
     }, 4000);
-    
     return () => clearInterval(interval);
   }, [status, partnerId, findMatch]);
-
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string) => {
     console.log("Setting up WebRTC for match:", mId);
@@ -266,18 +256,14 @@ export const useVideoChat = () => {
 
     pc.oniceconnectionstatechange = () => {
       console.log("ICE State:", pc.iceConnectionState);
-      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'closed') {
-        // Don't immediately cleanup on 'disconnected' as it might reconnect
-        if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
-          cleanupCall(false);
-        }
+      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
+        cleanupCall(false);
       }
     };
 
-    const database = db;
-    if (!database) return;
+    if (!db) return;
 
-    const iceRef = ref(database, `signals/${mId}/iceCandidates`);
+    const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
       if (data && data.senderId !== userId) {
@@ -297,13 +283,13 @@ export const useVideoChat = () => {
       console.log("Role: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      await set(ref(database, `signals/${mId}/offer`), {
+      await set(ref(db, `signals/${mId}/offer`), {
         type: offer.type,
         sdp: offer.sdp,
         senderId: userId
       });
 
-      const answerRef = ref(database, `signals/${mId}/answer`);
+      const answerRef = ref(db, `signals/${mId}/answer`);
       const unsubAnswer = onValue(answerRef, async (snap) => {
         const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'have-local-offer') {
@@ -317,14 +303,14 @@ export const useVideoChat = () => {
       unsubsRef.current.push(unsubAnswer);
     } else {
       console.log("Role: CALLEE");
-      const offerRef = ref(database, `signals/${mId}/offer`);
+      const offerRef = ref(db, `signals/${mId}/offer`);
       const unsubOffer = onValue(offerRef, async (snap) => {
         const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'stable') {
           await pc.setRemoteDescription(new RTCSessionDescription(data));
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-          await set(ref(database, `signals/${mId}/answer`), {
+          await set(ref(db, `signals/${mId}/answer`), {
             type: answer.type,
             sdp: answer.sdp,
             senderId: userId
@@ -345,18 +331,17 @@ export const useVideoChat = () => {
     }
   }, [status, matchId, partnerId, setupPeerConnection]);
 
-  // Handle Video Element Assignment
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
     }
-  }, [localStream, status]); // Re-run when status changes (video mounts)
+  }, [localStream, status]);
 
   useEffect(() => {
     if (remoteVideoRef.current && remoteStream) {
       remoteVideoRef.current.srcObject = remoteStream;
     }
-  }, [remoteStream, status]); // Re-run when status changes (video mounts)
+  }, [remoteStream, status]);
 
   const nextMatch = async () => {
     await cleanupCall(true);
