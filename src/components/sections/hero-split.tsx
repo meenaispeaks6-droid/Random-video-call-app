@@ -383,9 +383,9 @@ const HeroSplit = () => {
                           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                           className="absolute inset-0 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center text-2xl">
-                          🐵
-                        </div>
+                          <div className="absolute inset-0 flex items-center justify-center text-2xl">
+                            ⚡
+                          </div>
                       </div>
                       <p className="text-white/60 font-medium animate-pulse">Connecting to partner...</p>
                     </motion.div>
