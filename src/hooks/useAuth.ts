@@ -1,56 +1,62 @@
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { User, Session } from "@supabase/supabase-js";
+import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, User } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/supabase/../lib/firebase";
+
+export interface AuthUser {
+  id: string;
+  email: string | null;
+  name: string | null;
+  image: string | null;
+}
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName,
+          image: firebaseUser.photoURL,
+        });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
+    if (auth) {
+      await firebaseSignOut(auth);
+      window.location.href = "/";
+    }
   };
 
   const signInWithGoogle = async () => {
+    if (!auth) {
+      throw new Error("Firebase Auth not initialized. Check your environment variables.");
+    }
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Supabase sign in error:", error);
+      console.error("Firebase sign in error:", error);
       throw error;
     }
   };
 
   return {
     user,
-    session,
     loading,
     signOut,
     signInWithGoogle,
