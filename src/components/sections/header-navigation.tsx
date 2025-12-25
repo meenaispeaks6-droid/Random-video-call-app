@@ -2,24 +2,41 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Menu, Home, Clock, Heart, MessageSquare, Crown } from "lucide-react";
+import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 const HeaderNavigation = () => {
   const [mode, setMode] = useState<"solo" | "duo">("solo");
+  const { user, signOut } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-3 md:px-6">
-      {/* Left Section: Sign In button and Funkey Logo */}
+      {/* Left Section: Auth button and Funkey Logo */}
       <div className="flex items-center gap-4">
-        <a
-          href="#"
-          className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white text-white text-[14px] font-bold hover:bg-white/10 transition-colors"
-        >
-          Sign In
-        </a>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => signOut()}
+              className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white/20 text-white text-[14px] font-bold hover:bg-white/10 transition-colors gap-2"
+            >
+              <LogOut size={14} />
+              Sign Out
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/auth"
+            className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white text-white text-[14px] font-bold hover:bg-white/10 transition-colors"
+          >
+            Sign In
+          </Link>
+        )}
         <div className="hidden lg:flex items-center">
-          <span className="text-white font-black text-2xl tracking-tighter uppercase">Funkey</span>
+          <Link href="/">
+            <span className="text-white font-black text-2xl tracking-tighter uppercase">Funkey</span>
+          </Link>
         </div>
       </div>
 
