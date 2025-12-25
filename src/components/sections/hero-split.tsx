@@ -7,19 +7,20 @@ import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 
 const HeroSplit = () => {
-  const {
-    status,
-    localStream,
-    remoteStream,
-    startMatchmaking,
-    nextMatch,
-    blockUser,
-    genderFilter,
-    setGenderFilter,
-    localVideoRef,
-    remoteVideoRef,
-    partnerLocation
-  } = useVideoChat();
+    const {
+      status,
+      localStream,
+      remoteStream,
+      startMatchmaking,
+      nextMatch,
+      blockUser,
+      reportUser,
+      genderFilter,
+      setGenderFilter,
+      localVideoRef,
+      remoteVideoRef,
+      partnerLocation
+    } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
 
