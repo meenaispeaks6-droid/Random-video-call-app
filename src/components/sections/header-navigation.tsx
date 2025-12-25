@@ -38,7 +38,7 @@ export default function HeaderNavigation() {
   ];
 
   const UltraPremiumBadge = () => (
-    <div className="absolute -top-1 -right-1 md:-top-1.5 md:-right-1.5 bg-yellow-400 text-black rounded-full p-0.5 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] z-20 scale-[0.6] md:scale-75 animate-bounce-slow">
+    <div className="absolute -top-1 -right-1 md:-top-1.5 md:-right-1.5 bg-gradient-to-br from-[#FFE07D] via-[#FDB931] to-[#9E7E38] text-black rounded-full p-0.5 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] z-20 scale-[0.6] md:scale-75 animate-bounce-slow">
       <Crown size={12} fill="currentColor" />
     </div>
   );
