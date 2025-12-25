@@ -223,10 +223,10 @@ const HeroSplit = () => {
           className="absolute -left-4 bottom-1/3 text-7xl select-none cursor-pointer z-40 active:scale-90"
           initial={{ x: -60 }}
           whileHover={{ x: 20, rotate: 10, scale: 1.1 }}
-          onClick={triggerBananaRain}
+          onClick={triggerSparkleRain}
           title="Click for surprise!"
         >
-          🍌
+          ✨
         </motion.div>
 
         <motion.div 
