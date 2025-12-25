@@ -49,7 +49,7 @@ export const useVideoChat = () => {
       pcRef.current = null;
     }
 
-    if (currentMatchId) {
+    if (currentMatchId && db) {
       try {
         await remove(ref(db, `signals/${currentMatchId}`));
       } catch (e) {
@@ -57,7 +57,7 @@ export const useVideoChat = () => {
       }
     }
 
-    if (informPartner && currentPartnerId) {
+    if (informPartner && currentPartnerId && db) {
       try {
         await update(ref(db, `onlineUsers/${currentPartnerId}`), {
           status: 'waiting',
@@ -70,14 +70,16 @@ export const useVideoChat = () => {
     }
 
     // Reset our own status in DB
-    try {
-      await update(ref(db, `onlineUsers/${userId}`), {
-        status: 'waiting',
-        matchId: null,
-        partnerId: null
-      });
-    } catch (e) {
-      console.error("Failed to reset own status", e);
+    if (db) {
+      try {
+        await update(ref(db, `onlineUsers/${userId}`), {
+          status: 'waiting',
+          matchId: null,
+          partnerId: null
+        });
+      } catch (e) {
+        console.error("Failed to reset own status", e);
+      }
     }
 
     setPartnerId(null);
