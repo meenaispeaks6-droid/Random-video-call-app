@@ -25,15 +25,16 @@ const Introduction = () => {
               </p>
             </div>
 
-            {/* Block 2 */}
-            <div className="space-y-4">
-              <h3 className="text-white font-display text-2xl font-bold leading-tight">
-                New Omegle & OmeTV Alternative
-              </h3>
-              <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
-                Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.
-              </p>
-            </div>
+              {/* Block 2 */}
+              <div className="space-y-4">
+                <h3 className="text-white font-display text-2xl font-bold leading-tight">
+                  Premium Video Chat Experience
+                </h3>
+                <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
+                  Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s the perfect platform for those who enjoy spontaneous chats or want to talk to strangers in a safe and engaging environment.
+                </p>
+              </div>
+
           </div>
 
           {/* Right Side: Visual Preview */}
