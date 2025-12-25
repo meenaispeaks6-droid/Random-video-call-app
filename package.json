@@ -45,6 +45,7 @@
         "@react-three/fiber": "^9.0.0-alpha.8",
         "@stripe/react-stripe-js": "^5.4.1",
         "@stripe/stripe-js": "^8.6.0",
+        "@supabase/supabase-js": "^2.89.0",
         "@tabler/icons-react": "^3.35.0",
         "@tailwindcss/typography": "^0.5.19",
         "@tsparticles/engine": "^3.8.1",
