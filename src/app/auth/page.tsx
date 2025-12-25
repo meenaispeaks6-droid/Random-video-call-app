@@ -18,34 +18,34 @@ function AuthContent() {
   const searchParams = useSearchParams();
   const urlError = searchParams.get('error');
 
-  React.useEffect(() => {
-    if (user && !authLoading) {
-      router.push("/");
-    }
-  }, [user, authLoading, router]);
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success("Check your email for the confirmation link!");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success("Successfully signed in!");
-        router.push("/");
+    React.useEffect(() => {
+      if (user && !authLoading) {
+        router.push("/profile");
       }
-    } catch (error: any) {
+    }, [user, authLoading, router]);
+
+    const handleAuth = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setLoading(true);
+
+      try {
+        if (isSignUp) {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+          });
+          if (error) throw error;
+          toast.success("Check your email for the confirmation link!");
+        } else {
+          const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (error) throw error;
+          toast.success("Successfully signed in!");
+          router.push("/profile");
+        }
+      } catch (error: any) {
       toast.error(error.message);
     } finally {
       setLoading(false);
