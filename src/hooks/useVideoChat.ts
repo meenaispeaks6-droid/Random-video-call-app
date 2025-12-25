@@ -91,51 +91,6 @@ export const useVideoChat = () => {
     iceQueueRef.current = [];
   }, [userId, cleanupListeners, partnerId, matchId, isInitiator]);
 
-  // Heartbeat & Status Sync - Moved AFTER cleanupCall
-  useEffect(() => {
-    if (!db) return;
-    
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    
-    const updatePresence = async () => {
-      try {
-        await update(userRef, {
-          lastActive: Date.now(),
-          gender: genderFilter,
-          location: "Global",
-          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
-        });
-      } catch (e) {
-        console.error("Presence update failed", e);
-      }
-    };
-
-    updatePresence();
-    const interval = setInterval(updatePresence, 10000);
-
-    const unsubStatus = onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
-        if (status !== 'in-call') {
-          console.log("Matched by another user!", data.partnerId);
-          setPartnerId(data.partnerId);
-          setMatchId(data.matchId);
-          setIsInitiator(!!data.isInitiator);
-          setStatus('in-call');
-        }
-      } else if (data && data.status === 'waiting' && status === 'in-call') {
-        console.log("Status reset to waiting by DB");
-        cleanupCall(false);
-      }
-    });
-
-    return () => {
-      clearInterval(interval);
-      unsubStatus();
-      remove(userRef).catch(() => {});
-    };
-  }, [userId, status, genderFilter, cleanupCall]);
-
   const findMatch = useCallback(async () => {
     if (status === 'in-call') return;
     
@@ -162,7 +117,6 @@ export const useVideoChat = () => {
 
     const userRef = ref(db, `onlineUsers/${userId}`);
     
-    // Check if we were already matched before searching
     const selfSnap = await get(userRef);
     if (selfSnap.val()?.status === 'in-call') return;
 
@@ -200,7 +154,7 @@ export const useVideoChat = () => {
           currentData.status = "in-call";
           currentData.matchId = newMatchId;
           currentData.partnerId = userId;
-          currentData.isInitiator = false; // They are the callee
+          currentData.isInitiator = false;
           return currentData;
         }
         return undefined;
@@ -212,7 +166,7 @@ export const useVideoChat = () => {
           status: "in-call", 
           matchId: newMatchId, 
           partnerId: targetId,
-          isInitiator: true // We are the caller
+          isInitiator: true 
         });
         setMatchId(newMatchId);
         setPartnerId(targetId);
@@ -227,14 +181,6 @@ export const useVideoChat = () => {
       setTimeout(findMatch, 2000);
     }
   }, [userId, genderFilter, status]);
-
-  useEffect(() => {
-    if (status !== 'waiting' || partnerId) return;
-    const interval = setInterval(() => {
-      findMatch();
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [status, partnerId, findMatch]);
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string, initiator: boolean) => {
     console.log("Setting up WebRTC for match:", mId, "Initiator:", initiator);
@@ -277,7 +223,6 @@ export const useVideoChat = () => {
 
     if (!db) return;
 
-    // Clear signals if initiator
     if (initiator) {
       await remove(ref(db, `signals/${mId}`));
     }
@@ -297,7 +242,6 @@ export const useVideoChat = () => {
     unsubsRef.current.push(unsubIce);
 
     if (initiator) {
-      console.log("Role: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
       await set(ref(db, `signals/${mId}/offer`), {
@@ -319,7 +263,6 @@ export const useVideoChat = () => {
       });
       unsubsRef.current.push(unsubAnswer);
     } else {
-      console.log("Role: CALLEE");
       const offerRef = ref(db, `signals/${mId}/offer`);
       const unsubOffer = onValue(offerRef, async (snap) => {
         const data = snap.val();
@@ -341,6 +284,50 @@ export const useVideoChat = () => {
       unsubsRef.current.push(unsubOffer);
     }
   }, [userId, cleanupCall, cleanupListeners]);
+
+  useEffect(() => {
+    if (!db) return;
+    const userRef = ref(db, `onlineUsers/${userId}`);
+    const updatePresence = async () => {
+      try {
+        await update(userRef, {
+          lastActive: Date.now(),
+          gender: genderFilter,
+          location: "Global",
+          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
+        });
+      } catch (e) {
+        console.error("Presence update failed", e);
+      }
+    };
+    updatePresence();
+    const interval = setInterval(updatePresence, 10000);
+    const unsubStatus = onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
+        if (status !== 'in-call') {
+          setPartnerId(data.partnerId);
+          setMatchId(data.matchId);
+          setIsInitiator(!!data.isInitiator);
+          setStatus('in-call');
+        }
+      } else if (data && data.status === 'waiting' && status === 'in-call') {
+        cleanupCall(false);
+      }
+    });
+    return () => {
+      clearInterval(interval);
+      unsubStatus();
+      remove(userRef).catch(() => {});
+    };
+  }, [userId, status, genderFilter, cleanupCall]);
+
+  useEffect(() => {
+    if (status === 'waiting' && !partnerId) {
+      const interval = setInterval(() => findMatch(), 4000);
+      return () => clearInterval(interval);
+    }
+  }, [status, partnerId, findMatch]);
 
   useEffect(() => {
     if (status === 'in-call' && matchId && partnerId) {
