@@ -33,9 +33,15 @@ export default function HeaderNavigation() {
   const navLinks = [
     { href: "/", icon: <Home size={20} strokeWidth={2.5} /> },
     { href: "/history", icon: <Clock size={20} strokeWidth={2.5} /> },
-    { href: "/likes", icon: <Heart size={20} strokeWidth={2.5} /> },
-    { href: "/chat", icon: <MessageSquare size={20} strokeWidth={2.5} /> },
+    { href: "/likes", icon: <Heart size={20} strokeWidth={2.5} />, premium: true },
+    { href: "/chat", icon: <MessageSquare size={20} strokeWidth={2.5} />, premium: true },
   ];
+
+  const UltraPremiumBadge = () => (
+    <div className="absolute -top-1 -right-1 md:-top-1.5 md:-right-1.5 bg-yellow-400 text-black rounded-full p-0.5 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] z-20 scale-[0.6] md:scale-75 animate-bounce-slow">
+      <Crown size={12} fill="currentColor" />
+    </div>
+  );
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-3 md:px-6">
@@ -79,21 +85,25 @@ export default function HeaderNavigation() {
             key={link.href}
             href={link.href}
             className={cn(
-              "w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full transition-all",
+              "w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full transition-all relative",
               pathname === link.href 
                 ? "bg-[#FFFF00] text-black" 
                 : "text-white hover:bg-white/10"
             )}
           >
             {link.icon}
+            {link.premium && <UltraPremiumBadge />}
           </Link>
         ))}
       </nav>
 
       {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
       <div className="flex items-center gap-3 md:gap-4 relative" ref={menuRef}>
-        <Link href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 text-white cursor-pointer hover:bg-white/10">
+        <Link href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 text-white cursor-pointer hover:bg-white/10 relative">
           <Crown size={20} fill="currentColor" />
+          <div className="absolute -top-1 -right-1 bg-yellow-400 text-black rounded-full p-0.5 border border-black scale-50">
+            <Zap size={10} fill="currentColor" />
+          </div>
         </Link>
 
         {/* Solo/Duo Toggle Switch */}
@@ -115,6 +125,7 @@ export default function HeaderNavigation() {
               )}
             >
               DUO
+              <UltraPremiumBadge />
               <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[9px] px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap">
                 <Lock size={8} strokeWidth={3} />
                 Not yet
