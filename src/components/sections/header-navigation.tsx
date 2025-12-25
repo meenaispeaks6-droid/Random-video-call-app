@@ -19,13 +19,7 @@ const HeaderNavigation = () => {
           Sign In
         </a>
         <div className="hidden lg:flex items-center">
-          <Image
-            src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/icons/monkey-logo-2.png"
-            alt="Funkey logo"
-            width={44}
-            height={44}
-            className="object-contain"
-          />
+          <span className="text-white font-black text-2xl tracking-tighter uppercase">Funkey</span>
         </div>
       </div>
 
