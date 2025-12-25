@@ -13,16 +13,16 @@ function AuthContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlError = searchParams.get('error');
 
   React.useEffect(() => {
-    if (urlError) {
-      toast.error(urlError);
+    if (user && !authLoading) {
+      router.push("/");
     }
-  }, [urlError]);
+  }, [user, authLoading, router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
