@@ -157,7 +157,7 @@ const HeroSplit = () => {
         />
 
         <AnimatePresence>
-          {isBananaRain && Array.from({ length: 20 }).map((_, i) => (
+          {isSparkleRain && Array.from({ length: 20 }).map((_, i) => (
             <motion.div
               key={i}
               initial={{ y: -100, x: Math.random() * 400 - 200, rotate: 0, opacity: 1 }}
@@ -170,7 +170,7 @@ const HeroSplit = () => {
               transition={{ duration: 2, delay: Math.random() * 0.5, ease: "easeIn" }}
               className="absolute text-4xl pointer-events-none z-50"
             >
-              🍌
+              ✨
             </motion.div>
           ))}
         </AnimatePresence>
