@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import HeaderNavigation from "@/components/sections/header-navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Send, User, Search, MoreVertical, Phone, Video, Smile, Paperclip } from "lucide-react";
+import { Send, User, Search, MoreVertical, Phone, Video, Smile, Paperclip, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
