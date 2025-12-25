@@ -174,11 +174,7 @@ const Introduction = () => {
         </motion.div>
       </div>
 
-      <div className="absolute bottom-[-60px] left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] select-none whitespace-nowrap z-0">
-        <span className="text-[180px] font-black font-display uppercase tracking-tighter">
-          Funkey Funkey Funkey Funkey
-        </span>
-      </div>
+
     </section>
   );
 };
