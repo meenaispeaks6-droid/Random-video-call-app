@@ -155,12 +155,12 @@ const HeroSplit = () => {
               >
                 Next
               </button>
-              <button 
-                onClick={() => nextMatch()}
-                className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
-              >
-                Report
-              </button>
+                <button 
+                  onClick={reportUser}
+                  className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
+                >
+                  Report
+                </button>
               <button 
                 onClick={blockUser}
                 className="flex-1 max-w-[100px] h-[54px] bg-gray-800 hover:bg-gray-900 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
