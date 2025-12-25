@@ -223,6 +223,8 @@ export const useVideoChat = () => {
 
     if (!db) return;
 
+    if (!db) return;
+
     const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
