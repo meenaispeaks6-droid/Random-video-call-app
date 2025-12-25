@@ -13,7 +13,7 @@ const firebaseConfig = {
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getDatabase(app);
+const db = getDatabase(app, "https://funkey-a2ae0-default-rtdb.asia-southeast1.firebasedatabase.app");
 const auth = getAuth(app);
 
 export { db, auth };
