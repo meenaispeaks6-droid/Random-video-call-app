@@ -157,7 +157,7 @@ const FeaturesGrid = () => {
           viewport={{ once: true }}
           className="text-white text-center text-[32px] md:text-[40px] font-black uppercase mb-[60px] tracking-tight"
         >
-          MEET PEOPLE LIKE NEVER BEFORE
+          Vibe with Strangers
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-[1100px] mx-auto">
