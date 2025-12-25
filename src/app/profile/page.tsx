@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Loader2, User, Globe, Calendar, ArrowRight, Check } from "lucide-react";
+import { Loader2, User, Globe, Calendar, ArrowRight, Check, VenusMars } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -14,7 +14,8 @@ export default function ProfilePage() {
   const [fetching, setFetching] = useState(true);
   
   const [formData, setFormData] = useState({
-    full_name: "",
+    name: "",
+    gender: "",
     age: "",
     country: "",
   });
@@ -34,7 +35,7 @@ export default function ProfilePage() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, age, country")
+        .select("name, gender, age, country")
         .eq("id", user?.id)
         .single();
 
@@ -44,7 +45,8 @@ export default function ProfilePage() {
 
       if (data) {
         setFormData({
-          full_name: data.full_name || "",
+          name: data.name || "",
+          gender: data.gender || "",
           age: data.age?.toString() || "",
           country: data.country || "",
         });
@@ -65,7 +67,8 @@ export default function ProfilePage() {
         .from("profiles")
         .upsert({
           id: user?.id,
-          full_name: formData.full_name,
+          name: formData.name,
+          gender: formData.gender,
           age: parseInt(formData.age),
           country: formData.country,
           updated_at: new Date().toISOString(),
@@ -105,17 +108,36 @@ export default function ProfilePage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-white/80 ml-1">Full Name</label>
+            <label className="text-sm font-medium text-white/80 ml-1">Name</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
               <input
                 type="text"
                 placeholder="Enter your name"
-                value={formData.full_name}
-                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[#FFFF00] transition-colors"
                 required
               />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/80 ml-1">Gender</label>
+            <div className="relative">
+              <VenusMars className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[#FFFF00] transition-colors appearance-none"
+                required
+              >
+                <option value="" disabled className="bg-brand-purple">Select Gender</option>
+                <option value="male" className="bg-brand-purple">Male</option>
+                <option value="female" className="bg-brand-purple">Female</option>
+                <option value="other" className="bg-brand-purple">Other</option>
+                <option value="prefer_not_to_say" className="bg-brand-purple">Prefer not to say</option>
+              </select>
             </div>
           </div>
 
