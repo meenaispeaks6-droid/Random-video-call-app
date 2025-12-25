@@ -1,16 +1,21 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
 const Introduction = () => {
+  const [mounted, setMounted] = useState(false);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-200, 200], [10, -10]);
   const rotateY = useTransform(x, [-200, 200], [-10, 10]);
   const springX = useSpring(rotateX, { damping: 20, stiffness: 150 });
   const springY = useSpring(rotateY, { damping: 20, stiffness: 150 });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -24,6 +29,30 @@ const Introduction = () => {
     x.set(0);
     y.set(0);
   };
+
+  if (!mounted) {
+    return (
+      <section className="relative w-full py-20 px-6 overflow-hidden bg-[#634AF1]">
+        <div className="container mx-auto max-w-[1280px]">
+          <h2 className="mb-12 text-center text-white font-display text-[28px] md:text-[40px] font-extrabold tracking-tight uppercase leading-[1.2]">
+            VIDEO CHAT & TALK TO STRANGERS
+          </h2>
+          <div className="relative w-full bg-white/10 backdrop-blur-[12px] border border-white/20 rounded-[40px] p-8 md:p-12 lg:p-16 flex flex-col md:flex-row items-center gap-12 lg:gap-24 overflow-hidden">
+             <div className="flex-1 space-y-12 relative z-10">
+                <div className="space-y-4">
+                  <h3 className="text-white font-display text-2xl font-bold leading-tight flex items-center gap-3">
+                    <span className="text-[#FFFF00]">#1</span> Random Video Chat Platform
+                  </h3>
+                  <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
+                    Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally.
+                  </p>
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full py-20 px-6 overflow-hidden bg-[#634AF1]">
