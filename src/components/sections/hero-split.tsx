@@ -43,22 +43,100 @@ const HeroSplit = () => {
   return (
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
       {/* Left Column: Purple Branding Area */}
-      <div className="flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-16 px-6 overflow-hidden">
-        {/* Floating Funkey Emojis (Decorative) */}
-        <div className="absolute top-10 left-10 text-3xl animate-float opacity-80 select-none pointer-events-none">🌍</div>
-        <div className="absolute top-1/4 right-20 text-4xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '1s' }}>🐒</div>
-        <div className="absolute bottom-1/4 left-1/4 text-3xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '2s' }}>🙊</div>
-        <div className="absolute bottom-10 right-10 text-4xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '1.5s' }}>🙉</div>
+        <div className="flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-16 px-6 overflow-hidden">
+          {/* Animated Background Elements */}
+          <motion.div
+            className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-10"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          >
+            <div className="w-[500px] h-[500px] border-[10px] border-dashed border-white rounded-full" />
+          </motion.div>
 
-        <div className="z-10 text-center flex flex-col items-center">
-          <h1 className="text-white text-[48px] md:text-[60px] font-[900] tracking-tight uppercase leading-none mb-4">
-            Funkey
-          </h1>
-          <p className="text-white text-[20px] md:text-[24px] font-[600] mb-8 opacity-90 max-w-[300px] leading-tight">
-            Make new friends face-to-face
-          </p>
+          <motion.div 
+            className="absolute top-10 left-10 text-4xl select-none pointer-events-none z-10"
+            animate={{ 
+              y: [0, -20, 0],
+              rotate: [0, 15, -15, 0],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            🌍
+          </motion.div>
+
+          <motion.div 
+            className="absolute top-1/3 right-10 text-5xl select-none pointer-events-none z-10"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              rotate: [0, -20, 20, 0],
+            }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          >
+            🍌
+          </motion.div>
+
+          <motion.div 
+            className="absolute bottom-20 left-1/4 text-4xl select-none pointer-events-none z-10"
+            animate={{ 
+              x: [0, 30, 0],
+              y: [0, -10, 0],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          >
+            🙊
+          </motion.div>
+
+          <motion.div 
+            className="absolute bottom-10 right-20 text-5xl select-none pointer-events-none z-10"
+            animate={{ 
+              rotate: [0, 360],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          >
+            🎡
+          </motion.div>
+
+          {/* Peeking Monkey */}
+          <motion.div
+            className="absolute -left-4 bottom-1/3 text-6xl select-none cursor-help z-20"
+            initial={{ x: -50 }}
+            whileHover={{ x: 20, rotate: 10, scale: 1.2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+          >
+            🐒
+          </motion.div>
+
+          <div className="z-10 text-center flex flex-col items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-white text-[48px] md:text-[60px] font-[900] tracking-tight uppercase leading-none mb-4">
+                Funkey
+              </h1>
+            </motion.div>
+            
+            <motion.p 
+              className="text-white text-[20px] md:text-[24px] font-[600] mb-8 opacity-90 max-w-[300px] leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Make new friends face-to-face
+            </motion.p>
+
+            {/* Aesthetic "Join the Fun" Badge */}
+            <motion.div
+              className="px-6 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-bold text-sm uppercase tracking-widest flex items-center gap-2"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+              JOIN THE FUN
+            </motion.div>
+          </div>
         </div>
-      </div>
 
       {/* Right Column: Video Chat Area */}
       <div className="flex-1 bg-[#0B032D] relative flex flex-col items-center justify-center py-16 px-6">
