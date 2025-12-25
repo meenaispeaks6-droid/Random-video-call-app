@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
@@ -42,12 +42,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX: springX, rotateY: springY, transformStyle: "preserve-3d" }}
-      className="glass-panel relative flex flex-col items-center p-8 md:p-10 transition-shadow duration-300 hover:shadow-2xl overflow-hidden group"
+      className="bg-white/5 backdrop-blur-xl border border-white/10 relative flex flex-col items-center p-8 md:p-10 transition-shadow duration-300 hover:shadow-2xl overflow-hidden group rounded-[32px]"
     >
       {/* Background Watermark */}
       <div 
         className="absolute top-8 left-8 text-[48px] font-black opacity-[0.05] uppercase select-none pointer-events-none"
-        style={{ fontFamily: 'var(--font-display)', transform: "translateZ(20px)" }}
+        style={{ transform: "translateZ(20px)" }}
       >
         Funkey
       </div>
@@ -85,6 +85,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
 };
 
 const FeaturesGrid = () => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const features = [
     {
       title: "Dynamic Video Chats",
@@ -112,6 +118,26 @@ const FeaturesGrid = () => {
     }
   ];
 
+  if (!mounted) {
+    return (
+      <section className="bg-brand-purple py-[100px] md:py-[120px] relative overflow-hidden">
+        <div className="container px-6 relative z-10">
+          <h2 className="text-white text-center text-[32px] md:text-[40px] font-black uppercase mb-[60px] tracking-tight">
+            MEET PEOPLE LIKE NEVER BEFORE
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-[1100px] mx-auto">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white/5 border border-white/10 p-8 md:p-10 rounded-[32px] text-center">
+                <h3 className="text-white text-2xl font-bold mb-4 uppercase">{feature.title}</h3>
+                <p className="text-white/80">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-brand-purple py-[100px] md:py-[120px] relative overflow-hidden">
       {/* Background Section Title Watermark */}
@@ -119,12 +145,12 @@ const FeaturesGrid = () => {
         initial={{ x: -100, opacity: 0 }}
         whileInView={{ x: 0, opacity: 0.03 }}
         viewport={{ once: true }}
-        className="absolute top-[20%] left-[-5%] watermark-bg select-none pointer-events-none"
+        className="absolute top-[20%] left-[-5%] text-[120px] md:text-[180px] font-black uppercase text-white select-none pointer-events-none whitespace-nowrap"
       >
         MEET PEOPLE MEET PEOPLE
       </motion.div>
 
-      <div className="container px-6 relative z-10">
+      <div className="container px-6 relative z-10 mx-auto">
         <motion.h2 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -153,7 +179,7 @@ const FeaturesGrid = () => {
         initial={{ x: 100, opacity: 0 }}
         whileInView={{ x: 0, opacity: 0.03 }}
         viewport={{ once: true }}
-        className="absolute bottom-[10%] right-0 watermark-bg select-none pointer-events-none"
+        className="absolute bottom-[10%] right-0 text-[120px] md:text-[180px] font-black uppercase text-white select-none pointer-events-none whitespace-nowrap"
       >
         FUNKEY FUNKEY
       </motion.div>
