@@ -142,14 +142,14 @@ const Introduction = () => {
               className="relative z-10 w-full"
               style={{ transform: "translateZ(50px)" }}
             >
-              <Image 
-                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop"
-                alt="Funkey App Video Chat Interface Preview"
-                width={440}
-                height={420}
-                className="object-contain drop-shadow-2xl rounded-3xl border border-white/10"
-                priority
-              />
+                <Image 
+                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/image-1766682322644.png?width=8000&height=8000&resize=contain"
+                  alt="Funkey App Video Chat Interface Preview"
+                  width={440}
+                  height={580}
+                  className="object-contain drop-shadow-2xl rounded-3xl"
+                  priority
+                />
             </motion.div>
 
             <motion.div 
