@@ -7,20 +7,20 @@ import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
 
 const HeroSplit = () => {
-    const {
-      status,
-      localStream,
-      remoteStream,
-      startMatchmaking,
-      nextMatch,
-      blockUser,
-      reportUser,
-      genderFilter,
-      setGenderFilter,
-      localVideoRef,
-      remoteVideoRef,
-      partnerLocation
-    } = useVideoChat();
+  const {
+    status,
+    localStream,
+    remoteStream,
+    startMatchmaking,
+    nextMatch,
+    blockUser,
+    reportUser,
+    genderFilter,
+    setGenderFilter,
+    localVideoRef,
+    remoteVideoRef,
+    partnerLocation
+  } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
 
@@ -52,7 +52,7 @@ const HeroSplit = () => {
       {/* Left Column: Purple Branding Area */}
       <div className="flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-16 px-6 overflow-hidden">
         {/* Floating Funkey Emojis (Decorative) */}
-        <div className="absolute top-10 left-10 text-3xl animate-float opacity-80 select-none pointer-events-none">🐵</div>
+        <div className="absolute top-10 left-10 text-3xl animate-float opacity-80 select-none pointer-events-none">🌍</div>
         <div className="absolute top-1/4 right-20 text-4xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '1s' }}>🐒</div>
         <div className="absolute bottom-1/4 left-1/4 text-3xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '2s' }}>🙊</div>
         <div className="absolute bottom-10 right-10 text-4xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '1.5s' }}>🙉</div>
@@ -83,7 +83,7 @@ const HeroSplit = () => {
             <div className="w-full max-w-[340px] space-y-6">
               {status === 'waiting' && (
                 <div className="text-white text-center mb-4 animate-pulse">
-                  Banda dhoondh rahe hain… vibe match ho to baat hogi!
+                  Searching for a match...
                 </div>
               )}
               
@@ -103,6 +103,7 @@ const HeroSplit = () => {
 
               {/* Primary Action Button */}
               <button 
+                id="startBtn"
                 onClick={startMatchmaking}
                 disabled={status === 'waiting'}
                 className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
@@ -115,7 +116,7 @@ const HeroSplit = () => {
                   className="invert"
                 />
                 <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
-                  {status === 'waiting' ? 'Matching...' : 'Start Video Chat'}
+                  {status === 'waiting' ? 'Matching...' : 'Start'}
                 </span>
               </button>
             </div>
@@ -146,42 +147,34 @@ const HeroSplit = () => {
             {/* Call Controls Overlay */}
             <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 z-30">
               <button 
-                onClick={() => window.location.reload()}
-                className="flex-1 max-w-[100px] h-[54px] bg-white/10 hover:bg-white/20 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
-              >
-                Home
-              </button>
-              <button 
+                id="nextBtn"
                 onClick={nextMatch}
                 className="flex-1 max-w-[100px] h-[54px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-extrabold text-[12px] uppercase transition-colors"
               >
-                Next
+                Next/Skip
               </button>
-                <button 
-                  onClick={reportUser}
-                  className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
-                >
-                  Report
-                </button>
               <button 
+                id="blockBtn"
                 onClick={blockUser}
                 className="flex-1 max-w-[100px] h-[54px] bg-gray-800 hover:bg-gray-900 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
               >
                 Block
               </button>
+              <button 
+                id="reportBtn"
+                onClick={reportUser}
+                className="flex-1 max-w-[100px] h-[54px] bg-red-600 hover:bg-red-700 rounded-[16px] flex items-center justify-center text-white font-extrabold text-[12px] uppercase transition-colors"
+              >
+                Report
+              </button>
             </div>
 
-              {/* Location Label */}
-              {partnerLocation ? (
-                <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                  <label id="locationLabel" className="text-white text-sm font-medium">🌍 {partnerLocation}</label>
-                </div>
-              ) : (
-                <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                  <label id="locationLabel" className="text-white text-sm font-medium">🌍 Detecting location...</label>
-                </div>
-              )}
-
+            {/* Location Label */}
+            <div className="absolute top-6 left-6 z-30 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+              <label id="locationLabel" className="text-white text-sm font-medium">
+                🌍 {partnerLocation || "Detecting location..."}
+              </label>
+            </div>
           </div>
         )}
       </div>
