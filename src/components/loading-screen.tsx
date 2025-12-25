@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
   const [message, setMessage] = useState("");
+  const [emoji, setEmoji] = useState("✨");
 
   const funnyMessages = [
     "Convincing pixels to cooperate...",
@@ -18,8 +19,11 @@ export function LoadingScreen() {
     "Herding cats into the server room...",
   ];
 
+  const funnyEmojis = ["✨", "🐢", "🍕", "🚀", "🎩", "🦄", "🥨", "👾"];
+
   useEffect(() => {
     setMessage(funnyMessages[Math.floor(Math.random() * funnyMessages.length)]);
+    setEmoji(funnyEmojis[Math.floor(Math.random() * funnyEmojis.length)]);
     const timer = setTimeout(() => {
       setIsVisible(false);
     }, 2000); // Slightly longer to read the message
