@@ -5,12 +5,14 @@ import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User, Settings,
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function HeaderNavigation() {
   const [mode, setMode] = useState<"solo" | "duo">("solo");
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -26,6 +28,13 @@ export default function HeaderNavigation() {
     { label: "Profile", icon: <User size={18} />, href: "/profile" },
     { label: "Settings", icon: <Settings size={18} />, href: "/settings" },
     { label: "Contact", icon: <Mail size={18} />, href: "/contact" },
+  ];
+
+  const navLinks = [
+    { href: "/", icon: <Home size={20} strokeWidth={2.5} /> },
+    { href: "/history", icon: <Clock size={20} strokeWidth={2.5} /> },
+    { href: "/likes", icon: <Heart size={20} strokeWidth={2.5} /> },
+    { href: "/chat", icon: <MessageSquare size={20} strokeWidth={2.5} /> },
   ];
 
   return (
@@ -65,30 +74,20 @@ export default function HeaderNavigation() {
 
       {/* Center Section: Navigation Icons */}
       <nav className="absolute left-1/2 -translate-x-1/2 flex items-center bg-white/10 backdrop-blur-md rounded-full px-1 py-1 border border-white/20">
-        <Link
-          href="/"
-          className="w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full bg-[#FFFF00] text-black transition-all"
-        >
-          <Home size={20} strokeWidth={2.5} />
-        </Link>
-        <Link
-          href="/history"
-          className="w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-all"
-        >
-          <Clock size={20} strokeWidth={2.5} />
-        </Link>
-        <Link
-          href="/likes"
-          className="w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-all"
-        >
-          <Heart size={20} strokeWidth={2.5} />
-        </Link>
-        <Link
-          href="/chat"
-          className="w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full text-white hover:bg-white/10 transition-all"
-        >
-          <MessageSquare size={20} strokeWidth={2.5} />
-        </Link>
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={cn(
+              "w-10 h-8 md:w-[70px] md:h-10 flex items-center justify-center rounded-full transition-all",
+              pathname === link.href 
+                ? "bg-[#FFFF00] text-black" 
+                : "text-white hover:bg-white/10"
+            )}
+          >
+            {link.icon}
+          </Link>
+        ))}
       </nav>
 
       {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
