@@ -53,9 +53,9 @@ const HeaderNavigation = () => {
 
       {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
       <div className="flex items-center gap-3 md:gap-4">
-        <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 text-white cursor-pointer hover:bg-white/10">
-          <Crown size={20} fill="currentColor" />
-        </div>
+<a href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 text-white cursor-pointer hover:bg-white/10">
+            <Crown size={20} fill="currentColor" />
+          </a>
 
         {/* Solo/Duo Toggle Switch */}
         <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-10 w-[140px] relative">
