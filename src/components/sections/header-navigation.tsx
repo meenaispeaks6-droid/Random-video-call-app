@@ -98,13 +98,10 @@ export default function HeaderNavigation() {
       </nav>
 
       {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
-      <div className="flex items-center gap-3 md:gap-4 relative" ref={menuRef}>
-        <Link href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
-          <Crown size={20} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
-          <div className="absolute -top-1 -right-1 bg-gradient-to-br from-[#FFE07D] via-[#FDB931] to-[#9E7E38] text-black rounded-full p-0.5 border border-black scale-50 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
-            <Zap size={10} fill="currentColor" />
-          </div>
-        </Link>
+        <div className="flex items-center gap-3 md:gap-4 relative" ref={menuRef}>
+          <Link href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
+            <Crown size={20} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
+          </Link>
 
         {/* Solo/Duo Toggle Switch */}
         <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-10 w-[140px] relative">
