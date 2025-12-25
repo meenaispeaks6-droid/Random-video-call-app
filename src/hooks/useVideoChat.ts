@@ -99,9 +99,22 @@ export const useVideoChat = () => {
       return;
     }
 
-    // 50/50 gender balancing - try to alternate or pick different gender if possible
-    // For now, we'll pick a random one from filtered list
-    const partnerUserId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+    // 50/50 gender balancing - prioritize opposite gender if filter is 'Both'
+    let targetId: string;
+    if (genderFilter === 'Both') {
+      const oppositeGender = selectedGender === 'Male' ? 'Female' : 'Male';
+      const oppositeGenderUsers = waitingUsers.filter(id => users[id].gender === oppositeGender);
+      
+      if (oppositeGenderUsers.length > 0) {
+        targetId = oppositeGenderUsers[Math.floor(Math.random() * oppositeGenderUsers.length)];
+      } else {
+        targetId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+      }
+    } else {
+      targetId = waitingUsers[Math.floor(Math.random() * waitingUsers.length)];
+    }
+
+    const partnerUserId = targetId;
     const newMatchId = `match_${userId}_${partnerUserId}`;
 
     setMatchId(newMatchId);
