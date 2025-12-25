@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-05-28.basil",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
