@@ -80,12 +80,13 @@ const HeroSplit = () => {
     localVideoRef,
     remoteVideoRef,
     partnerLocation
-  } = useVideoChat();
-
-  const [onlineCount, setOnlineCount] = useState(63267);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  // 3D Tilt Values
+    } = useVideoChat();
+  
+    const [onlineCount, setOnlineCount] = useState(63267);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isBananaRain, setIsBananaRain] = useState(false);
+  
+    // 3D Tilt Values
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-300, 300], [15, -15]);
