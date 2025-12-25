@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, User } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/supabase/../lib/firebase";
+import { auth, googleProvider } from "@/lib/firebase";
 
 export interface AuthUser {
   id: string;
