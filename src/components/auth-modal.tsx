@@ -32,8 +32,24 @@ export function AuthModal() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px] bg-brand-purple border-white/20 text-white backdrop-blur-xl rounded-3xl p-8">
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        // Only allow closing if user is authenticated
+        if (user) {
+          setIsOpen(open);
+        }
+      }}
+    >
+      <DialogContent 
+        className="sm:max-w-[425px] bg-brand-purple border-white/20 text-white backdrop-blur-xl rounded-3xl p-8"
+        onPointerDownOutside={(e) => {
+          if (!user) e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          if (!user) e.preventDefault();
+        }}
+      >
         <DialogHeader className="text-center">
           <DialogTitle className="text-4xl font-black tracking-tighter uppercase mb-2">
             Funkey
