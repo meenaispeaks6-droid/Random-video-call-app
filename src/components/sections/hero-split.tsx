@@ -145,6 +145,19 @@ const HeroSplit = () => {
               JOIN THE FUN
             </motion.div>
           </div>
+
+          {/* Mouse Following Funkey */}
+          <motion.div
+            className="absolute text-2xl pointer-events-none z-30 opacity-40 hidden md:block"
+            animate={{ 
+              x: mousePos.x / 10 - 50, 
+              y: mousePos.y / 10 - 50,
+              rotate: (mousePos.x - window.innerWidth / 2) / 50
+            }}
+            transition={{ type: "spring", stiffness: 50, damping: 20 }}
+          >
+            🐵
+          </motion.div>
         </div>
 
       {/* Right Column: Video Chat Area */}
