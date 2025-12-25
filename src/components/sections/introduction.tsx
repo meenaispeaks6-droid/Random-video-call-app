@@ -152,14 +152,14 @@ const Introduction = () => {
                 />
             </motion.div>
 
-            <motion.div 
-              animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -right-4 text-5xl z-20"
-              style={{ transform: "translateZ(80px)" }}
-            >
-              🐵
-            </motion.div>
+              <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-4 -right-4 text-5xl z-20"
+                style={{ transform: "translateZ(80px)" }}
+              >
+                ✨
+              </motion.div>
             <motion.div 
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
