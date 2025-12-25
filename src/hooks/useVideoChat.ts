@@ -203,7 +203,7 @@ export const useVideoChat = () => {
     };
 
     pc.onicecandidate = (e) => {
-      if (e.candidate) {
+      if (e.candidate && db) {
         push(ref(db, `signals/${mId}/iceCandidates`), {
           candidate: e.candidate.toJSON(),
           senderId: userId
@@ -220,6 +220,8 @@ export const useVideoChat = () => {
         }
       }
     };
+
+    if (!db) return;
 
     const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
