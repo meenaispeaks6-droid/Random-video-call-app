@@ -7,8 +7,8 @@ const Introduction = () => {
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-200, 200], [10, -10]);
   const rotateY = useTransform(x, [-200, 200], [-10, 10]);
-  const springX = useSpring(rotateX);
-  const springY = useSpring(rotateY);
+  const springX = useSpring(rotateX, { damping: 20, stiffness: 150 });
+  const springY = useSpring(rotateY, { damping: 20, stiffness: 150 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -143,18 +143,15 @@ const Introduction = () => {
               🍌
             </motion.div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Background Watermark Text */}
-      <motion.div 
-        style={{ x: useTransform(useMotionValue(0), [0, 1000], [0, -200]) }}
-        className="absolute bottom-[-60px] left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] select-none whitespace-nowrap z-0"
-      >
+      <div className="absolute bottom-[-60px] left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] select-none whitespace-nowrap z-0">
         <span className="text-[180px] font-black font-display uppercase tracking-tighter">
           Funkey Funkey Funkey Funkey
         </span>
-      </motion.div>
+      </div>
     </section>
   );
 };
