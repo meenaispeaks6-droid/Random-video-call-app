@@ -119,57 +119,66 @@ const Introduction = () => {
             </motion.div>
           </div>
 
-          {/* Right Side: Visual Preview */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
-            className="relative flex-1 w-full max-w-[440px] aspect-square flex items-center justify-center"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            style={{ 
-              rotateX: springX, 
-              rotateY: springY, 
-              transformStyle: "preserve-3d" 
-            }}
-          >
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="absolute w-[80%] h-[70%] bg-blue-500/10 rounded-3xl blur-2xl transform -translate-x-12 rotate-[-6deg]"></div>
-              <div className="absolute w-[80%] h-[70%] bg-purple-500/10 rounded-3xl blur-2xl transform translate-x-12 rotate-[6deg]"></div>
-            </div>
-
+            {/* Right Side: Visual Preview */}
             <motion.div 
-              className="relative z-10 w-full"
-              style={{ transform: "translateZ(50px)" }}
+              initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
+              className="relative flex-1 w-full max-w-[440px] aspect-square flex items-center justify-center"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{ 
+                rotateX: springX, 
+                rotateY: springY, 
+                transformStyle: "preserve-3d" 
+              }}
             >
-                <Image 
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/image-1766682322644.png?width=8000&height=8000&resize=contain"
-                  alt="Funkey App Video Chat Interface Preview"
-                  width={440}
-                  height={580}
-                  className="object-contain drop-shadow-2xl rounded-3xl"
-                  priority
-                />
-            </motion.div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="absolute w-[80%] h-[70%] bg-blue-500/10 rounded-3xl blur-2xl transform -translate-x-12 rotate-[-6deg]"></div>
+                <div className="absolute w-[80%] h-[70%] bg-purple-500/10 rounded-3xl blur-2xl transform translate-x-12 rotate-[6deg]"></div>
+              </div>
 
               <motion.div 
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 -right-4 text-5xl z-20"
-                style={{ transform: "translateZ(80px)" }}
+                className="relative z-10 w-full aspect-video bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] flex items-center justify-center shadow-2xl overflow-hidden group"
+                style={{ transform: "translateZ(50px)" }}
               >
-                ✨
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative flex flex-col items-center gap-6">
+                  <div className="w-24 h-24 rounded-full bg-yellow-400 flex items-center justify-center text-black shadow-[0_0_40px_rgba(255,255,0,0.3)]">
+                    <Video size={48} />
+                  </div>
+                  <div className="flex gap-2">
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                        className="w-2 h-2 rounded-full bg-white"
+                      />
+                    ))}
+                  </div>
+                </div>
               </motion.div>
-            <motion.div 
-              animate={{ y: [0, 15, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-6 -left-6 text-5xl z-20"
-              style={{ transform: "translateZ(60px)" }}
-            >
-              🍌
+
+                <motion.div 
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -top-4 -right-4 text-5xl z-20"
+                  style={{ transform: "translateZ(80px)" }}
+                >
+                  ✨
+                </motion.div>
+              <motion.div 
+                animate={{ y: [0, 15, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute -bottom-6 -left-6 text-5xl z-20"
+                style={{ transform: "translateZ(60px)" }}
+              >
+                ⚡
+              </motion.div>
             </motion.div>
-          </motion.div>
+
         </motion.div>
       </div>
 
