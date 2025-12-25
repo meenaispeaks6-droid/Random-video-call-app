@@ -38,6 +38,34 @@ const Magnetic = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+const CursorTrail = () => {
+  const [dots, setDots] = useState<{ x: number; y: number; id: number }[]>([]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const newDot = { x: e.clientX, y: e.clientY, id: Date.now() };
+      setDots((prev) => [...prev.slice(-15), newDot]);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[9999]">
+      {dots.map((dot, i) => (
+        <motion.div
+          key={dot.id}
+          initial={{ scale: 1, opacity: 0.5 }}
+          animate={{ scale: 0, opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+          style={{ left: dot.x, top: dot.y, transform: 'translate(-50%, -50%)' }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const HeroSplit = () => {
   const {
     status,
