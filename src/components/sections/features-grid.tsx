@@ -1,20 +1,51 @@
 import React from 'react';
 import Image from 'next/image';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
 interface FeatureCardProps {
   title: string;
   description: string;
   imageSrc: string;
   imageAlt: string;
+  index: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc, imageAlt }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc, imageAlt, index }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [5, -5]);
+  const rotateY = useTransform(x, [-100, 100], [-5, 5]);
+  const springX = useSpring(rotateX, { damping: 20, stiffness: 150 });
+  const springY = useSpring(rotateY, { damping: 20, stiffness: 150 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left - rect.width / 2;
+    const mouseY = e.clientY - rect.top - rect.height / 2;
+    x.set(mouseX);
+    y.set(mouseY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   return (
-    <div className="glass-panel relative flex flex-col items-center p-8 md:p-10 transition-transform duration-300 hover:scale-[1.02] overflow-hidden group">
+    <motion.div 
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX: springX, rotateY: springY, transformStyle: "preserve-3d" }}
+      className="glass-panel relative flex flex-col items-center p-8 md:p-10 transition-shadow duration-300 hover:shadow-2xl overflow-hidden group"
+    >
       {/* Background Watermark */}
       <div 
         className="absolute top-8 left-8 text-[48px] font-black opacity-[0.05] uppercase select-none pointer-events-none"
-        style={{ fontFamily: 'var(--font-display)' }}
+        style={{ fontFamily: 'var(--font-display)', transform: "translateZ(20px)" }}
       >
         Funkey
       </div>
@@ -24,7 +55,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
         {/* Glow Effect */}
         <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_70%)] opacity-50 group-hover:opacity-100 transition-opacity" />
         
-        <div className="relative w-[280px] h-full">
+        <motion.div 
+          className="relative w-[280px] h-full"
+          style={{ transform: "translateZ(60px)" }}
+        >
           <Image
             src={imageSrc}
             alt={imageAlt}
@@ -32,19 +66,19 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
             className="object-contain drop-shadow-2xl"
             sizes="(max-width: 768px) 100vw, 400px"
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* Text Content */}
-      <div className="text-center">
-        <h3 className="text-[24px] font-bold mb-4 leading-tight uppercase tracking-tight">
+      <div className="text-center" style={{ transform: "translateZ(40px)" }}>
+        <h3 className="text-[24px] font-bold mb-4 leading-tight uppercase tracking-tight text-white">
           {title}
         </h3>
         <p className="text-[16px] leading-[1.6] text-white/85 font-medium max-w-[340px] mx-auto">
           {description}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -78,20 +112,31 @@ const FeaturesGrid = () => {
 
   return (
     <section className="bg-brand-purple py-[100px] md:py-[120px] relative overflow-hidden">
-      {/* Background Section Title Watermark (Large text scrolling/fixed background) */}
-      <div className="absolute top-[20%] left-[-5%] watermark-bg opacity-[0.03] select-none pointer-events-none">
+      {/* Background Section Title Watermark */}
+      <motion.div 
+        initial={{ x: -100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 0.03 }}
+        viewport={{ once: true }}
+        className="absolute top-[20%] left-[-5%] watermark-bg select-none pointer-events-none"
+      >
         MEET PEOPLE MEET PEOPLE
-      </div>
+      </motion.div>
 
       <div className="container px-6 relative z-10">
-        <h2 className="text-white text-center text-[32px] md:text-[40px] font-black uppercase mb-[60px] tracking-tight">
+        <motion.h2 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="text-white text-center text-[32px] md:text-[40px] font-black uppercase mb-[60px] tracking-tight"
+        >
           MEET PEOPLE LIKE NEVER BEFORE
-        </h2>
+        </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-[1100px] mx-auto">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}
+              index={index}
               title={feature.title}
               description={feature.description}
               imageSrc={feature.imageSrc}
@@ -101,11 +146,15 @@ const FeaturesGrid = () => {
         </div>
       </div>
 
-        {/* Decorative Assets */}
-        <div className="absolute bottom-[10%] right-0 watermark-bg opacity-[0.03] select-none pointer-events-none">
-          FUNKEY FUNKEY
-        </div>
-
+      {/* Decorative Assets */}
+      <motion.div 
+        initial={{ x: 100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 0.03 }}
+        viewport={{ once: true }}
+        className="absolute bottom-[10%] right-0 watermark-bg select-none pointer-events-none"
+      >
+        FUNKEY FUNKEY
+      </motion.div>
     </section>
   );
 };
