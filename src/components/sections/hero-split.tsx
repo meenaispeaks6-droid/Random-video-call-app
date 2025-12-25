@@ -124,6 +124,7 @@ const HeroSplit = () => {
           <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
             {/* Remote Video - Fullscreen */}
             <video 
+              id="remoteVideo"
               ref={remoteVideoRef}
               autoPlay 
               playsInline 
@@ -133,6 +134,7 @@ const HeroSplit = () => {
             {/* Local Video - Floating */}
             <div className="absolute bottom-24 right-4 w-32 h-44 rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl z-20">
               <video 
+                id="localVideo"
                 ref={localVideoRef}
                 autoPlay 
                 playsInline 
