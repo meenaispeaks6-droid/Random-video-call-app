@@ -100,6 +100,39 @@ export default function AuthPage() {
           </button>
         </form>
 
+        <div className="mt-6">
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-sm uppercase">
+              <span className="bg-brand-purple px-2 text-white/40">Or continue with</span>
+            </div>
+          </div>
+
+          <button
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                toast.success("Welcome " + user.displayName + " 😎");
+                router.push("/");
+              } catch (error: any) {
+                toast.error("Login failed: " + error.message);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+            className="w-full bg-white/5 border border-white/10 text-white font-bold py-4 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
+            Google
+          </button>
+        </div>
+
         <div className="mt-8 text-center">
           <button
             onClick={() => setIsSignUp(!isSignUp)}
