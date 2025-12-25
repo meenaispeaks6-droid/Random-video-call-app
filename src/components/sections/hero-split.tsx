@@ -17,7 +17,8 @@ const HeroSplit = () => {
     genderFilter,
     setGenderFilter,
     localVideoRef,
-    remoteVideoRef
+    remoteVideoRef,
+    partnerLocation
   } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
