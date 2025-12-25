@@ -204,7 +204,7 @@ const HeroSplit = () => {
           }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         >
-          🍌
+          ⚡
         </motion.div>
 
         <motion.div 
