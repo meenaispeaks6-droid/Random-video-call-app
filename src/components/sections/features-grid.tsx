@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { Video, Globe, ShieldCheck, Zap, ArrowRight } from 'lucide-react';
 
 interface FeatureCardProps {
   title: string;
   description: string;
-  imageSrc: string;
-  imageAlt: string;
+  icon: React.ReactNode;
   index: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc, imageAlt, index }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, index }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [8, -8]);
@@ -47,21 +46,38 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
       {/* Subtle Glow */}
       <div className="absolute -inset-24 bg-gradient-to-br from-yellow-400/10 via-transparent to-purple-400/10 opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-700 pointer-events-none" />
       
-      {/* Illustration Area */}
+      {/* Icon Area */}
       <div className="relative w-full aspect-[16/10] mb-10 flex items-center justify-center overflow-visible">
         <motion.div 
-          className="relative w-full h-full max-w-[320px]"
+          className="relative w-32 h-32 flex items-center justify-center rounded-3xl bg-white/5 border border-white/10 group-hover:bg-yellow-400/10 group-hover:border-yellow-400/30 transition-all duration-500"
           style={{ transform: "translateZ(50px)" }}
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4 }}
+          whileHover={{ scale: 1.1, rotate: index % 2 === 0 ? 5 : -5 }}
         >
-          <Image
-            src={imageSrc}
-            alt={imageAlt}
-            fill
-            className="object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)] group-hover:drop-shadow-[0_25px_60px_rgba(255,255,0,0.2)] transition-all duration-500"
-            sizes="(max-width: 768px) 100vw, 400px"
-          />
+          <div className="text-yellow-400 group-hover:scale-110 transition-transform duration-500">
+            {icon}
+          </div>
+          
+          {/* Floating dots decoration */}
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-yellow-400/30"
+              animate={{
+                y: [0, -20, 0],
+                x: [0, i % 2 === 0 ? 15 : -15, 0],
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: 3 + i,
+                repeat: Infinity,
+                delay: i * 0.5
+              }}
+              style={{
+                top: `${20 + i * 20}%`,
+                left: `${10 + i * 30}%`
+              }}
+            />
+          ))}
         </motion.div>
       </div>
 
@@ -77,8 +93,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc,
       
       {/* Corner Detail */}
       <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-        <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-black text-xl font-bold">
-          →
+        <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-black shadow-[0_0_20px_rgba(255,255,0,0.3)]">
+          <ArrowRight className="w-5 h-5" />
         </div>
       </div>
     </motion.div>
@@ -96,26 +112,22 @@ const FeaturesGrid = () => {
     {
       title: "Real Conversations",
       description: "Dive into spontaneous video chats that spark genuine connections. Every encounter is a new story waiting to unfold.",
-      imageSrc: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_1-3.png",
-      imageAlt: "Live Video Chat"
+      icon: <Video size={64} strokeWidth={1.5} />
     },
     {
       title: "World Connection",
       description: "Meet people from across the globe instantly. Expand your horizon and discover perspectives that cross every border.",
-      imageSrc: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_2-4.png",
-      imageAlt: "Global Community"
+      icon: <Globe size={64} strokeWidth={1.5} />
     },
     {
       title: "Pure & Secure",
       description: "An intuitive experience designed around your safety. We prioritize privacy so you can focus on making friends.",
-      imageSrc: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_3-5.png",
-      imageAlt: "Secure Platform"
+      icon: <ShieldCheck size={64} strokeWidth={1.5} />
     },
     {
       title: "Random Vibe",
       description: "Let fate take the lead with our matching algorithm. Unexpected encounters that lead to lasting friendships.",
-      imageSrc: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_4-6.png",
-      imageAlt: "Random Discovery"
+      icon: <Zap size={64} strokeWidth={1.5} />
     }
   ];
 
@@ -143,7 +155,7 @@ const FeaturesGrid = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 bg-yellow-400 text-black text-xs font-black uppercase tracking-[0.2em] rounded-full mb-6"
+            className="inline-block px-4 py-1.5 bg-yellow-400 text-black text-xs font-black uppercase tracking-[0.2em] rounded-full mb-6 shadow-[0_0_20px_rgba(255,255,0,0.2)]"
           >
             Experience More
           </motion.div>
@@ -172,8 +184,7 @@ const FeaturesGrid = () => {
               index={index}
               title={feature.title}
               description={feature.description}
-              imageSrc={feature.imageSrc}
-              imageAlt={feature.imageAlt}
+              icon={feature.icon}
             />
           ))}
         </div>
@@ -181,5 +192,8 @@ const FeaturesGrid = () => {
     </section>
   );
 };
+
+export default FeaturesGrid;
+
 
 export default FeaturesGrid;
