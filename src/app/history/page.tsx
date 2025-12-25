@@ -127,17 +127,20 @@ export default function HistoryPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pr-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-3 rounded-xl bg-white/10 hover:bg-[#FFFF00] hover:text-black transition-all">
-                    <MessageSquare size={20} />
-                  </button>
-                  <button 
-                    onClick={() => deleteHistoryItem(item.id)}
-                    className="p-3 rounded-xl bg-white/10 hover:bg-red-500 hover:text-white transition-all"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
+                  <div className="flex items-center gap-2 pr-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link 
+                      href={`/chat?partnerId=${item.partner_id}`}
+                      className="p-3 rounded-xl bg-white/10 hover:bg-[#FFFF00] hover:text-black transition-all"
+                    >
+                      <MessageSquare size={20} />
+                    </Link>
+                    <button 
+                      onClick={() => deleteHistoryItem(item.id)}
+                      className="p-3 rounded-xl bg-white/10 hover:bg-red-500 hover:text-white transition-all"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
               </div>
             ))}
           </div>
