@@ -29,6 +29,36 @@ export const useVideoChat = () => {
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
 
+  // Heartbeat to keep user active in matchmaking pool
+  useEffect(() => {
+    if (!db) return;
+    
+    const userRef = ref(db, `onlineUsers/${userId}`);
+    
+    const updatePresence = async () => {
+      try {
+        await update(userRef, {
+          lastActive: Date.now(),
+          gender: genderFilter,
+          // Only update status if it's not already in-call
+          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
+        });
+      } catch (e) {
+        console.error("Presence update failed", e);
+      }
+    };
+
+    updatePresence();
+    const interval = setInterval(updatePresence, 10000);
+
+    return () => {
+      clearInterval(interval);
+      // Optional: don't remove immediately on refresh to allow reconnection, 
+      // but for matchmaking, we should probably set to offline or remove
+      remove(userRef).catch(() => {});
+    };
+  }, [userId, status, genderFilter]);
+
   const cleanupListeners = useCallback(() => {
     console.log("Cleaning up listeners...", unsubsRef.current.length);
     unsubsRef.current.forEach(unsub => unsub());
