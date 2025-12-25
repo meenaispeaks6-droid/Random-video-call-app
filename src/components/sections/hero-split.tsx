@@ -159,7 +159,7 @@ const HeroSplit = () => {
 
           {/* Banana Rain Effect */}
           <AnimatePresence>
-            {isBananaRainEffect && Array.from({ length: 20 }).map((_, i) => (
+            {isBananaRain && Array.from({ length: 20 }).map((_, i) => (
               <motion.div
                 key={i}
                 initial={{ y: -100, x: Math.random() * 400 - 200, rotate: 0, opacity: 1 }}
