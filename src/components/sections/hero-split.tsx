@@ -357,38 +357,64 @@ const HeroSplit = () => {
 
           </>
         ) : (
-          <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
-            {/* Remote Video - 50% */}
-            <div className="flex-1 relative overflow-hidden border-b border-white/10">
-              <video 
-                id="remoteVideo"
-                ref={remoteVideoRef}
-                autoPlay 
-                playsInline 
-                className="w-full h-full object-cover"
-              />
-              {/* Partner Location Label */}
-              <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
-                <span className="text-white text-xs font-medium">
-                  🌍 {partnerLocation || "Detecting..."}
-                </span>
-              </div>
-            </div>
+            <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
+              {/* Remote Video - 50% */}
+              <div className="flex-1 relative overflow-hidden border-b border-white/10 bg-[#0B032D]">
+                <video 
+                  id="remoteVideo"
+                  ref={remoteVideoRef}
+                  autoPlay 
+                  playsInline 
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Connecting Overlay */}
+                <AnimatePresence>
+                  {!remoteStream && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B032D]"
+                    >
+                      <div className="relative w-20 h-20 mb-4">
+                        <motion.div 
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          className="absolute inset-0 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-2xl">
+                          🐵
+                        </div>
+                      </div>
+                      <p className="text-white/60 font-medium animate-pulse">Connecting to partner...</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-            {/* Local Video - 50% */}
-            <div className="flex-1 relative overflow-hidden">
-              <video 
-                id="localVideo"
-                ref={localVideoRef}
-                autoPlay 
-                playsInline 
-                muted
-                className="w-full h-full object-cover mirror"
-              />
-              <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-                <span className="text-white text-xs font-medium">You</span>
+                {/* Partner Location Label */}
+                <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
+                  <span className="text-white text-xs font-medium">
+                    🌍 {partnerLocation || "Detecting..."}
+                  </span>
+                </div>
               </div>
-            </div>
+
+              {/* Local Video - 50% */}
+              <div className="flex-1 relative overflow-hidden bg-[#0B032D]">
+                <video 
+                  id="localVideo"
+                  ref={localVideoRef}
+                  autoPlay 
+                  playsInline 
+                  muted
+                  className="w-full h-full object-cover mirror"
+                />
+                <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                  <span className="text-white text-xs font-medium">You</span>
+                </div>
+              </div>
+
 
             {/* Call Controls Overlay - Floating over the split */}
             <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-3 z-30">
