@@ -38,6 +38,7 @@ export const useVideoChat = () => {
   const cleanupCall = useCallback(async (informPartner = true) => {
     console.log("Cleaning up call, informPartner:", informPartner);
     
+    // Use refs to avoid dependency on matchId/partnerId in the callback identity
     const currentPartnerId = partnerId;
     const currentMatchId = matchId;
 
@@ -68,7 +69,7 @@ export const useVideoChat = () => {
       }
     }
 
-    // Reset our own status
+    // Reset our own status in DB
     try {
       await update(ref(db, `onlineUsers/${userId}`), {
         status: 'waiting',
@@ -84,81 +85,13 @@ export const useVideoChat = () => {
     setRemoteStream(null);
     setStatus('waiting');
     iceQueueRef.current = [];
-  }, [matchId, partnerId, userId, cleanupListeners]);
-
-  const detectLocation = useCallback(async () => {
-    try {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      const locationLabel = `${data.city || 'Somewhere'}, ${data.country_name || 'Earth'}`;
-      
-      const userRef = ref(db, `onlineUsers/${userId}`);
-      await update(userRef, {
-        country: data.country_name || "Unknown",
-        city: data.city || "Unknown",
-        location: locationLabel
-      });
-      return locationLabel;
-    } catch (error) {
-      console.error("Location detection failed", error);
-      return "Location unavailable";
-    }
-  }, [userId]);
-
-  // Presence and initial setup
-  useEffect(() => {
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    set(userRef, {
-      status: "idle",
-      gender: "Both",
-      location: "Detecting...",
-      lastActive: Date.now()
-    });
-
-    detectLocation();
-
-    const interval = setInterval(() => {
-      update(userRef, { lastActive: Date.now() });
-    }, 10000);
-
-    const handleDisconnect = () => {
-      remove(userRef);
-    };
-
-    window.addEventListener('beforeunload', handleDisconnect);
-    return () => {
-      clearInterval(interval);
-      handleDisconnect();
-      window.removeEventListener('beforeunload', handleDisconnect);
-    };
-  }, [userId, detectLocation]);
-
-  // Listen for our own status changes
-  useEffect(() => {
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    const unsubscribe = onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (!data) return;
-
-      if (data.status === 'in-call' && data.matchId && data.partnerId) {
-        if (data.matchId !== matchId) {
-          console.log("Inbound match found!", data.partnerId);
-          setMatchId(data.matchId);
-          setPartnerId(data.partnerId);
-          setStatus('in-call');
-        }
-      } else if (data.status === 'waiting' && status === 'in-call') {
-        console.log("Partner left call.");
-        cleanupCall(false);
-      }
-    });
-    return () => unsubscribe();
-  }, [userId, matchId, status, cleanupCall]);
+  }, [userId, cleanupListeners, partnerId, matchId]); // Keep these for now but matchId/partnerId are needed to know who to inform
 
   const findMatch = useCallback(async () => {
+    // Avoid multiple concurrent searches
     if (status === 'in-call') return;
     
-    console.log("Finding match...");
+    console.log("Searching for match...");
     setStatus('waiting');
     
     if (!localStreamRef.current) {
@@ -188,14 +121,12 @@ export const useVideoChat = () => {
     );
 
     if (candidates.length === 0) {
-      console.log("No candidates, waiting for inbound match...");
-      // We are now in 'waiting' status, someone else will eventually find us
-      // or we will retry via the polling useEffect
+      console.log("No candidates found.");
       return;
     }
 
     const targetId = candidates[Math.floor(Math.random() * candidates.length)];
-    const newMatchId = `match_${[userId, targetId].sort().join('_')}_${Date.now()}`; // Add timestamp to make it unique
+    const newMatchId = `match_${[userId, targetId].sort().join('_')}_${Date.now()}`;
 
     const targetRef = ref(db, `onlineUsers/${targetId}`);
     try {
@@ -206,11 +137,11 @@ export const useVideoChat = () => {
           currentData.partnerId = userId;
           return currentData;
         }
-        return undefined; // Abort
+        return undefined;
       });
 
       if (result.committed) {
-        console.log("Matched with:", targetId);
+        console.log("Transaction success, matched with:", targetId);
         await update(userRef, { 
           status: "in-call", 
           matchId: newMatchId, 
@@ -220,25 +151,26 @@ export const useVideoChat = () => {
         setPartnerId(targetId);
         setStatus('in-call');
       } else {
-        console.log("Match race lost or target unavailable, retrying...");
+        console.log("Transaction failed (race), retrying search...");
         setTimeout(findMatch, 1000);
       }
     } catch (e) {
-      console.error("Transaction failed", e);
+      console.error("Transaction error", e);
       setTimeout(findMatch, 2000);
     }
   }, [userId, genderFilter, status]);
 
-  // Polling for matches if we are stuck in waiting
+  // Polling for matches
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (status === 'waiting' && !partnerId) {
-      timeout = setTimeout(() => {
-        findMatch();
-      }, 5000);
-    }
-    return () => clearTimeout(timeout);
+    if (status !== 'waiting' || partnerId) return;
+    
+    const interval = setInterval(() => {
+      findMatch();
+    }, 4000);
+    
+    return () => clearInterval(interval);
   }, [status, partnerId, findMatch]);
+
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string) => {
     console.log("Setting up WebRTC for match:", mId);
