@@ -5,26 +5,21 @@ import { useState, useEffect } from "react";
 
 export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
-  const [message, setMessage] = useState("");
-
-  const laughingMessages = [
-    "Preparing the punchline...",
-    "Wait for it...",
-    "Injecting humor...",
-    "Calibrating laughter levels...",
-    "Optimizing chuckles...",
-    "Loading funny business...",
-    "Warning: Extreme hilarity ahead!",
-  ];
 
   useEffect(() => {
-    setMessage(laughingMessages[Math.floor(Math.random() * laughingMessages.length)]);
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 3500);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
+
+  const orbitingElements = [
+    { size: 8, radius: 80, duration: 1.5, delay: 0 },
+    { size: 6, radius: 60, duration: 2, delay: 0.2 },
+    { size: 10, radius: 100, duration: 2.5, delay: 0.4 },
+    { size: 4, radius: 40, duration: 1.2, delay: 0.1 },
+  ];
 
   return (
     <AnimatePresence>
@@ -33,100 +28,69 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ 
             opacity: 0,
-            transition: { duration: 0.8, ease: "easeInOut" } 
+            transition: { duration: 0.5, ease: "easeOut" } 
           }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#FFD700] overflow-hidden"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#634AF1]"
         >
-          {/* Confetti-like Background */}
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ 
-                x: Math.random() * 2000 - 1000, 
-                y: Math.random() * 2000 - 1000,
-                rotate: 0,
-                opacity: 0
-              }}
-              animate={{ 
-                y: [null, Math.random() * 2000 - 1000],
-                rotate: 360,
-                opacity: [0, 1, 0]
-              }}
-              transition={{ 
-                duration: 2 + Math.random() * 2,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute text-2xl select-none pointer-events-none"
-            >
-              {["😂", "🤣", "✨", "🎈", "🎉"][Math.floor(Math.random() * 5)]}
-            </motion.div>
-          ))}
-          
-          <div className="relative flex flex-col items-center">
-            <div className="relative flex items-center justify-center h-64 w-64 mb-8">
-              {/* Main Laughing Emoji */}
+          <div className="relative flex items-center justify-center">
+            {/* Orbiting Elements */}
+            {orbitingElements.map((el, i) => (
               <motion.div
-                animate={{ 
-                  scale: [1, 1.2, 1, 1.3, 1],
-                  rotate: [0, -10, 10, -5, 5, 0],
-                  y: [0, -20, 0, -30, 0]
+                key={i}
+                className="absolute rounded-full bg-brand-yellow/80"
+                style={{
+                  width: el.size,
+                  height: el.size,
                 }}
-                transition={{ 
-                  duration: 0.6,
+                animate={{
+                  rotate: 360,
+                  x: [
+                    Math.cos(0) * el.radius,
+                    Math.cos(Math.PI / 2) * el.radius,
+                    Math.cos(Math.PI) * el.radius,
+                    Math.cos(3 * Math.PI / 2) * el.radius,
+                    Math.cos(2 * Math.PI) * el.radius
+                  ],
+                  y: [
+                    Math.sin(0) * el.radius,
+                    Math.sin(Math.PI / 2) * el.radius,
+                    Math.sin(Math.PI) * el.radius,
+                    Math.sin(3 * Math.PI / 2) * el.radius,
+                    Math.sin(2 * Math.PI) * el.radius
+                  ],
+                }}
+                transition={{
+                  duration: el.duration,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "linear",
+                  delay: el.delay,
                 }}
-                className="text-[160px] select-none z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
-              >
-                😂
-              </motion.div>
+              />
+            ))}
 
-              {/* Tears of Joy Effects */}
-              <motion.div
-                animate={{ 
-                  x: [-40, -100],
-                  y: [20, 100],
-                  opacity: [0, 1, 0],
-                  scale: [0.5, 1.5]
-                }}
-                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 0.1 }}
-                className="absolute left-0 text-5xl"
+            {/* Loading Text */}
+            <div className="flex flex-col items-center">
+              <motion.h2 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-white text-2xl font-black tracking-widest uppercase"
               >
-                💧
-              </motion.div>
-              <motion.div
-                animate={{ 
-                  x: [40, 100],
-                  y: [20, 100],
-                  opacity: [0, 1, 0],
-                  scale: [0.5, 1.5]
-                }}
-                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 0.15 }}
-                className="absolute right-0 text-5xl"
-              >
-                💧
-              </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex flex-col items-center"
-            >
-              <h2 className="text-black text-2xl font-black tracking-tighter uppercase italic bg-white px-4 py-1 rotate-2">
-                LOL LOADING...
-              </h2>
+                loading
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity, times: [0, 0.5, 1] }}
+                >
+                  ....
+                </motion.span>
+              </motion.h2>
               
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
-                className="mt-6 text-lg text-black font-bold bg-white/50 backdrop-blur-sm px-6 py-2 rounded-full border-4 border-black"
-              >
-                {message}
-              </motion.div>
-            </motion.div>
+              <motion.div 
+                className="mt-2 h-1 bg-brand-yellow rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+              />
+            </div>
           </div>
         </motion.div>
       )}
