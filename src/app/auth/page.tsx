@@ -56,6 +56,8 @@ function AuthContent() {
     setLoading(true);
     try {
       await signInWithGoogle();
+      toast.success("Successfully signed in!");
+      router.push("/");
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
       setLoading(false);
