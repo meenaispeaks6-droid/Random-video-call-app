@@ -200,7 +200,7 @@ const HeroSplit = () => {
             animate={{ 
               x: mousePos.x / 12 - 60, 
               y: mousePos.y / 12 - 60,
-              rotate: (mousePos.x - typeof window !== 'undefined' ? window.innerWidth : 0 / 2) / 40
+              rotate: (mousePos.x - (typeof window !== 'undefined' ? window.innerWidth : 0) / 2) / 40
             }}
             transition={{ type: "spring", stiffness: 40, damping: 25 }}
           >
