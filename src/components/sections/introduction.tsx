@@ -108,6 +108,7 @@ const Introduction = () => {
               <div className="absolute w-[80%] h-[70%] bg-blue-500/10 rounded-3xl blur-2xl transform -translate-x-12 rotate-[-6deg]"></div>
               <div className="absolute w-[80%] h-[70%] bg-purple-500/10 rounded-3xl blur-2xl transform translate-x-12 rotate-[6deg]"></div>
             </div>
+            </div>
 
             <motion.div 
               className="relative z-10 w-full"
