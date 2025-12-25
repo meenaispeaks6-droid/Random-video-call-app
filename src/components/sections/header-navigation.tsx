@@ -116,6 +116,7 @@ export default function HeaderNavigation() {
             >
               DUO
               <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[9px] px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap">
+                <Lock size={8} strokeWidth={3} />
                 Not yet
               </span>
             </button>
