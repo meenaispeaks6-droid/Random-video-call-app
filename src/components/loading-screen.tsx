@@ -5,11 +5,24 @@ import { useState, useEffect } from "react";
 
 export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
+  const [message, setMessage] = useState("");
+
+  const funnyMessages = [
+    "Convincing pixels to cooperate...",
+    "Feeding the server hamsters...",
+    "Searching for the 'Any' key...",
+    "Reticulating splines...",
+    "Calculating the meaning of life...",
+    "Downloading more RAM...",
+    "Sharpening the pencils...",
+    "Herding cats into the server room...",
+  ];
 
   useEffect(() => {
+    setMessage(funnyMessages[Math.floor(Math.random() * funnyMessages.length)]);
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 1200);
+    }, 2000); // Slightly longer to read the message
 
     return () => clearTimeout(timer);
   }, []);
