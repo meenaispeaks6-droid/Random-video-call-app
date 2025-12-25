@@ -101,10 +101,11 @@ const FeaturesGrid = () => {
         </div>
       </div>
 
-      {/* Decorative Assets */}
-      <div className="absolute bottom-[10%] right-0 watermark-bg opacity-[0.03] select-none pointer-events-none">
-        MONKEY MONKEY
-      </div>
+        {/* Decorative Assets */}
+        <div className="absolute bottom-[10%] right-0 watermark-bg opacity-[0.03] select-none pointer-events-none">
+          FUNKEY FUNKEY
+        </div>
+
     </section>
   );
 };
