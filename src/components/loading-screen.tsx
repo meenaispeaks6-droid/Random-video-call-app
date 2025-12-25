@@ -71,7 +71,7 @@ export function LoadingScreen() {
                   }}
                   className="absolute -top-8 -right-8 text-2xl"
                 >
-                  ✨
+                  {emoji}
                 </motion.div>
 
                 {/* Inner Core */}
