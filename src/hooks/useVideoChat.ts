@@ -145,16 +145,22 @@ export const useVideoChat = () => {
     }
 
     const userRef = ref(db, `onlineUsers/${userId}`);
-    await update(userRef, { status: "waiting", matchId: null, partnerId: null });
+    await update(userRef, { 
+      status: "waiting", 
+      matchId: null, 
+      partnerId: null,
+      lastActive: Date.now() 
+    });
 
     const snap = await get(ref(db, "onlineUsers"));
     const users = snap.val() || {};
 
+    const now = Date.now();
     const candidates = Object.keys(users).filter(id =>
       id !== userId && 
       users[id].status === "waiting" &&
       (genderFilter === 'Both' || users[id].gender === genderFilter) &&
-      (Date.now() - (users[id].lastActive || 0) < 30000)
+      (now - (users[id].lastActive || 0) < 60000) // Relaxed to 60s
     );
 
     if (candidates.length === 0) {
