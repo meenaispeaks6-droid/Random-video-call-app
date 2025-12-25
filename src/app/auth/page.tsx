@@ -3,7 +3,6 @@
 import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
