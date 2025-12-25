@@ -47,11 +47,11 @@ const Introduction = () => {
             {/* Main Mockup Image */}
             <div className="relative z-10 w-full animate-float">
               <Image 
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/images_1.png"
+                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop"
                 alt="Monkey App Video Chat Interface Preview"
                 width={440}
                 height={420}
-                className="object-contain drop-shadow-2xl"
+                className="object-contain drop-shadow-2xl rounded-3xl"
                 priority
               />
             </div>
