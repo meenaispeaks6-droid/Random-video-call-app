@@ -8,9 +8,11 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Crown, Check, Sparkles, ArrowLeft, Shield, Zap } from "lucide-react";
+import { Crown, Check, Sparkles, ArrowLeft, Shield, Zap, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
