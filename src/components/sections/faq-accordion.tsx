@@ -62,11 +62,12 @@ const FAQAccordion = () => {
       answer:
         "Funkey prioritizes speed and security. Our proprietary matching algorithm connects you with relevant peers almost instantly, while our stringent moderation system ensures a safer environment for talking to strangers compared to older platforms.",
     },
-    {
-      question: "Can I Use Funkey Anytime and Anywhere?",
-      answer:
-        "Absolutely. Funkey is built to be cross-platform. Whether you're at home on a desktop browser or on the go using our mobile app (available on Google Play), you can jump into a video chat whenever you want to meet someone new.",
-    },
+      {
+        question: "Can I Use Funkey Anytime and Anywhere?",
+        answer:
+          "Absolutely. Funkey is built to be cross-platform. Whether you're at home on a desktop browser or on the go using your mobile device, you can jump into a video chat whenever you want to meet someone new.",
+      },
+
     {
       question: "Can I Use Funkey for Free?",
       answer:
