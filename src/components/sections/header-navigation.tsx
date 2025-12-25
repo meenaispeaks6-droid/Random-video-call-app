@@ -14,18 +14,24 @@ const HeaderNavigation = () => {
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-3 md:px-6">
       {/* Left Section: Auth button and Funkey Logo */}
-      <div className="flex items-center gap-4">
-        {user ? (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => signOut()}
-              className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white/20 text-white text-[14px] font-bold hover:bg-white/10 transition-colors gap-2"
-            >
-              <LogOut size={14} />
-              Sign Out
-            </button>
-          </div>
-        ) : (
+        <div className="flex items-center gap-4">
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/profile"
+                className="w-10 h-[34px] flex items-center justify-center rounded-full border-2 border-white/20 text-white hover:bg-white/10 transition-colors"
+              >
+                <User size={18} />
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white/20 text-white text-[14px] font-bold hover:bg-white/10 transition-colors gap-2"
+              >
+                <LogOut size={14} />
+                Sign Out
+              </button>
+            </div>
+          ) : (
           <Link
             href="/auth"
             className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white text-white text-[14px] font-bold hover:bg-white/10 transition-colors"
