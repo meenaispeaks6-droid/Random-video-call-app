@@ -223,7 +223,7 @@ const HeroSplit = () => {
             🙊
           </motion.div>
 
-          {/* Peeking Monkey - Click me! */}
+          {/* Peeking Surprise - Click me! */}
           <motion.div
             className="absolute -left-4 bottom-1/3 text-7xl select-none cursor-pointer z-40 active:scale-90"
             initial={{ x: -60 }}
@@ -231,7 +231,7 @@ const HeroSplit = () => {
             onClick={triggerBananaRain}
             title="Click for surprise!"
           >
-            🐒
+            🍌
           </motion.div>
 
           <motion.div 
