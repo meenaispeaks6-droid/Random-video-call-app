@@ -5,13 +5,8 @@ import Image from 'next/image';
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/lib/supabase';
-import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 
 const HeroSplit = () => {
-  const { user, signInWithGoogle } = useAuth();
   const {
     status,
     localStream,
@@ -28,27 +23,6 @@ const HeroSplit = () => {
   } = useVideoChat();
 
   const [onlineCount, setOnlineCount] = useState(63267);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const handleGoogleLogin = async () => {
-    setIsLoggingIn(true);
-    try {
-      await signInWithGoogle();
-    } catch (error: any) {
-      toast.error("Login failed: " + error.message);
-      setIsLoggingIn(false);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      const hasWelcomed = sessionStorage.getItem('hasWelcomed');
-      if (!hasWelcomed) {
-        toast.success(`Login Success 🎉 Welcome ${user.user_metadata?.full_name || user.email}`);
-        sessionStorage.setItem('hasWelcomed', 'true');
-      }
-    }
-  }, [user]);
 
   useEffect(() => {
     const onlineUsersRef = ref(db, 'onlineUsers');
