@@ -234,13 +234,22 @@ const HeroSplit = () => {
             🐒
           </motion.div>
 
-          <div className="z-20 text-center flex flex-col items-center">
+          <motion.div 
+            className="z-20 text-center flex flex-col items-center"
+            style={{ 
+              rotateX: springRotateX, 
+              rotateY: springRotateY, 
+              transformStyle: "preserve-3d",
+              perspective: 1000 
+            }}
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              style={{ transform: "translateZ(50px)" }}
             >
-              <h1 className="text-white text-[64px] md:text-[80px] font-[950] tracking-tighter uppercase leading-[0.9] mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] select-none">
+              <h1 className="text-white text-[64px] md:text-[80px] font-[950] tracking-tighter uppercase leading-[0.9] mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] select-none bg-gradient-to-r from-white via-yellow-200 to-white bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent">
                 Funkey<span className="text-[#FFFF00]">.</span>
               </h1>
             </motion.div>
@@ -250,6 +259,7 @@ const HeroSplit = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
+              style={{ transform: "translateZ(30px)" }}
             >
               Vibe with strangers, make real <span className="underline decoration-[#FFFF00] decoration-4 underline-offset-4">connections</span>.
             </motion.p>
@@ -262,6 +272,7 @@ const HeroSplit = () => {
                 boxShadow: ["0 0 20px rgba(255,255,0,0)", "0 0 20px rgba(255,255,0,0.2)", "0 0 20px rgba(255,255,0,0)"]
               }}
               transition={{ duration: 3, repeat: Infinity }}
+              style={{ transform: "translateZ(40px)" }}
             >
               <motion.span 
                 className="w-2.5 h-2.5 bg-yellow-400 rounded-full" 
@@ -270,7 +281,7 @@ const HeroSplit = () => {
               />
               Live & Global
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* Mouse Following Funkey */}
           <motion.div
