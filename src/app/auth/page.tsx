@@ -13,10 +13,9 @@ function AuthContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
-  const { signInWithGoogle, user, loading: authLoading } = useAuth();
+  const { signInWithGoogle, signUpWithEmail, signInWithEmail, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClient();
   const urlError = searchParams.get('error');
 
   React.useEffect(() => {
@@ -37,18 +36,11 @@ function AuthContent() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success("Check your email for the confirmation link!");
+        await signUpWithEmail(email, password);
+        toast.success("Account created successfully!");
+        router.push("/profile");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
+        await signInWithEmail(email, password);
         toast.success("Successfully signed in!");
         router.push("/profile");
       }
