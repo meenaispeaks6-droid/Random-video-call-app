@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
+  const { signInWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -45,13 +46,7 @@ export default function AuthPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
+      await signInWithGoogle();
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
       setLoading(false);
