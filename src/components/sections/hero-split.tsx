@@ -8,6 +8,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 const HeroSplit = () => {
   const { user, signInWithGoogle } = useAuth();
