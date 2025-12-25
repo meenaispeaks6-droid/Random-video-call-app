@@ -205,8 +205,22 @@ export default function PremiumPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <div className="text-center mb-12">
-                <motion.div
+                <div className="text-center mb-12">
+                  <AnimatePresence>
+                    {authError && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="mb-6 flex items-center justify-center gap-2 bg-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-semibold border border-red-500/30"
+                      >
+                        <AlertCircle size={18} />
+                        Please login to upgrade to Premium
+                        <Link href="/auth" className="underline ml-2">Login here</Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
