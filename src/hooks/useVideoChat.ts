@@ -156,6 +156,8 @@ export const useVideoChat = () => {
   }, [userId, matchId, status, cleanupCall]);
 
   const findMatch = useCallback(async () => {
+    if (status === 'in-call') return;
+    
     console.log("Finding match...");
     setStatus('waiting');
     
@@ -182,48 +184,70 @@ export const useVideoChat = () => {
       id !== userId && 
       users[id].status === "waiting" &&
       (genderFilter === 'Both' || users[id].gender === genderFilter) &&
-      (Date.now() - users[id].lastActive < 45000)
+      (Date.now() - (users[id].lastActive || 0) < 30000)
     );
 
     if (candidates.length === 0) {
-      console.log("No candidates, waiting...");
+      console.log("No candidates, waiting for inbound match...");
+      // We are now in 'waiting' status, someone else will eventually find us
+      // or we will retry via the polling useEffect
       return;
     }
 
     const targetId = candidates[Math.floor(Math.random() * candidates.length)];
-    const newMatchId = `match_${[userId, targetId].sort().join('_')}`;
+    const newMatchId = `match_${[userId, targetId].sort().join('_')}_${Date.now()}`; // Add timestamp to make it unique
 
     const targetRef = ref(db, `onlineUsers/${targetId}`);
-    const result = await runTransaction(targetRef, (currentData) => {
-      if (currentData && currentData.status === "waiting") {
-        currentData.status = "in-call";
-        currentData.matchId = newMatchId;
-        currentData.partnerId = userId;
-        return currentData;
-      }
-      return undefined;
-    });
-
-    if (result.committed) {
-      console.log("Matched with:", targetId);
-      await update(userRef, { 
-        status: "in-call", 
-        matchId: newMatchId, 
-        partnerId: targetId 
+    try {
+      const result = await runTransaction(targetRef, (currentData) => {
+        if (currentData && currentData.status === "waiting") {
+          currentData.status = "in-call";
+          currentData.matchId = newMatchId;
+          currentData.partnerId = userId;
+          return currentData;
+        }
+        return undefined; // Abort
       });
-      setMatchId(newMatchId);
-      setPartnerId(targetId);
-      setStatus('in-call');
-    } else {
-      console.log("Match race lost, retrying...");
-      setTimeout(findMatch, 1500);
+
+      if (result.committed) {
+        console.log("Matched with:", targetId);
+        await update(userRef, { 
+          status: "in-call", 
+          matchId: newMatchId, 
+          partnerId: targetId 
+        });
+        setMatchId(newMatchId);
+        setPartnerId(targetId);
+        setStatus('in-call');
+      } else {
+        console.log("Match race lost or target unavailable, retrying...");
+        setTimeout(findMatch, 1000);
+      }
+    } catch (e) {
+      console.error("Transaction failed", e);
+      setTimeout(findMatch, 2000);
     }
-  }, [userId, genderFilter]);
+  }, [userId, genderFilter, status]);
+
+  // Polling for matches if we are stuck in waiting
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (status === 'waiting' && !partnerId) {
+      timeout = setTimeout(() => {
+        findMatch();
+      }, 5000);
+    }
+    return () => clearTimeout(timeout);
+  }, [status, partnerId, findMatch]);
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string) => {
-    console.log("Initializing RTCPeerConnection:", mId);
+    console.log("Setting up WebRTC for match:", mId);
     
-    if (pcRef.current) pcRef.current.close();
+    cleanupListeners();
+    if (pcRef.current) {
+      pcRef.current.close();
+    }
+
     const pc = new RTCPeerConnection(ICE_SERVERS);
     pcRef.current = pc;
     iceQueueRef.current = [];
@@ -235,7 +259,7 @@ export const useVideoChat = () => {
     }
 
     pc.ontrack = (e) => {
-      console.log("Remote track received");
+      console.log("Remote stream received");
       setRemoteStream(e.streams[0]);
     };
 
@@ -249,19 +273,22 @@ export const useVideoChat = () => {
     };
 
     pc.oniceconnectionstatechange = () => {
-      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
-        if (status === 'in-call') cleanupCall();
+      console.log("ICE State:", pc.iceConnectionState);
+      if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'closed') {
+        // Don't immediately cleanup on 'disconnected' as it might reconnect
+        if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
+          cleanupCall(false);
+        }
       }
     };
 
-    // Correct ICE candidate handling with queue
     const iceRef = ref(db, `signals/${mId}/iceCandidates`);
     const unsubIce = onChildAdded(iceRef, (snapshot) => {
       const data = snapshot.val();
       if (data && data.senderId !== userId) {
         const candidate = new RTCIceCandidate(data.candidate);
-        if (pc.remoteDescription) {
-          pc.addIceCandidate(candidate).catch(err => console.error("ICE error:", err));
+        if (pc.remoteDescription && pc.remoteDescription.type) {
+          pc.addIceCandidate(candidate).catch(e => console.warn("Add ICE failed", e));
         } else {
           iceQueueRef.current.push(data.candidate);
         }
@@ -272,7 +299,7 @@ export const useVideoChat = () => {
     const isCaller = userId < pId;
 
     if (isCaller) {
-      console.log("Mode: CALLER");
+      console.log("Role: CALLER");
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
       await set(ref(db, `signals/${mId}/offer`), {
@@ -286,16 +313,15 @@ export const useVideoChat = () => {
         const data = snap.val();
         if (data && data.senderId !== userId && pc.signalingState === 'have-local-offer') {
           await pc.setRemoteDescription(new RTCSessionDescription(data));
-          // Process queued ICE candidates
-          while (iceQueueRef.current.length) {
+          while (iceQueueRef.current.length > 0) {
             const cand = iceQueueRef.current.shift();
-            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(err => console.error("Queued ICE error:", err));
+            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(e => console.warn("Add queued ICE failed", e));
           }
         }
       });
       unsubsRef.current.push(unsubAnswer);
     } else {
-      console.log("Mode: CALLEE");
+      console.log("Role: CALLEE");
       const offerRef = ref(db, `signals/${mId}/offer`);
       const unsubOffer = onValue(offerRef, async (snap) => {
         const data = snap.val();
@@ -308,16 +334,15 @@ export const useVideoChat = () => {
             sdp: answer.sdp,
             senderId: userId
           });
-          // Process queued ICE candidates
-          while (iceQueueRef.current.length) {
+          while (iceQueueRef.current.length > 0) {
             const cand = iceQueueRef.current.shift();
-            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(err => console.error("Queued ICE error:", err));
+            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(e => console.warn("Add queued ICE failed", e));
           }
         }
       });
       unsubsRef.current.push(unsubOffer);
     }
-  }, [userId, cleanupCall, status]);
+  }, [userId, cleanupCall, cleanupListeners]);
 
   useEffect(() => {
     if (status === 'in-call' && matchId && partnerId) {
