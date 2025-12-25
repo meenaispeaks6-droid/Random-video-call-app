@@ -107,25 +107,41 @@ const HeroSplit = () => {
                 <span className="text-white font-bold text-lg">{genderFilter}</span>
               </button>
 
-              {/* Primary Action Button */}
-              <button 
-                id="startBtn"
-                onClick={startMatchmaking}
-                disabled={status === 'waiting'}
-                className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
-              >
-                <Image 
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/icon-24-start_3x-w-15.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="invert"
-                />
-                <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
-                  {status === 'waiting' ? 'Matching...' : 'Start'}
-                </span>
-              </button>
-            </div>
+                {/* Primary Action Button */}
+                <button 
+                  id="startBtn"
+                  onClick={startMatchmaking}
+                  disabled={status === 'waiting'}
+                  className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
+                >
+                  <Image 
+                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/icon-24-start_3x-w-15.png"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="invert"
+                  />
+                  <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
+                    {status === 'waiting' ? 'Matching...' : 'Start'}
+                  </span>
+                </button>
+
+                {/* Google Login for non-authenticated users */}
+                {!user && (
+                  <button
+                    onClick={handleGoogleLogin}
+                    className="w-full h-[54px] bg-white/5 border border-white/10 hover:bg-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-all text-white font-bold"
+                  >
+                    <img 
+                      src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                      className="w-5 h-5" 
+                      alt="Google" 
+                    />
+                    Simple Google Login
+                  </button>
+                )}
+              </div>
+
           </>
         ) : (
           <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
