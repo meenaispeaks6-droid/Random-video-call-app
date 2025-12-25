@@ -12,23 +12,23 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Are There Any Other Sites Like the New Omegle?",
-    answer: "Monkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Monkey's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.",
+    answer: "Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Funkey's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.",
   },
   {
-    question: "What Makes Monkey Unique in Social Networking?",
-    answer: "Monkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It’s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.",
+    question: "What Makes Funkey Unique in Social Networking?",
+    answer: "Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It’s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.",
   },
   {
-    question: "Why Choose Monkey for Engaging with New Connections?",
+    question: "Why Choose Funkey for Engaging with New Connections?",
     answer: "Our platform prioritizes stringent security, ensuring user safety and privacy while fostering cross-cultural interactions that broaden perspectives and spark meaningful exchanges with people worldwide.",
   },
   {
-    question: "Can I Use Monkey Anytime and Anywhere?",
-    answer: "Yes, Monkey is accessible on any device or web browser, allowing you to connect with a diverse global community whenever you feel like meeting new people.",
+    question: "Can I Use Funkey Anytime and Anywhere?",
+    answer: "Yes, Funkey is accessible on any device or web browser, allowing you to connect with a diverse global community whenever you feel like meeting new people.",
   },
   {
-    question: "Can I Use Monkey for Free?",
-    answer: "Monkey offers a free random video chat experience, making it easy for anyone to dive into real-time conversations without financial barriers.",
+    question: "Can I Use Funkey for Free?",
+    answer: "Funkey offers a free random video chat experience, making it easy for anyone to dive into real-time conversations without financial barriers.",
   },
 ];
 

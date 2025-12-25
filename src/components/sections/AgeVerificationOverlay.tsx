@@ -5,7 +5,7 @@ import { Camera, X, ArrowLeft, Upload } from "lucide-react";
 
 /**
  * AgeVerificationOverlay Component
- * Clones the age verification/appeal modal shown in the Monkey app.
+ * Clones the age verification/appeal modal shown in the Funkey app.
  * Features: Overlay, Camera snap UI placeholders, and Appeal process steps.
  */
 export default function AgeVerificationOverlay() {

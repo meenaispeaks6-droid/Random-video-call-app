@@ -10,7 +10,7 @@ const HeaderNavigation = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-3 md:px-6">
-      {/* Left Section: Sign In button and Monkey Logo */}
+      {/* Left Section: Sign In button and Funkey Logo */}
       <div className="flex items-center gap-4">
         <a
           href="#"
@@ -21,7 +21,7 @@ const HeaderNavigation = () => {
         <div className="hidden lg:flex items-center">
           <Image
             src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/icons/monkey-logo-2.png"
-            alt="Monkey logo"
+            alt="Funkey logo"
             width={44}
             height={44}
             className="object-contain"

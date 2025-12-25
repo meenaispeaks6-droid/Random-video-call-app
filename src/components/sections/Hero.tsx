@@ -6,7 +6,7 @@ const Hero = () => {
     <section className="relative w-full h-screen overflow-hidden flex flex-col md:flex-row">
       {/* Left Branding Side (Primary Purple #634AF1) */}
       <div className="relative w-full md:w-1/2 h-full bg-[#634AF1] flex flex-col items-center justify-center p-8 overflow-hidden">
-        {/* Floating Monkey Icons - Animated with CSS from globals.css */}
+        {/* Floating Funkey Icons - Animated with CSS from globals.css */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[10%] left-[15%] animate-float delay-0 text-3xl">🐵</div>
           <div className="absolute top-[25%] right-[20%] animate-float delay-[1s] text-2xl">🐵</div>
@@ -19,7 +19,7 @@ const Hero = () => {
         {/* Branding Content */}
         <div className="relative z-10 flex flex-col items-center text-center">
           <h1 className="text-white text-[48px] md:text-[64px] font-extrabold uppercase mb-2 tracking-tight">
-            Monkey
+            Funkey
           </h1>
           <p className="text-white text-[20px] md:text-[24px] font-semibold mb-12 opacity-90 leading-tight">
             Make new friends <div className="hidden md:block"></div>face-to-face

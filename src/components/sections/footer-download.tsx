@@ -4,11 +4,11 @@ import Image from 'next/image';
 /**
  * FooterDownload Component
  * 
- * This component clones the "Download App" section of the Monkey website.
+ * This component clones the "Download App" section of the Funkey website.
  * Features:
  * - H2 title "Download App" in Montserrat Extra Bold/Uppercase
  * - Google Play Store badge with white border stroke
- * - Copyright text "© 2025 Monkey"
+ * - Copyright text "© 2025 Funkey"
  * - Consistent brand purple background (#634AF1)
  */
 const FooterDownload: React.FC = () => {
@@ -49,7 +49,7 @@ const FooterDownload: React.FC = () => {
             className="text-white opacity-80 text-[14px] font-sans m-0"
             style={{ fontFamily: 'Montserrat, Inter, sans-serif' }}
           >
-            © 2025 Monkey
+            © 2025 Funkey
           </p>
         </div>
       </div>

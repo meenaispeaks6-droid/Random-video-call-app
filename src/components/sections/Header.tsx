@@ -25,7 +25,7 @@ const Header = () => {
           className="flex items-center gap-2 text-white text-[13px] font-semibold hover:opacity-80 transition-opacity"
         >
           <span className="text-[16px]">👑</span>
-          <span>Try the New Monkey Now &gt;</span>
+          <span>Try the New Funkey Now &gt;</span>
         </a>
       </div>
 
@@ -39,7 +39,7 @@ const Header = () => {
           <div className="md:hidden flex items-center h-[38px]">
              <Image 
                 src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/icons/monkey-logo-2.png"
-                alt="Monkey Logo"
+                alt="Funkey Logo"
                 width={32}
                 height={32}
                 className="w-8 h-8"

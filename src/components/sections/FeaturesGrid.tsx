@@ -5,25 +5,25 @@ const FeaturesGrid = () => {
   const features = [
     {
       title: "Dynamic Video Chats",
-      description: "Dive into real-time, personal video conversations that redefine human connections. Monkey's lightning-fast and spontaneous video interactions create exhilarating encounters, making every conversation feel fresh and authentic.",
+      description: "Dive into real-time, personal video conversations that redefine human connections. Funkey's lightning-fast and spontaneous video interactions create exhilarating encounters, making every conversation feel fresh and authentic.",
       image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_1-3.png",
       alt: "Dynamic Video Chats icon"
     },
     {
       title: "Global Reach",
-      description: "Break through geographical barriers and engage with a diverse global community. Monkey's platform fosters cross-cultural interactions that broaden perspectives and spark meaningful exchanges with people worldwide.",
+      description: "Break through geographical barriers and engage with a diverse global community. Funkey's platform fosters cross-cultural interactions that broaden perspectives and spark meaningful exchanges with people worldwide.",
       image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_2-4.png",
       alt: "Global Reach icon"
     },
     {
       title: "Simplicity and Security",
-      description: "Experience Monkey's intuitive interface, enabling seamless video chats. Our platform prioritizes stringent security, ensuring user safety and privacy.",
+      description: "Experience Funkey's intuitive interface, enabling seamless video chats. Our platform prioritizes stringent security, ensuring user safety and privacy.",
       image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_3-5.png",
       alt: "Simplicity and Security icon"
     },
     {
       title: "Random Matching",
-      description: "Explore Monkey's random matching feature for unexpected encounters. Discover new connections and engage in genuine conversations that go beyond the ordinary, enhancing your social experience online.",
+      description: "Explore Funkey's random matching feature for unexpected encounters. Discover new connections and engage in genuine conversations that go beyond the ordinary, enhancing your social experience online.",
       image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_4-6.png",
       alt: "Random Matching icon"
     }

@@ -7,7 +7,7 @@ const Introduction = () => {
       {/* Background Watermark Text */}
       <div className="absolute bottom-[-60px] left-0 w-full overflow-hidden opacity-10 pointer-events-none select-none">
         <h2 className="text-[120px] font-[900] whitespace-nowrap text-black uppercase tracking-tight leading-none">
-          Monkey.Monkey.Monkey.Monkey.Monkey.
+          Funkey.Funkey.Funkey.Funkey.Funkey.
         </h2>
       </div>
 
@@ -27,7 +27,7 @@ const Introduction = () => {
                 #1 Random Video Chat Platform
               </h3>
               <p className="text-white/90 text-base leading-[1.6] font-normal">
-                Monkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Monkey&apos;s real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.
+                Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Funkey&apos;s real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.
               </p>
             </div>
 
@@ -36,7 +36,7 @@ const Introduction = () => {
                 New Omegle & OmeTV Alternative
               </h3>
               <p className="text-white/90 text-base leading-[1.6] font-normal">
-                Monkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.
+                Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.
               </p>
             </div>
           </div>
@@ -48,7 +48,7 @@ const Introduction = () => {
               <div className="relative w-full h-full z-10 transition-transform duration-500 hover:scale-[1.02]">
                 <Image
                   src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d-www-archive-monkey-app/assets/images/mt_5-2.png"
-                  alt="Monkey Video Chat Mockup"
+                  alt="Funkey Video Chat Mockup"
                   width={440}
                   height={330}
                   className="object-contain"

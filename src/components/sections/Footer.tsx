@@ -38,7 +38,7 @@ const Footer = () => {
         {/* Bottom Bar Info */}
         <div className="flex flex-col items-center gap-[16px]">
           <p className="text-[14px] font-semibold text-white/90 m-0">
-            © 2025 Monkey
+            © 2025 Funkey
           </p>
           
           <a

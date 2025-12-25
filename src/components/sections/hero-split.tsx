@@ -6,7 +6,7 @@ const HeroSplit = () => {
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
       {/* Left Column: Purple Branding Area */}
       <div className="flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-16 px-6 overflow-hidden">
-        {/* Floating Monkey Emojis (Decorative) */}
+        {/* Floating Funkey Emojis (Decorative) */}
         <div className="absolute top-10 left-10 text-3xl animate-float opacity-80 select-none pointer-events-none">🐵</div>
         <div className="absolute top-1/4 right-20 text-4xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '1s' }}>🐒</div>
         <div className="absolute bottom-1/4 left-1/4 text-3xl animate-float opacity-80 select-none pointer-events-none" style={{ animationDelay: '2s' }}>🙊</div>
@@ -14,7 +14,7 @@ const HeroSplit = () => {
 
         <div className="z-10 text-center flex flex-col items-center">
           <h1 className="text-white text-[48px] md:text-[60px] font-[900] tracking-tight uppercase leading-none mb-4">
-            Monkey
+            Funkey
           </h1>
           <p className="text-white text-[20px] md:text-[24px] font-[600] mb-12 opacity-90 max-w-[300px] leading-tight">
             Make new friends face-to-face

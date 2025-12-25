@@ -21,7 +21,7 @@ const Introduction = () => {
                 #1 Random Video Chat Platform
               </h3>
               <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
-                Monkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Monkey's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.
+                Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Funkey's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser—enjoy the same exhilarating environment, now with even more ways to engage.
               </p>
             </div>
 
@@ -31,7 +31,7 @@ const Introduction = () => {
                 New Omegle & OmeTV Alternative
               </h3>
               <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
-                Monkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.
+                Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s a top alternative to the original Omegle or any New Omegle platform, perfect for those who enjoy spontaneous chats or want to talk to strangers.
               </p>
             </div>
           </div>
@@ -48,7 +48,7 @@ const Introduction = () => {
             <div className="relative z-10 w-full animate-float">
               <Image 
                 src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop"
-                alt="Monkey App Video Chat Interface Preview"
+                alt="Funkey App Video Chat Interface Preview"
                 width={440}
                 height={420}
                 className="object-contain drop-shadow-2xl rounded-3xl"
@@ -64,7 +64,7 @@ const Introduction = () => {
       {/* Background Watermark Text */}
       <div className="absolute bottom-[-60px] left-0 w-full overflow-hidden pointer-events-none opacity-[0.08] select-none whitespace-nowrap z-0">
         <span className="text-[180px] font-black font-display uppercase tracking-tighter">
-          Monkey Monkey Monkey Monkey
+          Funkey Funkey Funkey Funkey
         </span>
       </div>
     </section>
