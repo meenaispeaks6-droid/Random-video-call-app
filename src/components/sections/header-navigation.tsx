@@ -99,38 +99,7 @@ export default function HeaderNavigation() {
           <Crown size={18} fill="currentColor" className="md:w-5 drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
         </Link>
 
-        <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-9 md:h-10 w-[110px] md:w-[140px] relative">
-          <button
-            onClick={() => setMode("solo")}
-            className={cn(
-              "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300",
-              mode === "solo" ? "text-black" : "text-white"
-            )}
-          >
-            SOLO
-          </button>
-          <button
-            onClick={() => setMode("duo")}
-            className={cn(
-              "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300 relative",
-              mode === "duo" ? "text-black" : "text-white"
-            )}
-          >
-            DUO
-            <UltraPremiumBadge />
-            <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap scale-75 md:scale-100 origin-right">
-              <Lock size={8} strokeWidth={3} />
-              Not yet
-            </span>
-          </button>
-          <div
-            className={cn(
-              "absolute top-1 bottom-1 bg-[#FFFF00] rounded-full transition-all duration-300 ease-in-out",
-              mode === "solo" ? "left-1" : "left-[50%] ml-[-2px] md:left-[69px] md:ml-0",
-              "w-[51px] md:w-[66px]"
-            )}
-          />
-        </div>
+
 
         <button 
           onClick={() => setMenuOpen(!menuOpen)}
