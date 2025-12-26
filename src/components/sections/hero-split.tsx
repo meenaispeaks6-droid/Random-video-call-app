@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { ref, onValue } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles, Heart, MessageSquare } from 'lucide-react';
+import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles, Heart, MessageSquare, Maximize, Minimize } from 'lucide-react';
 import Link from 'next/link';
 
 const Magnetic = ({ children }: { children: React.ReactNode }) => {
