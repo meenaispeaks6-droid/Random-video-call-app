@@ -134,7 +134,7 @@ const FeaturesGrid = () => {
   if (!mounted) return null;
 
   return (
-    <section className="bg-[#634AF1] py-24 md:py-40 relative overflow-hidden">
+    <section className="bg-[#634AF1] py-16 md:py-40 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div 
@@ -149,13 +149,13 @@ const FeaturesGrid = () => {
         />
       </div>
 
-      <div className="container px-6 relative z-10 mx-auto">
-        <header className="max-w-[800px] mx-auto text-center mb-20 md:mb-32">
+      <div className="container px-4 md:px-6 relative z-10 mx-auto">
+        <header className="max-w-[800px] mx-auto text-center mb-12 md:mb-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 bg-yellow-400 text-black text-xs font-black uppercase tracking-[0.2em] rounded-full mb-6 shadow-[0_0_20px_rgba(255,255,0,0.2)]"
+            className="inline-block px-4 py-1.5 bg-yellow-400 text-black text-[10px] md:text-xs font-black uppercase tracking-[0.2em] rounded-full mb-4 md:mb-6 shadow-[0_0_20px_rgba(255,255,0,0.2)]"
           >
             Experience More
           </motion.div>
@@ -164,7 +164,7 @@ const FeaturesGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-white text-4xl md:text-7xl font-[950] uppercase tracking-tighter leading-none mb-8"
+            className="text-white text-[32px] md:text-7xl font-[950] uppercase tracking-tighter leading-none mb-6 md:mb-8"
           >
             Vibe with the <span className="text-yellow-400">World</span>
           </motion.h2>
@@ -173,11 +173,11 @@ const FeaturesGrid = () => {
             whileInView={{ opacity: 1, scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="h-1.5 w-24 bg-white/20 mx-auto rounded-full"
+            className="h-1.5 w-16 md:w-24 bg-white/20 mx-auto rounded-full"
           />
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 max-w-[1200px] mx-auto">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}
