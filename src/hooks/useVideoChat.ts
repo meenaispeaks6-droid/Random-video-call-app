@@ -159,6 +159,7 @@ export const useVideoChat = () => {
 
     const targetId = candidates[Math.floor(Math.random() * candidates.length)];
     const newMatchId = `match_${[userId, targetId].sort().join('_')}`;
+    const actuallyInitiator = userId < targetId;
 
     const targetRef = ref(db, `onlineUsers/${targetId}`);
     try {
@@ -167,7 +168,7 @@ export const useVideoChat = () => {
           currentData.status = "in-call";
           currentData.matchId = newMatchId;
           currentData.partnerId = userId;
-          currentData.isInitiator = false;
+          currentData.isInitiator = !actuallyInitiator;
           return currentData;
         }
         return undefined;
@@ -179,11 +180,11 @@ export const useVideoChat = () => {
           status: "in-call", 
           matchId: newMatchId, 
           partnerId: targetId,
-          isInitiator: true 
+          isInitiator: actuallyInitiator 
         });
         setMatchId(newMatchId);
         setPartnerId(targetId);
-        setIsInitiator(true);
+        setIsInitiator(actuallyInitiator);
         setStatus('in-call');
       } else {
         console.log("Transaction failed (race), retrying search...");
