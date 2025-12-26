@@ -44,42 +44,42 @@ export default function HeaderNavigation() {
   );
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-3 md:px-6">
+    <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-3 py-2 md:px-6 md:py-3">
       {/* Left Section: Auth button and Funkey Logo */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4 shrink-0">
         {user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 md:gap-2">
             <Link
               href="/profile"
-              className="w-10 h-[34px] flex items-center justify-center rounded-full border-2 border-white/20 text-white hover:bg-white/10 transition-colors"
+              className="w-9 h-9 md:w-10 md:h-[34px] flex items-center justify-center rounded-full border-2 border-white/20 text-white hover:bg-white/10 transition-colors"
             >
-              <User size={18} />
+              <User size={16} className="md:w-[18px]" />
             </Link>
             <button
               onClick={() => signOut()}
-              className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white/20 text-white text-[14px] font-bold hover:bg-white/10 transition-colors gap-2"
+              className="h-9 md:h-[34px] flex items-center justify-center px-3 md:px-4 rounded-full border-2 border-white/20 text-white text-[12px] md:text-[14px] font-bold hover:bg-white/10 transition-colors gap-1.5 md:gap-2"
             >
-              <LogOut size={14} />
-              Sign Out
+              <LogOut size={12} className="md:w-[14px]" />
+              <span className="hidden xs:inline">Sign Out</span>
             </button>
           </div>
         ) : (
           <Link
             href="/auth"
-            className="h-[34px] flex items-center justify-center px-4 rounded-full border-2 border-white text-white text-[14px] font-bold hover:bg-white/10 transition-colors"
+            className="h-9 md:h-[34px] flex items-center justify-center px-3 md:px-4 rounded-full border-2 border-white text-white text-[12px] md:text-[14px] font-bold hover:bg-white/10 transition-colors"
           >
             Sign In
           </Link>
         )}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden sm:flex items-center">
           <Link href="/">
-            <span className="text-white font-black text-2xl tracking-tighter uppercase">Funkey</span>
+            <span className="text-white font-black text-xl md:text-2xl tracking-tighter uppercase">Funkey</span>
           </Link>
         </div>
       </div>
 
-      {/* Center Section: Navigation Icons */}
-      <nav className="absolute left-1/2 -translate-x-1/2 flex items-center bg-white/10 backdrop-blur-md rounded-full px-1 py-1 border border-white/20">
+      {/* Center Section: Navigation Icons - Hidden on very small screens */}
+      <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center bg-white/10 backdrop-blur-md rounded-full px-1 py-1 border border-white/20">
         {navLinks.map((link) => (
           <Link
             key={link.href}
@@ -98,17 +98,17 @@ export default function HeaderNavigation() {
       </nav>
 
       {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
-        <div className="flex items-center gap-3 md:gap-4 relative" ref={menuRef}>
-          <Link href="/premium" className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
-            <Crown size={20} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
+        <div className="flex items-center gap-2 md:gap-4 relative shrink-0" ref={menuRef}>
+          <Link href="/premium" className="hidden sm:flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
+            <Crown size={18} fill="currentColor" className="md:w-5 drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
           </Link>
 
-        {/* Solo/Duo Toggle Switch */}
-        <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-10 w-[140px] relative">
+        {/* Solo/Duo Toggle Switch - Compact on mobile */}
+        <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-9 md:h-10 w-[110px] md:w-[140px] relative">
           <button
             onClick={() => setMode("solo")}
             className={cn(
-              "flex-1 text-[13px] font-bold z-10 transition-colors duration-300",
+              "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300",
               mode === "solo" ? "text-black" : "text-white"
             )}
           >
@@ -117,21 +117,22 @@ export default function HeaderNavigation() {
             <button
               onClick={() => setMode("duo")}
               className={cn(
-                "flex-1 text-[13px] font-bold z-10 transition-colors duration-300 relative",
+                "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300 relative",
                 mode === "duo" ? "text-black" : "text-white"
               )}
             >
               DUO
               <UltraPremiumBadge />
-              <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[9px] px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap">
+              <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap scale-75 md:scale-100 origin-right">
                 <Lock size={8} strokeWidth={3} />
                 Not yet
               </span>
             </button>
           <div
             className={cn(
-              "absolute top-1 bottom-1 w-[66px] bg-[#FFFF00] rounded-full transition-all duration-300 ease-in-out",
-              mode === "solo" ? "left-1" : "left-[69px]"
+              "absolute top-1 bottom-1 bg-[#FFFF00] rounded-full transition-all duration-300 ease-in-out",
+              mode === "solo" ? "left-1" : "left-[50%] ml-[-2px] md:left-[69px] md:ml-0",
+              "w-[51px] md:w-[66px]"
             )}
           />
         </div>
@@ -140,38 +141,50 @@ export default function HeaderNavigation() {
           onClick={() => setMenuOpen(!menuOpen)}
           className="text-white hover:opacity-80 transition-opacity"
         >
-          {menuOpen ? <X size={32} strokeWidth={2.5} /> : <Menu size={32} strokeWidth={2.5} />}
+          {menuOpen ? <X size={28} className="md:w-8" strokeWidth={2.5} /> : <Menu size={28} className="md:w-8" strokeWidth={2.5} />}
         </button>
 
         {/* Dropdown Menu */}
         {menuOpen && (
-          <div className="absolute top-full right-0 mt-4 w-56 bg-black/80 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden p-2 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
-            {menuItems.map((item, idx) => (
-              <Link
-                key={idx}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#FFFF00] hover:text-black rounded-2xl transition-all font-bold group"
-              >
-                <span className="opacity-70 group-hover:opacity-100 transition-opacity">
-                  {item.icon}
-                </span>
-                {item.label}
-              </Link>
+          <div className="absolute top-full right-0 mt-3 md:mt-4 w-56 bg-black/90 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden p-2 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
+            {/* Mobile Nav Links (added for better accessibility) */}
+            <div className="md:hidden grid grid-cols-4 gap-1 mb-2 p-1 bg-white/5 rounded-2xl">
+              {navLinks.map((link, idx) => (
+                <Link
+                  key={idx}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "flex items-center justify-center p-2 rounded-xl transition-all relative",
+                    pathname === link.href ? "bg-[#FFFF00] text-black" : "text-white/60 hover:text-white"
+                  )}
+                >
+                  {React.cloneElement(link.icon as React.ReactElement, { size: 18 })}
+                  {link.premium && (
+                    <div className="absolute top-0 right-0 w-2 h-2 bg-yellow-400 rounded-full border border-black" />
+                  )}
+                </Link>
+              ))}
+            </div>
+            {itemGroups.map((group, gIdx) => (
+               <React.Fragment key={gIdx}>
+                 {group.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#FFFF00] hover:text-black rounded-2xl transition-all font-bold group"
+                  >
+                    <span className="opacity-70 group-hover:opacity-100 transition-opacity">
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </Link>
+                ))}
+                {gIdx < itemGroups.length - 1 && <div className="h-px bg-white/10 my-2 mx-2" />}
+               </React.Fragment>
             ))}
-            <div className="h-px bg-white/10 my-2 mx-2" />
-            <button
-              onClick={() => {
-                signOut();
-                setMenuOpen(false);
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-bold group"
-            >
-              <LogOut size={18} />
-              Sign Out
-            </button>
-          </div>
-        )}
+
       </div>
     </header>
   );
