@@ -139,7 +139,7 @@ const HeroSplit = () => {
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
       <CursorTrail />
       {/* Left Column: Purple Branding Area */}
-      <div className="flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-16 px-6 overflow-hidden">
+      <div className="flex-[0.6] md:flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-12 md:py-16 px-6 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-10" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
         
         <motion.div
@@ -162,7 +162,7 @@ const HeroSplit = () => {
         />
 
         <AnimatePresence>
-          {isSparkleRain && Array.from({ length: 20 }).map((_, i) => (
+          {isSparkleRain && Array.from({ length: 15 }).map((_, i) => (
             <motion.div
               key={i}
               initial={{ y: -100, x: Math.random() * 400 - 200, rotate: 0, opacity: 1 }}
@@ -185,13 +185,14 @@ const HeroSplit = () => {
           animate={{ rotate: 360 }}
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         >
-          <div className="w-[600px] h-[600px] border-[2px] border-dashed border-white rounded-full" />
+          <div className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] border-[2px] border-dashed border-white rounded-full" />
         </motion.div>
 
+        {/* Emojis - Hidden on mobile for less clutter */}
         <motion.div 
-          className="absolute top-[15%] left-[10%] text-5xl select-none pointer-events-none z-10 filter drop-shadow-2xl"
+          className="absolute top-[10%] left-[10%] text-4xl md:text-5xl select-none pointer-events-none z-10 filter drop-shadow-2xl hidden xs:block"
           animate={{ 
-            y: [0, -30, 0],
+            y: [0, -20, 0],
             rotate: [0, 15, -15, 0],
             scale: [1, 1.1, 1]
           }}
@@ -201,7 +202,7 @@ const HeroSplit = () => {
         </motion.div>
 
         <motion.div 
-          className="absolute top-[40%] right-[10%] text-6xl select-none pointer-events-none z-10 filter drop-shadow-2xl"
+          className="absolute top-[30%] right-[10%] text-5xl md:text-6xl select-none pointer-events-none z-10 filter drop-shadow-2xl hidden sm:block"
           animate={{ 
             scale: [1, 1.3, 1],
             rotate: [0, -25, 25, 0],
@@ -213,7 +214,7 @@ const HeroSplit = () => {
         </motion.div>
 
         <motion.div 
-          className="absolute bottom-[20%] left-[15%] text-5xl select-none pointer-events-none z-10 filter drop-shadow-2xl"
+          className="absolute bottom-[15%] left-[10%] text-4xl md:text-5xl select-none pointer-events-none z-10 filter drop-shadow-2xl hidden sm:block"
           animate={{ 
             x: [0, 40, 0],
             y: [0, -20, 0],
@@ -225,7 +226,7 @@ const HeroSplit = () => {
         </motion.div>
 
         <motion.div
-          className="absolute -left-4 bottom-1/3 text-7xl select-none cursor-pointer z-40 active:scale-90"
+          className="absolute -left-4 bottom-1/4 text-5xl md:text-7xl select-none cursor-pointer z-40 active:scale-90"
           initial={{ x: -60 }}
           whileHover={{ x: 20, rotate: 10, scale: 1.1 }}
           onClick={triggerSparkleRain}
@@ -235,7 +236,7 @@ const HeroSplit = () => {
         </motion.div>
 
         <motion.div 
-          className="z-20 text-center flex flex-col items-center"
+          className="z-20 text-center flex flex-col items-center pt-8 md:pt-0"
           style={{ 
             rotateX: springRotateX, 
             rotateY: springRotateY, 
@@ -249,23 +250,23 @@ const HeroSplit = () => {
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
             style={{ transform: "translateZ(50px)" }}
           >
-            <h1 className="text-white text-[64px] md:text-[80px] font-[950] tracking-tighter uppercase leading-[0.9] mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] select-none bg-gradient-to-r from-white via-yellow-200 to-white bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent">
+            <h1 className="text-white text-[48px] md:text-[80px] font-[950] tracking-tighter uppercase leading-[0.9] mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] select-none bg-gradient-to-r from-white via-yellow-200 to-white bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent">
               Funkey<span className="text-[#FFFF00]">.</span>
             </h1>
           </motion.div>
           
           <motion.p 
-            className="text-white text-[22px] md:text-[26px] font-[600] mb-10 opacity-90 max-w-[320px] leading-tight tracking-tight select-none"
+            className="text-white text-[18px] md:text-[26px] font-[600] mb-8 md:mb-10 opacity-90 max-w-[280px] md:max-w-[320px] leading-tight tracking-tight select-none"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{ transform: "translateZ(30px)" }}
           >
-            Vibe with strangers, make real <span className="underline decoration-[#FFFF00] decoration-4 underline-offset-4">connections</span>.
+            Vibe with strangers, make real <span className="underline decoration-[#FFFF00] decoration-2 md:decoration-4 underline-offset-4">connections</span>.
           </motion.p>
 
           <motion.div
-            className="px-8 py-3 bg-white/10 backdrop-blur-xl rounded-full border border-white/30 text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 shadow-2xl cursor-pointer hover:bg-white/20 transition-colors"
+            className="px-6 py-2 md:px-8 md:py-3 bg-white/10 backdrop-blur-xl rounded-full border border-white/30 text-white font-black text-[10px] md:text-xs uppercase tracking-[0.2em] flex items-center gap-3 shadow-2xl cursor-pointer hover:bg-white/20 transition-colors"
             animate={{ 
               scale: [1, 1.05, 1],
               boxShadow: ["0 0 20px rgba(255,255,0,0)", "0 0 20px rgba(255,255,0,0.2)", "0 0 20px rgba(255,255,0,0)"]
@@ -274,7 +275,7 @@ const HeroSplit = () => {
             style={{ transform: "translateZ(40px)" }}
           >
             <motion.span 
-              className="w-2.5 h-2.5 bg-yellow-400 rounded-full" 
+              className="w-2 h-2 md:w-2.5 md:h-2.5 bg-yellow-400 rounded-full" 
               animate={{ scale: [1, 1.5, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
@@ -296,19 +297,19 @@ const HeroSplit = () => {
       </div>
 
       {/* Right Column: Video Chat Area */}
-      <div className="flex-1 bg-[#0B032D] relative flex flex-col items-center justify-center py-16 px-6">
+      <div className="flex-1 bg-[#0B032D] relative flex flex-col items-center justify-center py-12 md:py-16 px-6">
         {status === 'idle' || status === 'waiting' ? (
           <>
-            <div className="flex flex-col items-center text-center space-y-2 mb-12">
-              <div className="flex items-center gap-2 text-white/90 text-[18px] font-semibold">
+            <div className="flex flex-col items-center text-center space-y-2 mb-8 md:mb-12">
+              <div className="flex items-center gap-2 text-white/90 text-[16px] md:text-[18px] font-semibold">
                 <span>👩‍🦳👨‍🦳</span>
                 <span>{onlineCount.toLocaleString()} users online</span>
               </div>
             </div>
 
-            <div className="w-full max-w-[340px] space-y-6">
+            <div className="w-full max-w-[340px] space-y-4 md:space-y-6">
               {status === 'waiting' && (
-                <div className="text-white text-center mb-4 animate-pulse">
+                <div className="text-white text-center mb-4 animate-pulse text-sm md:text-base">
                   Searching for a match...
                 </div>
               )}
@@ -319,12 +320,12 @@ const HeroSplit = () => {
                     const next = genderFilter === 'Both' ? 'Male' : genderFilter === 'Male' ? 'Female' : 'Both';
                     setGenderFilter(next);
                   }}
-                  className="w-full h-[64px] bg-[#1C1243] hover:bg-[#251955] border border-white/10 rounded-[20px] flex items-center justify-center gap-3 transition-colors active:scale-95 group"
+                  className="w-full h-[56px] md:h-[64px] bg-[#1C1243] hover:bg-[#251955] border border-white/10 rounded-[16px] md:rounded-[20px] flex items-center justify-center gap-3 transition-colors active:scale-95 group"
                 >
-                  <span className="text-2xl">
+                  <span className="text-xl md:text-2xl">
                     {genderFilter === 'Both' ? '👨‍👩‍👦' : genderFilter === 'Male' ? '👨' : '👩'}
                   </span>
-                  <span className="text-white font-bold text-lg">{genderFilter}</span>
+                  <span className="text-white font-bold text-base md:text-lg">{genderFilter}</span>
                 </button>
               </Magnetic>
 
@@ -333,10 +334,10 @@ const HeroSplit = () => {
                     id="startBtn"
                     onClick={startMatchmaking}
                     disabled={status === 'waiting'}
-                    className="w-full h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
+                    className="w-full h-[56px] md:h-[64px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] md:rounded-[20px] flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,0,0.15)] disabled:opacity-50"
                   >
-                    <Video className="w-6 h-6 text-black" />
-                    <span className="text-black font-extrabold text-[18px] uppercase tracking-wide">
+                    <Video className="w-5 h-5 md:w-6 md:h-6 text-black" />
+                    <span className="text-black font-extrabold text-[16px] md:text-[18px] uppercase tracking-wide">
                       {status === 'waiting' ? 'Matching...' : 'Start'}
                     </span>
                   </button>
@@ -363,17 +364,17 @@ const HeroSplit = () => {
                     exit={{ opacity: 0 }}
                     className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B032D]"
                   >
-                    <div className="relative w-20 h-20 mb-4">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 mb-4">
                       <motion.div 
                         animate={{ rotate: 360 }}
                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         className="absolute inset-0 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center text-2xl">
+                      <div className="absolute inset-0 flex items-center justify-center text-xl md:text-2xl">
                         ⚡
                       </div>
                     </div>
-                    <p className="text-white/60 font-medium animate-pulse">Connecting to partner...</p>
+                    <p className="text-white/60 text-sm md:text-base font-medium animate-pulse">Connecting...</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -383,27 +384,27 @@ const HeroSplit = () => {
                   <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-purple/80 backdrop-blur-xl"
+                    className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-purple/80 backdrop-blur-xl p-6"
                   >
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 0.5, repeat: Infinity }}
-                      className="text-8xl mb-8"
+                      className="text-6xl md:text-8xl mb-6 md:mb-8"
                     >
                       ❤️
                     </motion.div>
-                    <h2 className="text-white text-5xl font-black uppercase tracking-tighter italic mb-4">It's a Match!</h2>
-                    <p className="text-white/80 font-bold mb-8 uppercase tracking-widest text-sm">You are now friends</p>
+                    <h2 className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter italic mb-3 md:mb-4 text-center">It's a Match!</h2>
+                    <p className="text-white/80 font-bold mb-6 md:mb-8 uppercase tracking-widest text-[10px] md:text-sm text-center">You are now friends</p>
                     <Link
                       href={`/chat?partnerId=${partnerId}`}
-                      className="bg-[#FFFF00] text-black px-8 py-4 rounded-[1.5rem] font-black uppercase tracking-tighter flex items-center gap-3 hover:scale-105 transition-transform"
+                      className="bg-[#FFFF00] text-black px-6 py-3 md:px-8 md:py-4 rounded-[1.2rem] md:rounded-[1.5rem] font-black uppercase tracking-tighter flex items-center gap-3 hover:scale-105 transition-transform text-sm md:text-base"
                     >
-                      <MessageSquare size={20} />
+                      <MessageSquare size={18} className="md:w-5" />
                       Send Message
                     </Link>
                     <button
                       onClick={nextMatch}
-                      className="mt-6 text-white/40 font-bold uppercase tracking-widest text-xs hover:text-white transition-colors"
+                      className="mt-6 text-white/40 font-bold uppercase tracking-widest text-[10px] md:text-xs hover:text-white transition-colors"
                     >
                       Or keep vibing
                     </button>
@@ -412,7 +413,7 @@ const HeroSplit = () => {
               </AnimatePresence>
 
               <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
-                <span className="text-white text-xs font-medium">
+                <span className="text-white text-[10px] md:text-xs font-medium">
                   🌍 {partnerLocation || "Detecting..."}
                 </span>
               </div>
@@ -428,15 +429,15 @@ const HeroSplit = () => {
                 className="w-full h-full object-cover mirror"
               />
               <div className="absolute top-4 left-4 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-                <span className="text-white text-xs font-medium">You</span>
+                <span className="text-white text-[10px] md:text-xs font-medium">You</span>
               </div>
             </div>
 
-            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-3 z-30">
+            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 md:gap-3 z-30">
               <button 
                 id="nextBtn"
                 onClick={nextMatch}
-                className="flex-1 max-w-[120px] h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[16px] flex items-center justify-center text-black font-black text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
+                className="flex-[2] max-w-[140px] h-[48px] md:h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[14px] md:rounded-[16px] flex items-center justify-center text-black font-black text-[13px] md:text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
               >
                 Next
               </button>
@@ -444,19 +445,19 @@ const HeroSplit = () => {
                 onClick={likePartner}
                 disabled={isLiked}
                 className={cn(
-                  "w-[50px] h-[50px] backdrop-blur-md rounded-[16px] flex items-center justify-center transition-all hover:scale-110 active:scale-90 border",
+                  "w-[48px] h-[48px] md:w-[50px] md:h-[50px] backdrop-blur-md rounded-[14px] md:rounded-[16px] flex items-center justify-center transition-all hover:scale-110 active:scale-90 border",
                   isLiked 
                     ? "bg-red-500 text-white border-red-500" 
                     : "bg-white/10 text-white/40 hover:text-red-500 border-white/10"
                 )}
                 title="Like Partner"
               >
-                <Heart size={24} fill={isLiked ? "currentColor" : "none"} strokeWidth={2.5} />
+                <Heart size={20} className="md:w-6" fill={isLiked ? "currentColor" : "none"} strokeWidth={2.5} />
               </button>
               <button 
                 id="blockBtn"
                 onClick={blockUser}
-                className="w-[50px] h-[50px] bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-[16px] flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 border border-white/10"
+                className="w-[48px] h-[48px] md:w-[50px] md:h-[50px] bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-[14px] md:rounded-[16px] flex items-center justify-center text-[18px] md:text-[20px] transition-all hover:scale-105 active:scale-95 border border-white/10"
                 title="Block User"
               >
                 🚫
@@ -464,7 +465,7 @@ const HeroSplit = () => {
               <button 
                 id="reportBtn"
                 onClick={reportUser}
-                className="w-[50px] h-[50px] bg-red-600/20 hover:bg-red-600/40 backdrop-blur-md rounded-[16px] flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 border border-red-600/20"
+                className="w-[48px] h-[48px] md:w-[50px] md:h-[50px] bg-red-600/20 hover:bg-red-600/40 backdrop-blur-md rounded-[14px] md:rounded-[16px] flex items-center justify-center text-[18px] md:text-[20px] transition-all hover:scale-105 active:scale-95 border border-red-600/20"
                 title="Report User"
               >
                 🚩
@@ -473,6 +474,7 @@ const HeroSplit = () => {
           </div>
         )}
       </div>
+
       <style jsx>{`
         .mirror {
           transform: scaleX(-1);
