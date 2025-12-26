@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User, Settings, Mail, X, Lock, Zap } from "lucide-react";
+import { Menu, Home, Clock, Heart, MessageSquare, Crown, LogOut, User, Settings, Mail, X, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
@@ -45,7 +45,7 @@ export default function HeaderNavigation() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-3 py-2 md:px-6 md:py-3">
-      {/* Left Section: Auth button and Funkey Logo */}
+      {/* Left Section */}
       <div className="flex items-center gap-2 md:gap-4 shrink-0">
         {user ? (
           <div className="flex items-center gap-1.5 md:gap-2">
@@ -78,7 +78,7 @@ export default function HeaderNavigation() {
         </div>
       </div>
 
-      {/* Center Section: Navigation Icons - Hidden on very small screens */}
+      {/* Center Section - Navigation Icons (hidden on small) */}
       <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center bg-white/10 backdrop-blur-md rounded-full px-1 py-1 border border-white/20">
         {navLinks.map((link) => (
           <Link
@@ -97,13 +97,13 @@ export default function HeaderNavigation() {
         ))}
       </nav>
 
-      {/* Right Section: Crown, Solo/Duo Toggle, Hamburger */}
-        <div className="flex items-center gap-2 md:gap-4 relative shrink-0" ref={menuRef}>
-          <Link href="/premium" className="hidden sm:flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
-            <Crown size={18} fill="currentColor" className="md:w-5 drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
-          </Link>
+      {/* Right Section */}
+      <div className="flex items-center gap-2 md:gap-4 relative shrink-0" ref={menuRef}>
+        <Link href="/premium" className="hidden sm:flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
+          <Crown size={18} fill="currentColor" className="md:w-5 drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
+        </Link>
 
-        {/* Solo/Duo Toggle Switch - Compact on mobile */}
+        {/* Solo/Duo Toggle */}
         <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-9 md:h-10 w-[110px] md:w-[140px] relative">
           <button
             onClick={() => setMode("solo")}
@@ -114,20 +114,20 @@ export default function HeaderNavigation() {
           >
             SOLO
           </button>
-            <button
-              onClick={() => setMode("duo")}
-              className={cn(
-                "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300 relative",
-                mode === "duo" ? "text-black" : "text-white"
-              )}
-            >
-              DUO
-              <UltraPremiumBadge />
-              <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap scale-75 md:scale-100 origin-right">
-                <Lock size={8} strokeWidth={3} />
-                Not yet
-              </span>
-            </button>
+          <button
+            onClick={() => setMode("duo")}
+            className={cn(
+              "flex-1 text-[11px] md:text-[13px] font-bold z-10 transition-colors duration-300 relative",
+              mode === "duo" ? "text-black" : "text-white"
+            )}
+          >
+            DUO
+            <UltraPremiumBadge />
+            <span className="absolute -top-3 -right-2 bg-[#FFFF00] text-black text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 rounded-full border border-black font-black uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-0.5 whitespace-nowrap scale-75 md:scale-100 origin-right">
+              <Lock size={8} strokeWidth={3} />
+              Not yet
+            </span>
+          </button>
           <div
             className={cn(
               "absolute top-1 bottom-1 bg-[#FFFF00] rounded-full transition-all duration-300 ease-in-out",
@@ -147,7 +147,7 @@ export default function HeaderNavigation() {
         {/* Dropdown Menu */}
         {menuOpen && (
           <div className="absolute top-full right-0 mt-3 md:mt-4 w-56 bg-black/90 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden p-2 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
-            {/* Mobile Nav Links (added for better accessibility) */}
+            {/* Mobile Nav Links */}
             <div className="md:hidden grid grid-cols-4 gap-1 mb-2 p-1 bg-white/5 rounded-2xl">
               {navLinks.map((link, idx) => (
                 <Link
@@ -166,25 +166,34 @@ export default function HeaderNavigation() {
                 </Link>
               ))}
             </div>
-            {itemGroups.map((group, gIdx) => (
-               <React.Fragment key={gIdx}>
-                 {group.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#FFFF00] hover:text-black rounded-2xl transition-all font-bold group"
-                  >
-                    <span className="opacity-70 group-hover:opacity-100 transition-opacity">
-                      {item.icon}
-                    </span>
-                    {item.label}
-                  </Link>
-                ))}
-                {gIdx < itemGroups.length - 1 && <div className="h-px bg-white/10 my-2 mx-2" />}
-               </React.Fragment>
+            
+            {menuItems.map((item, idx) => (
+              <Link
+                key={idx}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#FFFF00] hover:text-black rounded-2xl transition-all font-bold group"
+              >
+                <span className="opacity-70 group-hover:opacity-100 transition-opacity">
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
             ))}
-
+            
+            <div className="h-px bg-white/10 my-2 mx-2" />
+            <button
+              onClick={() => {
+                signOut();
+                setMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-bold group"
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
