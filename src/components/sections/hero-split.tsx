@@ -140,7 +140,10 @@ const HeroSplit = () => {
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
       <CursorTrail />
       {/* Left Column: Purple Branding Area */}
-      <div className="flex-[0.6] md:flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-12 md:py-16 px-6 overflow-hidden">
+      <div className={cn(
+        "flex-[0.6] md:flex-1 bg-[#634AF1] relative flex flex-col items-center justify-center py-12 md:py-16 px-6 overflow-hidden transition-all duration-300",
+        status === 'in-call' && "hidden md:flex"
+      )}>
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-10" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
         
         <motion.div
