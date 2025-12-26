@@ -90,6 +90,7 @@ const HeroSplit = () => {
     const [onlineCount, setOnlineCount] = useState(63267);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isSparkleRain, setIsSparkleRain] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
   
     // 3D Tilt Values
     const x = useMotionValue(0);
