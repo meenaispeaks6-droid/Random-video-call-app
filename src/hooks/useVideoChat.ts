@@ -15,7 +15,14 @@ const ICE_SERVERS = {
 export const useVideoChat = () => {
   const { user: authUser } = useAuth();
   const supabase = createClient();
-  const [userId] = useState(() => authUser?.id || `user_${Math.random().toString(36).substr(2, 9)}`);
+  const [userId, setUserId] = useState<string>(() => authUser?.id || `user_${Math.random().toString(36).substr(2, 9)}`);
+  
+  useEffect(() => {
+    if (authUser?.id) {
+      setUserId(authUser.id);
+    }
+  }, [authUser?.id]);
+
   const [status, setStatus] = useState<'idle' | 'waiting' | 'in-call'>('idle');
   const [partnerId, setPartnerId] = useState<string | null>(null);
   const [matchId, setMatchId] = useState<string | null>(null);
