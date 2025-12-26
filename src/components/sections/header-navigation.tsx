@@ -45,7 +45,6 @@ export default function HeaderNavigation() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-3 py-2 md:px-6 md:py-3">
-      {/* Left Section */}
       <div className="flex items-center gap-2 md:gap-4 shrink-0">
         {user ? (
           <div className="flex items-center gap-1.5 md:gap-2">
@@ -78,7 +77,6 @@ export default function HeaderNavigation() {
         </div>
       </div>
 
-      {/* Center Section - Navigation Icons (hidden on small) */}
       <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center bg-white/10 backdrop-blur-md rounded-full px-1 py-1 border border-white/20">
         {navLinks.map((link) => (
           <Link
@@ -97,13 +95,11 @@ export default function HeaderNavigation() {
         ))}
       </nav>
 
-      {/* Right Section */}
       <div className="flex items-center gap-2 md:gap-4 relative shrink-0" ref={menuRef}>
         <Link href="/premium" className="hidden sm:flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-[#FFE07D]/50 text-[#FFE07D] cursor-pointer hover:bg-white/10 relative group">
           <Crown size={18} fill="currentColor" className="md:w-5 drop-shadow-[0_0_8px_rgba(255,224,125,0.4)] group-hover:scale-110 transition-transform animate-bounce-slow" />
         </Link>
 
-        {/* Solo/Duo Toggle */}
         <div className="flex bg-black/40 backdrop-blur-sm rounded-full p-1 border border-white/20 h-9 md:h-10 w-[110px] md:w-[140px] relative">
           <button
             onClick={() => setMode("solo")}
@@ -144,10 +140,8 @@ export default function HeaderNavigation() {
           {menuOpen ? <X size={28} className="md:w-8" strokeWidth={2.5} /> : <Menu size={28} className="md:w-8" strokeWidth={2.5} />}
         </button>
 
-        {/* Dropdown Menu */}
         {menuOpen && (
           <div className="absolute top-full right-0 mt-3 md:mt-4 w-56 bg-black/90 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden p-2 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
-            {/* Mobile Nav Links */}
             <div className="md:hidden grid grid-cols-4 gap-1 mb-2 p-1 bg-white/5 rounded-2xl">
               {navLinks.map((link, idx) => (
                 <Link
@@ -166,7 +160,6 @@ export default function HeaderNavigation() {
                 </Link>
               ))}
             </div>
-            
             {menuItems.map((item, idx) => (
               <Link
                 key={idx}
@@ -180,7 +173,6 @@ export default function HeaderNavigation() {
                 {item.label}
               </Link>
             ))}
-            
             <div className="h-px bg-white/10 my-2 mx-2" />
             <button
               onClick={() => {
