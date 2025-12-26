@@ -298,8 +298,12 @@ const HeroSplit = () => {
       </div>
 
       {/* Right Column: Video Chat Area */}
-      <div className="flex-1 bg-[#0B032D] relative flex flex-col items-center justify-center py-12 md:py-16 px-6">
-        {status === 'idle' || status === 'waiting' ? (
+        <div className={cn(
+          "flex-1 bg-[#0B032D] relative flex flex-col items-center justify-center py-12 md:py-16 px-6",
+          isFullscreen && status === 'in-call' && "fixed inset-0 z-[100] p-0"
+        )}>
+          {status === 'idle' || status === 'waiting' ? (
+
           <>
             <div className="flex flex-col items-center text-center space-y-2 mb-8 md:mb-12">
               <div className="flex items-center gap-2 text-white/90 text-[16px] md:text-[18px] font-semibold">
