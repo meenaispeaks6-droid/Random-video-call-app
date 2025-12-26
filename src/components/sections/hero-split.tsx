@@ -438,16 +438,24 @@ const HeroSplit = () => {
               </div>
             </div>
 
-            <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 md:gap-3 z-30">
-              <button 
-                id="nextBtn"
-                onClick={nextMatch}
-                className="flex-[2] max-w-[140px] h-[48px] md:h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[14px] md:rounded-[16px] flex items-center justify-center text-black font-black text-[13px] md:text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
-              >
-                Next
-              </button>
-              <button 
-                onClick={likePartner}
+              <div className="absolute bottom-6 inset-x-0 px-4 flex justify-center gap-2 md:gap-3 z-30">
+                <button 
+                  id="nextBtn"
+                  onClick={nextMatch}
+                  className="flex-[2] max-w-[140px] h-[48px] md:h-[50px] bg-[#FFFF00] hover:bg-[#e6e600] rounded-[14px] md:rounded-[16px] flex items-center justify-center text-black font-black text-[13px] md:text-[14px] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl"
+                >
+                  Next
+                </button>
+                <button 
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className="w-[48px] h-[48px] md:w-[50px] md:h-[50px] bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-[14px] md:rounded-[16px] flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 border border-white/10"
+                  title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                >
+                  {isFullscreen ? <Minimize size={20} className="md:w-6" /> : <Maximize size={20} className="md:w-6" />}
+                </button>
+                <button 
+                  onClick={likePartner}
+
                 disabled={isLiked}
                 className={cn(
                   "w-[48px] h-[48px] md:w-[50px] md:h-[50px] backdrop-blur-md rounded-[14px] md:rounded-[16px] flex items-center justify-center transition-all hover:scale-110 active:scale-90 border",
