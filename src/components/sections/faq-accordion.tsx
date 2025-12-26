@@ -76,9 +76,9 @@ const FAQAccordion = () => {
   ];
 
   return (
-    <section className="bg-[#634AF1] py-20 px-4 md:py-32">
+    <section className="bg-[#634AF1] py-12 px-4 md:py-32">
       <div className="container max-w-[1000px] mx-auto">
-        <h2 className="text-white text-[32px] md:text-[40px] font-extrabold uppercase text-center mb-12 tracking-tight">
+        <h2 className="text-white text-[28px] md:text-[40px] font-extrabold uppercase text-center mb-8 md:mb-12 tracking-tight">
           FAQs
         </h2>
         
