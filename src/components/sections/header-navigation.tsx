@@ -8,7 +8,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function HeaderNavigation() {
-  const [mode, setMode] = useState<"solo" | "duo">("solo");
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
