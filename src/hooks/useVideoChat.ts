@@ -29,6 +29,7 @@ export const useVideoChat = () => {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [genderFilter, setGenderFilter] = useState<'Both' | 'Male' | 'Female'>('Both');
   const [partnerLocation, setPartnerLocation] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<string | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isMutualMatch, setIsMutualMatch] = useState(false);
 
