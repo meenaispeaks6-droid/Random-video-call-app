@@ -511,6 +511,8 @@ export const useVideoChat = () => {
     remoteVideoRef,
     likePartner,
     isLiked,
-    isMutualMatch
+    isMutualMatch,
+    hasFilterAccess,
+    filterExpiry
   };
 };
