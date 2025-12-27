@@ -464,6 +464,7 @@ export const useVideoChat = () => {
     status,
     partnerId,
     partnerLocation,
+    userLocation,
     localStream,
     remoteStream,
     startMatchmaking: findMatch,
