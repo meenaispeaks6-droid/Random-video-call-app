@@ -47,7 +47,7 @@ export const useVideoChat = () => {
     const checkAccess = async () => {
       if (!userId) return;
       const { data } = await supabase
-        .from('profiles')
+        .from('online_users')
         .select('filter_expiry')
         .eq('id', userId)
         .single();
