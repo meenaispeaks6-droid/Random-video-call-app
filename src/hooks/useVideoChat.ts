@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { db } from '@/lib/firebase';
-import { ref, onValue, set, push, onChildAdded, remove, update, get, runTransaction, Unsubscribe } from 'firebase/database';
-import { useAuth } from './useAuth';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from './useAuth';
 
 const ICE_SERVERS = {
   iceServers: [
@@ -36,16 +34,10 @@ export const useVideoChat = () => {
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const unsubsRef = useRef<Unsubscribe[]>([]);
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
-
-  const cleanupListeners = useCallback(() => {
-    console.log("Cleaning up listeners...", unsubsRef.current.length);
-    unsubsRef.current.forEach(unsub => unsub());
-    unsubsRef.current = [];
-  }, []);
+  const signalChannelRef = useRef<any>(null);
 
   const cleanupCall = useCallback(async (informPartner = true) => {
     console.log("Cleaning up call, informPartner:", informPartner);
@@ -53,45 +45,46 @@ export const useVideoChat = () => {
     const currentPartnerId = partnerId;
     const currentMatchId = matchId;
 
-    cleanupListeners();
+    if (signalChannelRef.current) {
+      supabase.removeChannel(signalChannelRef.current);
+      signalChannelRef.current = null;
+    }
 
     if (pcRef.current) {
       pcRef.current.close();
       pcRef.current = null;
     }
 
-    if (currentMatchId && db && isInitiator) {
+    if (currentMatchId && isInitiator) {
       try {
-        await remove(ref(db, `signals/${currentMatchId}`));
+        await supabase.from('signals').delete().eq('match_id', currentMatchId);
       } catch (e) {
         console.error("Failed to remove signals", e);
       }
     }
 
-    if (informPartner && currentPartnerId && db) {
+    if (informPartner && currentPartnerId) {
       try {
-        await update(ref(db, `onlineUsers/${currentPartnerId}`), {
+        await supabase.from('online_users').update({
           status: 'waiting',
-          matchId: null,
-          partnerId: null,
-          isInitiator: false
-        });
+          match_id: null,
+          partner_id: null,
+          is_initiator: false
+        }).eq('id', currentPartnerId);
       } catch (e) {
         console.error("Failed to reset partner status", e);
       }
     }
 
-    if (db) {
-      try {
-        await update(ref(db, `onlineUsers/${userId}`), {
-          status: 'waiting',
-          matchId: null,
-          partnerId: null,
-          isInitiator: false
-        });
-      } catch (e) {
-        console.error("Failed to reset own status", e);
-      }
+    try {
+      await supabase.from('online_users').update({
+        status: 'waiting',
+        match_id: null,
+        partner_id: null,
+        is_initiator: false
+      }).eq('id', userId);
+    } catch (e) {
+      console.error("Failed to reset own status", e);
     }
 
     setPartnerId(null);
@@ -102,7 +95,7 @@ export const useVideoChat = () => {
     setIsLiked(false);
     setIsMutualMatch(false);
     iceQueueRef.current = [];
-  }, [userId, cleanupListeners, partnerId, matchId, isInitiator]);
+  }, [userId, partnerId, matchId, isInitiator, supabase]);
 
   const findMatch = useCallback(async () => {
     if (status === 'in-call') return;
@@ -123,83 +116,82 @@ export const useVideoChat = () => {
       }
     }
 
-    if (!db) {
-      console.warn("Firebase Database not initialized");
-      return;
+    // 1. Get current location (mocked or actual if possible)
+    let country = "Unknown";
+    let city = "Unknown";
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      country = data.country_name || "Unknown";
+      city = data.city || "Unknown";
+    } catch (e) {
+      console.error("Location detection failed", e);
     }
 
-    const userRef = ref(db, `onlineUsers/${userId}`);
-    
-    const selfSnap = await get(userRef);
-    if (selfSnap.val()?.status === 'in-call') return;
-
-    await update(userRef, { 
-      status: "waiting", 
-      matchId: null, 
-      partnerId: null,
-      isInitiator: false,
-      lastActive: Date.now() 
+    // 2. Set self as waiting
+    await supabase.from('online_users').upsert({
+      id: userId,
+      status: 'waiting',
+      country,
+      city,
+      gender: genderFilter,
+      last_active: new Date().toISOString()
     });
 
-    const snap = await get(ref(db, "onlineUsers"));
-    const users = snap.val() || {};
+    // 3. Find candidates
+    const { data: candidates, error } = await supabase
+      .from('online_users')
+      .select('*')
+      .eq('status', 'waiting')
+      .neq('id', userId)
+      .limit(10);
 
-    const now = Date.now();
-    const candidates = Object.keys(users).filter(id =>
-      id !== userId && 
-      users[id].status === "waiting" &&
-      (genderFilter === 'Both' || users[id].gender === genderFilter) &&
-      (now - (users[id].lastActive || 0) < 60000)
-    );
-
-    if (candidates.length === 0) {
+    if (error || !candidates || candidates.length === 0) {
       console.log("No candidates found.");
       return;
     }
 
-    const targetId = candidates[Math.floor(Math.random() * candidates.length)];
-    const newMatchId = `match_${[userId, targetId].sort().join('_')}`;
-    const actuallyInitiator = userId < targetId;
+    // 4. Implement 50/50 Match Ratio Rule (Simplified: Pick random for now, could be improved)
+    const target = candidates[Math.floor(Math.random() * candidates.length)];
+    const newMatchId = `match_${[userId, target.id].sort().join('_')}`;
+    const actuallyInitiator = userId < target.id;
 
-    const targetRef = ref(db, `onlineUsers/${targetId}`);
-    try {
-      const result = await runTransaction(targetRef, (currentData) => {
-        if (currentData && currentData.status === "waiting") {
-          currentData.status = "in-call";
-          currentData.matchId = newMatchId;
-          currentData.partnerId = userId;
-          currentData.isInitiator = !actuallyInitiator;
-          return currentData;
-        }
-        return undefined;
-      });
+    // 5. Try to claim the partner
+    const { data: updatedTarget, error: updateError } = await supabase
+      .from('online_users')
+      .update({
+        status: 'in-call',
+        match_id: newMatchId,
+        partner_id: userId,
+        is_initiator: !actuallyInitiator
+      })
+      .eq('id', target.id)
+      .eq('status', 'waiting')
+      .select()
+      .single();
 
-      if (result.committed) {
-        console.log("Transaction success, matched with:", targetId);
-        await update(userRef, { 
-          status: "in-call", 
-          matchId: newMatchId, 
-          partnerId: targetId,
-          isInitiator: actuallyInitiator 
-        });
-        setMatchId(newMatchId);
-        setPartnerId(targetId);
-        setIsInitiator(actuallyInitiator);
-        setStatus('in-call');
-      } else {
-        console.log("Transaction failed (race), retrying search...");
-        setTimeout(findMatch, 1000);
-      }
-    } catch (e) {
-      console.error("Transaction error", e);
+    if (updatedTarget) {
+      console.log("Matched with:", target.id);
+      await supabase.from('online_users').update({
+        status: 'in-call',
+        match_id: newMatchId,
+        partner_id: target.id,
+        is_initiator: actuallyInitiator
+      }).eq('id', userId);
+
+      setMatchId(newMatchId);
+      setPartnerId(target.id);
+      setIsInitiator(actuallyInitiator);
+      setStatus('in-call');
+    } else {
+      console.log("Partner taken or update failed, retrying...");
       setTimeout(findMatch, 2000);
     }
-  }, [userId, genderFilter, status]);
+  }, [userId, genderFilter, status, supabase]);
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string, initiator: boolean) => {
     console.log("Setting up WebRTC for match:", mId, "Initiator:", initiator);
     
-    cleanupListeners();
     if (pcRef.current) {
       pcRef.current.close();
     }
@@ -219,126 +211,138 @@ export const useVideoChat = () => {
       setRemoteStream(e.streams[0]);
     };
 
-    pc.onicecandidate = (e) => {
-      if (e.candidate && db) {
-        push(ref(db, `signals/${mId}/iceCandidates`), {
-          candidate: e.candidate.toJSON(),
-          senderId: userId
+    pc.onicecandidate = async (e) => {
+      if (e.candidate) {
+        await supabase.from('signals').insert({
+          match_id: mId,
+          sender_id: userId,
+          type: 'ice-candidate',
+          payload: e.candidate.toJSON()
         });
       }
     };
 
     pc.oniceconnectionstatechange = () => {
-      console.log("ICE State:", pc.iceConnectionState);
       if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
         cleanupCall(false);
       }
     };
 
-    if (!db) return;
+    // Listen for signals via Realtime
+    const channel = supabase
+      .channel(`signals:${mId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'signals',
+          filter: `match_id=eq.${mId}`
+        },
+        async (payload) => {
+          const data = payload.new;
+          if (data.sender_id === userId) return;
 
-    if (initiator) {
-      await remove(ref(db, `signals/${mId}`));
-    }
-
-    const iceRef = ref(db, `signals/${mId}/iceCandidates`);
-    const unsubIce = onChildAdded(iceRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.senderId !== userId) {
-        const candidate = new RTCIceCandidate(data.candidate);
-        if (pc.remoteDescription && pc.remoteDescription.type) {
-          pc.addIceCandidate(candidate).catch(e => console.warn("Add ICE failed", e));
-        } else {
-          iceQueueRef.current.push(data.candidate);
+          if (data.type === 'offer' && !initiator) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.payload));
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await supabase.from('signals').insert({
+              match_id: mId,
+              sender_id: userId,
+              type: 'answer',
+              payload: { type: answer.type, sdp: answer.sdp }
+            });
+            // Process queued candidates
+            while (iceQueueRef.current.length > 0) {
+              const cand = iceQueueRef.current.shift();
+              await pc.addIceCandidate(new RTCIceCandidate(cand!));
+            }
+          } else if (data.type === 'answer' && initiator) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.payload));
+            // Process queued candidates
+            while (iceQueueRef.current.length > 0) {
+              const cand = iceQueueRef.current.shift();
+              await pc.addIceCandidate(new RTCIceCandidate(cand!));
+            }
+          } else if (data.type === 'ice-candidate') {
+            const candidate = new RTCIceCandidate(data.payload);
+            if (pc.remoteDescription && pc.remoteDescription.type) {
+              await pc.addIceCandidate(candidate);
+            } else {
+              iceQueueRef.current.push(data.payload);
+            }
+          }
         }
-      }
-    });
-    unsubsRef.current.push(unsubIce);
+      )
+      .subscribe();
+
+    signalChannelRef.current = channel;
 
     if (initiator) {
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      await set(ref(db, `signals/${mId}/offer`), {
-        type: offer.type,
-        sdp: offer.sdp,
-        senderId: userId
+      await supabase.from('signals').insert({
+        match_id: mId,
+        sender_id: userId,
+        type: 'offer',
+        payload: { type: offer.type, sdp: offer.sdp }
       });
-
-      const answerRef = ref(db, `signals/${mId}/answer`);
-      const unsubAnswer = onValue(answerRef, async (snap) => {
-        const data = snap.val();
-        if (data && data.senderId !== userId && pc.signalingState === 'have-local-offer') {
-          await pc.setRemoteDescription(new RTCSessionDescription(data));
-          while (iceQueueRef.current.length > 0) {
-            const cand = iceQueueRef.current.shift();
-            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(e => console.warn("Add queued ICE failed", e));
-          }
-        }
-      });
-      unsubsRef.current.push(unsubAnswer);
-    } else {
-      const offerRef = ref(db, `signals/${mId}/offer`);
-      const unsubOffer = onValue(offerRef, async (snap) => {
-        const data = snap.val();
-        if (data && data.senderId !== userId && pc.signalingState === 'stable') {
-          await pc.setRemoteDescription(new RTCSessionDescription(data));
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
-          await set(ref(db, `signals/${mId}/answer`), {
-            type: answer.type,
-            sdp: answer.sdp,
-            senderId: userId
-          });
-          while (iceQueueRef.current.length > 0) {
-            const cand = iceQueueRef.current.shift();
-            pc.addIceCandidate(new RTCIceCandidate(cand!)).catch(e => console.warn("Add queued ICE failed", e));
-          }
-        }
-      });
-      unsubsRef.current.push(unsubOffer);
     }
-  }, [userId, cleanupCall, cleanupListeners]);
+  }, [userId, cleanupCall, supabase]);
 
   useEffect(() => {
-    if (!db) return;
-    const userRef = ref(db, `onlineUsers/${userId}`);
+    const userRef = userId;
     const updatePresence = async () => {
       try {
-        await update(userRef, {
-          lastActive: Date.now(),
+        await supabase.from('online_users').update({
+          last_active: new Date().toISOString(),
           gender: genderFilter,
-          location: "Global",
-          ...(status !== 'in-call' ? { status: status === 'waiting' ? 'waiting' : 'idle' } : {})
-        });
+        }).eq('id', userRef);
       } catch (e) {
         console.error("Presence update failed", e);
       }
     };
-    updatePresence();
+
     const interval = setInterval(updatePresence, 10000);
-    const unsubStatus = onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.status === 'in-call' && data.partnerId && data.matchId) {
-        if (status !== 'in-call') {
-          setPartnerId(data.partnerId);
-          setMatchId(data.matchId);
-          setIsInitiator(!!data.isInitiator);
-          setStatus('in-call');
+
+    // Subscribe to self for status changes (e.g. if someone matches us)
+    const channel = supabase
+      .channel(`user:${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'online_users',
+          filter: `id=eq.${userId}`
+        },
+        (payload) => {
+          const data = payload.new;
+          if (data.status === 'in-call' && data.partner_id && data.match_id) {
+            if (status !== 'in-call') {
+              setPartnerId(data.partner_id);
+              setMatchId(data.match_id);
+              setIsInitiator(!!data.is_initiator);
+              setStatus('in-call');
+            }
+          } else if (data.status === 'waiting' && status === 'in-call') {
+            cleanupCall(false);
+          }
         }
-      } else if (data && data.status === 'waiting' && status === 'in-call') {
-        cleanupCall(false);
-      }
-    });
+      )
+      .subscribe();
+
     return () => {
       clearInterval(interval);
-      unsubStatus();
-      remove(userRef).catch(() => {});
+      supabase.removeChannel(channel);
+      supabase.from('online_users').delete().eq('id', userId).then(() => {});
     };
-  }, [userId, status, genderFilter, cleanupCall]);
+  }, [userId, status, genderFilter, cleanupCall, supabase]);
 
   useEffect(() => {
     if (status === 'waiting' && !partnerId) {
-      const interval = setInterval(() => findMatch(), 4000);
+      const interval = setInterval(() => findMatch(), 5000);
       return () => clearInterval(interval);
     }
   }, [status, partnerId, findMatch]);
@@ -368,21 +372,18 @@ export const useVideoChat = () => {
 
   const applyGenderFilter = (gender: 'Both' | 'Male' | 'Female') => {
     setGenderFilter(gender);
-    if (db) {
-      update(ref(db, "onlineUsers/" + userId), { gender });
-    }
+    supabase.from('online_users').update({ gender }).eq('id', userId);
   };
 
   useEffect(() => {
-    if (status === 'in-call' && partnerId && db) {
-      get(ref(db, `onlineUsers/${partnerId}`)).then(snap => {
-        const data = snap.val();
-        if (data) setPartnerLocation(data.location || "Earth");
+    if (status === 'in-call' && partnerId) {
+      supabase.from('online_users').select('country, city').eq('id', partnerId).single().then(({ data }) => {
+        if (data) setPartnerLocation(`${data.country}, ${data.city}`);
       });
     } else {
       setPartnerLocation(null);
     }
-  }, [status, partnerId]);
+  }, [status, partnerId, supabase]);
 
   const likePartner = async () => {
     if (!partnerId || !userId || isLiked) return;
@@ -390,26 +391,37 @@ export const useVideoChat = () => {
     setIsLiked(true);
     
     try {
-      // 1. Record like in Supabase
       await supabase.from('likes').upsert({ user_id: userId, target_id: partnerId });
       
-      // 2. Check if partner liked us
       const { data: partnerLike } = await supabase
         .from('likes')
         .select('*')
         .eq('user_id', partnerId)
         .eq('target_id', userId)
         .single();
-        
+          
       if (partnerLike) {
         setIsMutualMatch(true);
-        // 3. Record friendship
         const [u1, u2] = [userId, partnerId].sort();
         await supabase.from('friends').upsert({ user_1: u1, user_2: u2 });
       }
     } catch (e) {
       console.error("Failed to like partner", e);
     }
+  };
+
+  const blockUser = async () => {
+    if (!partnerId) return;
+    await supabase.from('online_users').delete().eq('id', partnerId);
+    nextMatch();
+  };
+
+  const reportUser = async () => {
+    if (!partnerId) return;
+    // Log report flag (simplified)
+    console.log("Reporting user:", partnerId);
+    await supabase.from('online_users').delete().eq('id', partnerId);
+    nextMatch();
   };
 
   return {
@@ -421,8 +433,8 @@ export const useVideoChat = () => {
     remoteStream,
     startMatchmaking: findMatch,
     nextMatch,
-    blockUser: nextMatch,
-    reportUser: nextMatch,
+    blockUser,
+    reportUser,
     genderFilter,
     setGenderFilter: applyGenderFilter,
     localVideoRef,
