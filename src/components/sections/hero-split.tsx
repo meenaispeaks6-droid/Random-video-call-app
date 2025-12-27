@@ -129,7 +129,7 @@ const HeroSplit = () => {
         .from('online_users')
         .select('*', { count: 'exact', head: true });
       if (count !== null) {
-        setOnlineCount(count + 60000);
+        setOnlineCount(count);
       }
     };
     
