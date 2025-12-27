@@ -24,16 +24,6 @@ export default function RootLayout({
           data-orchids-project-id="610e6ab9-8fc7-4045-aecf-ae5bd0f9a94d"
         />
         <ErrorReporter />
-        <Script
-          src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
-          strategy="afterInteractive"
-          data-target-origin="*"
-          data-message-type="ROUTE_CHANGE"
-          data-include-search-params="true"
-          data-only-in-iframe="true"
-          data-debug="true"
-          data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
-        />
         {children}
         <VisualEditsMessenger />
       </body>
