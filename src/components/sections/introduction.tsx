@@ -45,7 +45,7 @@ const Introduction = () => {
                     <span className="text-[#FFFF00]">#1</span> Random Video Chat Platform
                   </h3>
                   <p className="text-white/85 text-base md:text-[16px] leading-[1.6] font-normal">
-                    Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally.
+                    MojCall is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally.
                   </p>
                 </div>
              </div>
@@ -99,7 +99,7 @@ const Introduction = () => {
                 <span className="text-[#FFFF00]">#1</span> Random Video Chat Platform
               </h3>
               <p className="text-white/85 text-[15px] md:text-base leading-relaxed font-normal">
-                Funkey is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience Funkey's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser.
+                MojCall is the premier platform for live video chat, seamlessly connecting you with new people both locally and globally. Experience MojCall's real-time surprises, authentic excitement, and meaningful interactions on any device or web browser.
               </p>
             </motion.div>
 
@@ -114,7 +114,7 @@ const Introduction = () => {
                 <span className="text-[#FFFF00]">✨</span> Premium Video Chat Experience
               </h3>
               <p className="text-white/85 text-[15px] md:text-base leading-relaxed font-normal">
-                Funkey lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s the perfect platform for those who enjoy spontaneous chats or want to talk to strangers in a safe environment.
+                MojCall lets you experience the thrill of random video chat - connecting with new people worldwide in real time. It&apos;s the perfect platform for those who enjoy spontaneous chats or want to talk to strangers in a safe environment.
               </p>
             </motion.div>
           </div>
@@ -145,7 +145,7 @@ const Introduction = () => {
               >
                 <Image 
                   src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/Gemini_Generated_Image_6fothz6fothz6fot-resized-1766684312919.webp?width=8000&height=8000&resize=contain"
-                  alt="Funkey App Preview"
+                  alt="MojCall App Preview"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                   priority

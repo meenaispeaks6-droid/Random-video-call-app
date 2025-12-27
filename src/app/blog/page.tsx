@@ -6,29 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Funkey Blog | Trends in Random Video Chat & Social Discovery",
-  description: "Stay updated with the latest trends in random video chat, safety tips, and why Funkey is the #1 choice for meeting strangers online.",
-  keywords: ["video chat trends", "random video chat safety", "social discovery", "Funkey blog", "Monkey app news"],
+  title: "MojCall Blog | Trends in Random Video Chat & Social Discovery",
+  description: "Stay updated with the latest trends in random video chat, safety tips, and why MojCall is the #1 choice for meeting strangers online.",
+  keywords: ["video chat trends", "random video chat safety", "social discovery", "MojCall blog", "Monkey app news"],
 };
 
 const blogPosts = [
   {
-    title: "Why Funkey is the Best Monkey App Alternative in 2024",
-    excerpt: "With Monkey app's changing landscape, discover why Gen-Z is flocking to Funkey for instant, safe, and fun random video matches.",
+    title: "Why MojCall is the Best Monkey App Alternative in 2024",
+    excerpt: "With Monkey app's changing landscape, discover why Gen-Z is flocking to MojCall for instant, safe, and fun random video matches.",
     category: "Trends",
     date: "May 15, 2024",
     slug: "monkey-app-alternative-2024"
   },
   {
     title: "Omegle Shut Down? Here's Where Everyone is Chatting Now",
-    excerpt: "The end of an era for Omegle has led to a new beginning for social discovery. Learn why Funkey is the top Omegle replacement.",
+    excerpt: "The end of an era for Omegle has led to a new beginning for social discovery. Learn why MojCall is the top Omegle replacement.",
     category: "News",
     date: "May 10, 2024",
     slug: "omegle-replacement-news"
   },
   {
-    title: "Safe Random Video Chat: How Funkey Protects Its Community",
-    excerpt: "Safety is our priority. Explore the advanced moderation and reporting tools that make Funkey the safest place for stranger cam chat.",
+    title: "Safe Random Video Chat: How MojCall Protects Its Community",
+    excerpt: "Safety is our priority. Explore the advanced moderation and reporting tools that make MojCall the safest place for stranger cam chat.",
     category: "Safety",
     date: "May 05, 2024",
     slug: "safe-random-video-chat"
@@ -41,7 +41,7 @@ const blogPosts = [
     slug: "psychology-of-random-connections"
   },
   {
-    title: "5 Tips for Your First Random Video Call on Funkey",
+    title: "5 Tips for Your First Random Video Call on MojCall",
     excerpt: "New to the scene? Here are 5 expert tips to have the best experience and make meaningful connections on your first call.",
     category: "Guides",
     date: "April 20, 2024",
@@ -95,10 +95,10 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-white text-3xl md:text-4xl font-black uppercase tracking-tighter mb-6">
-                Funkey <span className="text-yellow-400">vs</span> The Rest
+                MojCall <span className="text-yellow-400">vs</span> The Rest
               </h2>
               <p className="text-white/70 mb-8 leading-relaxed">
-                Why settle for outdated platforms? Funkey balances speed, safety, and engagement to provide a 50/50 split of thrill and security that other alternatives simply can't match.
+                Why settle for outdated platforms? MojCall balances speed, safety, and engagement to provide a 50/50 split of thrill and security that other alternatives simply can't match.
               </p>
               <div className="space-y-4">
                 {[

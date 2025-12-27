@@ -126,7 +126,7 @@ function SuccessMessage() {
       </motion.div>
       <h3 className="text-2xl font-bold text-white mb-3">Welcome to Premium!</h3>
       <p className="text-white/70 mb-8 max-w-sm mx-auto">
-        Your premium features are now active. Enjoy the full Funkey experience!
+        Your premium features are now active. Enjoy the full MojCall experience!
       </p>
       <Link
         href="/"
@@ -233,7 +233,7 @@ export default function PremiumPage() {
                   Go <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500">Premium</span>
                 </h1>
                 <p className="text-white/60 text-lg max-w-lg mx-auto">
-                  Take your Funkey experience to the next level with exclusive features
+                  Take your MojCall experience to the next level with exclusive features
                 </p>
               </div>
 
@@ -347,7 +347,7 @@ export default function PremiumPage() {
               <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h2 className="text-xl font-bold text-white">Funkey Premium</h2>
+                    <h2 className="text-xl font-bold text-white">MojCall Premium</h2>
                     <p className="text-white/50 text-sm">Monthly subscription</p>
                   </div>
                   <div className="text-right">

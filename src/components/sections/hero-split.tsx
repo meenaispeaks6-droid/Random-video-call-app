@@ -286,7 +286,7 @@ const HeroSplit = () => {
             style={{ transform: "translateZ(50px)" }}
           >
             <h1 className="text-white text-[48px] md:text-[80px] font-[950] tracking-tighter uppercase leading-[0.9] mb-4 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] select-none bg-gradient-to-r from-white via-yellow-200 to-white bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent">
-              Funkey<span className="text-[#FFFF00]">.</span>
+              MojCall<span className="text-[#FFFF00]">.</span>
             </h1>
           </motion.div>
           
