@@ -1,56 +1,29 @@
 import type { Metadata } from "next";
 import HeaderNavigation from "@/components/sections/header-navigation";
 import FooterDownload from "@/components/sections/footer-download";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { blogPosts } from "@/lib/blog-data";
 
 export const metadata: Metadata = {
-  title: "Funkey Blog | Trends in Random Video Chat & Social Discovery",
-  description: "Stay updated with the latest trends in random video chat, safety tips, and why Funkey is the #1 choice for meeting strangers online.",
-  keywords: ["video chat trends", "random video chat safety", "social discovery", "Funkey blog", "Monkey app news"],
+  title: "Funkey Blog | Random Video Call, Live Stranger Chat & Omegle Alternatives",
+  description: "Explore India ka fastest random video chat experience. Monkey app jaisa experience with stranger video calls, safety tips, and meeting new people online.",
+  keywords: [
+    "random video call",
+    "live stranger chat",
+    "meet new people online",
+    "monkey app jaisa experience",
+    "omegle ka best alternative",
+    "India ka fastest random video chat",
+    "monkey app alternative",
+    "stranger video chat"
+  ],
 };
-
-const blogPosts = [
-  {
-    title: "Why Funkey is the Best Monkey App Alternative in 2024",
-    excerpt: "With Monkey app's changing landscape, discover why Gen-Z is flocking to Funkey for instant, safe, and fun random video matches.",
-    category: "Trends",
-    date: "May 15, 2024",
-    slug: "monkey-app-alternative-2024"
-  },
-  {
-    title: "Omegle Shut Down? Here's Where Everyone is Chatting Now",
-    excerpt: "The end of an era for Omegle has led to a new beginning for social discovery. Learn why Funkey is the top Omegle replacement.",
-    category: "News",
-    date: "May 10, 2024",
-    slug: "omegle-replacement-news"
-  },
-  {
-    title: "Safe Random Video Chat: How Funkey Protects Its Community",
-    excerpt: "Safety is our priority. Explore the advanced moderation and reporting tools that make Funkey the safest place for stranger cam chat.",
-    category: "Safety",
-    date: "May 05, 2024",
-    slug: "safe-random-video-chat"
-  },
-  {
-    title: "The Science of Random Connections",
-    excerpt: "Why do we love talking to strangers? We dive into the psychology of random video calls and the thrill of social discovery.",
-    category: "Psychology",
-    date: "April 28, 2024",
-    slug: "psychology-of-random-connections"
-  },
-  {
-    title: "5 Tips for Your First Random Video Call on Funkey",
-    excerpt: "New to the scene? Here are 5 expert tips to have the best experience and make meaningful connections on your first call.",
-    category: "Guides",
-    date: "April 20, 2024",
-    slug: "video-chat-tips"
-  }
-];
 
 export default function BlogPage() {
   return (
+
     <main className="min-h-screen bg-brand-purple">
       <HeaderNavigation />
       
