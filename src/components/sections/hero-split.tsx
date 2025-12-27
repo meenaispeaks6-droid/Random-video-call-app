@@ -356,20 +356,50 @@ const HeroSplit = () => {
                 </div>
               )}
               
-              <Magnetic>
-                <button 
-                  onClick={() => {
-                    const next = genderFilter === 'Both' ? 'Male' : genderFilter === 'Male' ? 'Female' : 'Both';
-                    setGenderFilter(next);
-                  }}
-                  className="w-full h-[56px] md:h-[64px] bg-[#1C1243] hover:bg-[#251955] border border-white/10 rounded-[16px] md:rounded-[20px] flex items-center justify-center gap-3 transition-colors active:scale-95 group"
-                >
-                  <span className="text-xl md:text-2xl">
-                    {genderFilter === 'Both' ? '👨‍👩‍👦' : genderFilter === 'Male' ? '👨' : '👩'}
-                  </span>
-                  <span className="text-white font-bold text-base md:text-lg">{genderFilter}</span>
-                </button>
-              </Magnetic>
+                <Magnetic>
+                  <div className="relative group/filter">
+                    <button 
+                      onClick={() => {
+                        if (hasFilterAccess) {
+                          const next = genderFilter === 'Both' ? 'Male' : genderFilter === 'Male' ? 'Female' : 'Both';
+                          setGenderFilter(next);
+                        } else {
+                          setIsAdsModalOpen(true);
+                        }
+                      }}
+                      className={cn(
+                        "w-full h-[56px] md:h-[64px] rounded-[16px] md:rounded-[20px] flex items-center justify-center gap-3 transition-all active:scale-95 border",
+                        hasFilterAccess 
+                          ? "bg-[#1C1243] border-yellow-400/50 hover:bg-[#251955]" 
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      )}
+                    >
+                      <span className="text-xl md:text-2xl">
+                        {genderFilter === 'Both' ? '👨‍👩‍👦' : genderFilter === 'Male' ? '👨' : '👩'}
+                      </span>
+                      <div className="flex flex-col items-start">
+                        <span className="text-white font-bold text-base md:text-lg">{genderFilter}</span>
+                        {!hasFilterAccess && (
+                          <span className="text-yellow-400 text-[10px] font-black uppercase tracking-tighter flex items-center gap-1">
+                            <Zap size={8} className="fill-yellow-400" /> Unlock with Ads
+                          </span>
+                        )}
+                        {timeRemaining && (
+                          <span className="text-green-400 text-[10px] font-black uppercase tracking-tighter flex items-center gap-1">
+                            <Timer size={8} /> {timeRemaining} left
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                    
+                    {!hasFilterAccess && (
+                      <div className="absolute -top-3 -right-2 bg-yellow-400 text-black text-[10px] font-black px-2 py-0.5 rounded-full rotate-12 shadow-xl border-2 border-[#0B032D]">
+                        ADS
+                      </div>
+                    )}
+                  </div>
+                </Magnetic>
+
 
               <Magnetic>
                   <button 
