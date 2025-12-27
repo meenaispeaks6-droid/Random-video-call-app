@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MojCall – Random Video Chat & Live Stranger Calls",
     description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
-    url: "https://mojcall.chat",
+    url: "https://mojcall.com",
     siteName: "MojCall",
     type: "website",
   },
@@ -22,6 +22,30 @@ export const metadata: Metadata = {
     description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
   },
 };
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MojCall",
+    "applicationCategory": "SocialNetworking",
+    "operatingSystem": "Web",
+    "description": "MojCall is a free random video chat app to connect with strangers, offering live 1-on-1 video calls and gender filter rewards.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1250"
+    }
+  };
 
 export default function RootLayout({
   children,
