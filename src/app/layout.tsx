@@ -47,30 +47,6 @@ export default function RootLayout({
     }
   };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "MojCall",
-    "applicationCategory": "SocialNetworking",
-    "operatingSystem": "Web",
-    "description": "MojCall is a free random video chat app to connect with strangers, offering live 1-on-1 video calls and global matching.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1250"
-    }
-  };
-
   return (
     <html lang="en">
         <body className="antialiased">
