@@ -5,19 +5,21 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Loader2, User, Globe, Calendar, ArrowRight, Check, VenusAndMars } from "lucide-react";
+import { Loader2, User, Globe, Calendar, ArrowRight, Check, VenusAndMars, Camera, Upload } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [uploading, setUploading] = useState(false);
   
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
     age: "",
     country: "",
+    avatar_url: "",
   });
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function ProfilePage() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("name, gender, age, country")
+        .select("name, gender, age, country, avatar_url")
         .eq("id", user?.id)
         .single();
 
@@ -49,12 +51,45 @@ export default function ProfilePage() {
           gender: data.gender || "",
           age: data.age?.toString() || "",
           country: data.country || "",
+          avatar_url: data.avatar_url || "",
         });
       }
     } catch (error: any) {
       console.error("Error fetching profile:", error.message);
     } finally {
       setFetching(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      if (!e.target.files || e.target.files.length === 0) {
+        throw new Error("You must select an image to upload.");
+      }
+
+      const file = e.target.files[0];
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user?.id}/${Math.random()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, avatar_url: publicUrl });
+      toast.success("Avatar uploaded successfully!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -71,6 +106,7 @@ export default function ProfilePage() {
           gender: formData.gender,
           age: parseInt(formData.age),
           country: formData.country,
+          avatar_url: formData.avatar_url,
           updated_at: new Date().toISOString(),
         });
 
@@ -97,8 +133,29 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-brand-purple flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl mt-12 mb-12">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-[#FFFF00] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#FFFF00]/20">
-            <User className="text-black" size={40} />
+          <div className="relative w-24 h-24 mx-auto mb-6">
+            <div className="w-24 h-24 bg-[#FFFF00] rounded-full flex items-center justify-center shadow-lg shadow-[#FFFF00]/20 overflow-hidden border-4 border-white/10">
+              {formData.avatar_url ? (
+                <img src={formData.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="text-black" size={48} />
+              )}
+            </div>
+            <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-100 transition-colors">
+              <Camera size={16} className="text-black" />
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileUpload}
+                disabled={uploading}
+              />
+            </label>
+            {uploading && (
+              <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
+                <Loader2 className="animate-spin text-white" size={24} />
+              </div>
+            )}
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Complete Your Profile</h1>
           <p className="text-white/60">
