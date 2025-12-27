@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
+import { PresenceTracker } from "@/components/PresenceTracker";
 import Script from "next/script";
 
 export const metadata: Metadata = {
