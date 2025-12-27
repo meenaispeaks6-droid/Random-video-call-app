@@ -418,8 +418,14 @@ const HeroSplit = () => {
             </div>
           </>
         ) : (
-          <div className="absolute inset-0 w-full h-full bg-black flex flex-col">
-            <div className="flex-1 relative overflow-hidden border-b border-white/10 bg-[#0B032D]">
+          <div className={cn(
+            "absolute inset-0 w-full h-full bg-black flex flex-col",
+            isFullscreen && "md:flex-row"
+          )}>
+            <div className={cn(
+              "flex-1 relative overflow-hidden bg-[#0B032D]",
+              isFullscreen ? "border-b md:border-b-0 md:border-r border-white/10" : "border-b border-white/10"
+            )}>
               <video 
                 id="remoteVideo"
                 ref={remoteVideoRef}
