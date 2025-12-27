@@ -96,5 +96,50 @@ export const blogPosts: BlogPost[] = [
       <h2>Building Connections</h2>
       <p>Many users have found long-term friends through platforms that provide a <strong>Monkey app jaisa experience</strong>. It's all about that first "Hello!"</p>
     `
+  },
+  {
+    title: "Why Funkey is the Best Monkey App Alternative in 2024",
+    excerpt: "With Monkey app's changing landscape, discover why Gen-Z is flocking to Funkey for instant, safe, and fun random video matches.",
+    category: "Trends",
+    date: "May 15, 2024",
+    slug: "monkey-app-alternative-2024",
+    keywords: ["monkey app alternative", "random video chat", "Gen-Z video chat"],
+    content: "<p>Content for Monkey app alternative...</p>"
+  },
+  {
+    title: "Omegle Shut Down? Here's Where Everyone is Chatting Now",
+    excerpt: "The end of an era for Omegle has led to a new beginning for social discovery. Learn why Funkey is the top Omegle replacement.",
+    category: "News",
+    date: "May 10, 2024",
+    slug: "omegle-replacement-news",
+    keywords: ["omegle shut down", "omegle replacement", "random chat"],
+    content: "<p>Content for Omegle shut down...</p>"
+  },
+  {
+    title: "Safe Random Video Chat: How Funkey Protects Its Community",
+    excerpt: "Safety is our priority. Explore the advanced moderation and reporting tools that make Funkey the safest place for stranger cam chat.",
+    category: "Safety",
+    date: "May 05, 2024",
+    slug: "safe-random-video-chat",
+    keywords: ["safe video chat", "online safety", "moderation"],
+    content: "<p>Content for Safe random video chat...</p>"
+  },
+  {
+    title: "The Science of Random Connections",
+    excerpt: "Why do we love talking to strangers? We dive into the psychology of random video calls and the thrill of social discovery.",
+    category: "Psychology",
+    date: "April 28, 2024",
+    slug: "psychology-of-random-connections",
+    keywords: ["psychology of connection", "talking to strangers", "social discovery"],
+    content: "<p>Content for Science of random connections...</p>"
+  },
+  {
+    title: "5 Tips for Your Your First Random Video Call on Funkey",
+    excerpt: "New to the scene? Here are 5 expert tips to have the best experience and make meaningful connections on your first call.",
+    category: "Guides",
+    date: "April 20, 2024",
+    slug: "video-chat-tips",
+    keywords: ["video chat tips", "first call", "how to use Funkey"],
+    content: "<p>Content for 5 tips...</p>"
   }
 ];
