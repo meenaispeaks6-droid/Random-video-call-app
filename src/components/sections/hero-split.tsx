@@ -79,15 +79,16 @@ const HeroSplit = () => {
     genderFilter,
     setGenderFilter,
     localVideoRef,
-    remoteVideoRef,
-    partnerLocation,
-    likePartner,
-    isLiked,
-    isMutualMatch,
-    partnerId
-  } = useVideoChat();
-
-    const [onlineCount, setOnlineCount] = useState(63267);
+      remoteVideoRef,
+      partnerLocation,
+      userLocation,
+      likePartner,
+      isLiked,
+      isMutualMatch,
+      partnerId
+    } = useVideoChat();
+  
+      const [onlineCount, setOnlineCount] = useState(0);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isSparkleRain, setIsSparkleRain] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
