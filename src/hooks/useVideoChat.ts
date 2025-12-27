@@ -97,110 +97,129 @@ export const useVideoChat = () => {
     iceQueueRef.current = [];
   }, [userId, partnerId, matchId, isInitiator, supabase]);
 
-  const findMatch = useCallback(async () => {
-    if (status === 'in-call') return;
-    
-    console.log("Searching for match...");
-    setStatus('waiting');
-    
-    if (!localStreamRef.current) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localStreamRef.current = stream;
-        setLocalStream(stream);
-      } catch (err) {
-        console.error("Media error:", err);
-        alert("Camera and Microphone access are required.");
-        setStatus('idle');
+    const [lastMatchedGender, setLastMatchedGender] = useState<'Male' | 'Female' | null>(null);
+
+    // 1. Initial registration on load
+    useEffect(() => {
+      const registerUser = async () => {
+        if (!userId) return;
+        
+        let country = "Unknown";
+        let city = "Unknown";
+        try {
+          const res = await fetch('https://ipapi.co/json/');
+          const data = await res.json();
+          country = data.country_name || "Unknown";
+          city = data.city || "Unknown";
+        } catch (e) {
+          console.error("Location detection failed", e);
+        }
+
+        await supabase.from('online_users').upsert({
+          id: userId,
+          status: 'waiting',
+          country,
+          city,
+          gender: genderFilter,
+          last_active: new Date().toISOString()
+        });
+      };
+
+      registerUser();
+    }, [userId, genderFilter, supabase]);
+
+    const findMatch = useCallback(async () => {
+      if (status === 'in-call') return;
+      
+      console.log("Searching for match...");
+      setStatus('waiting');
+      
+      if (!localStreamRef.current) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          localStreamRef.current = stream;
+          setLocalStream(stream);
+        } catch (err) {
+          console.error("Media error:", err);
+          alert("Camera and Microphone access are required.");
+          setStatus('idle');
+          return;
+        }
+      }
+
+      // 3. Find candidates
+      const { data: candidates, error } = await supabase
+        .from('online_users')
+        .select('*')
+        .eq('status', 'waiting')
+        .neq('id', userId)
+        .limit(20);
+
+      if (error || !candidates || candidates.length === 0) {
+        console.log("No candidates found.");
         return;
       }
-    }
 
-    // 1. Get current location (mocked or actual if possible)
-    let country = "Unknown";
-    let city = "Unknown";
-    try {
-      const res = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      country = data.country_name || "Unknown";
-      city = data.city || "Unknown";
-    } catch (e) {
-      console.error("Location detection failed", e);
-    }
+      // 4. Implement 50/50 Match Ratio Rule
+      let candidatesToPick = candidates;
+      
+      if (genderFilter !== 'Both') {
+        candidatesToPick = candidates.filter(c => c.gender === genderFilter);
+      } else if (lastMatchedGender) {
+        // Try to alternate gender if filter is Both
+        const preferredGender = lastMatchedGender === 'Male' ? 'Female' : 'Male';
+        const diversed = candidates.filter(c => c.gender === preferredGender);
+        if (diversed.length > 0) candidatesToPick = diversed;
+      }
 
-    // 2. Set self as waiting
-    await supabase.from('online_users').upsert({
-      id: userId,
-      status: 'waiting',
-      country,
-      city,
-      gender: genderFilter,
-      last_active: new Date().toISOString()
-    });
+      if (candidatesToPick.length === 0 && genderFilter === 'Both') {
+        candidatesToPick = candidates; // Fallback if preferred gender not found
+      }
 
-    // 3. Find candidates
-    const { data: candidates, error } = await supabase
-      .from('online_users')
-      .select('*')
-      .eq('status', 'waiting')
-      .neq('id', userId)
-      .limit(10);
+      if (candidatesToPick.length === 0) {
+        console.log("No candidates matching criteria.");
+        return;
+      }
 
-    if (error || !candidates || candidates.length === 0) {
-      console.log("No candidates found.");
-      return;
-    }
+      const target = candidatesToPick[Math.floor(Math.random() * candidatesToPick.length)];
+      const newMatchId = `match_${userId}_${target.id}`;
+      const actuallyInitiator = true; 
 
-    // 4. Implement 50/50 Match Ratio Rule (Gender-aware matching)
-    let candidatesToPick = candidates;
-    
-    // Simple 50/50 logic: if genderFilter is Both, try to alternate or pick based on diversity
-    // For now, we'll just respect the gender filter if it's set, or pick truly random if Both.
-    if (genderFilter !== 'Both') {
-      candidatesToPick = candidates.filter(c => c.gender === genderFilter);
-    }
+      // 5. Try to claim the partner
+      const { data: updatedTarget, error: updateError } = await supabase
+        .from('online_users')
+        .update({
+          status: 'in-call',
+          match_id: newMatchId,
+          partner_id: userId,
+          is_initiator: false
+        })
+        .eq('id', target.id)
+        .eq('status', 'waiting')
+        .select()
+        .single();
 
-    if (candidatesToPick.length === 0) {
-      console.log("No candidates matching gender filter.");
-      return;
-    }
+      if (updatedTarget) {
+        console.log("Matched with:", target.id);
+        await supabase.from('online_users').update({
+          status: 'in-call',
+          match_id: newMatchId,
+          partner_id: target.id,
+          is_initiator: true
+        }).eq('id', userId);
 
-    const target = candidatesToPick[Math.floor(Math.random() * candidatesToPick.length)];
-    const newMatchId = `match_${userId}_${target.id}`;
-    const actuallyInitiator = true; // We are the one who clicked start and found someone
-
-    // 5. Try to claim the partner
-    const { data: updatedTarget, error: updateError } = await supabase
-      .from('online_users')
-      .update({
-        status: 'in-call',
-        match_id: newMatchId,
-        partner_id: userId,
-        is_initiator: !actuallyInitiator
-      })
-      .eq('id', target.id)
-      .eq('status', 'waiting')
-      .select()
-      .single();
-
-    if (updatedTarget) {
-      console.log("Matched with:", target.id);
-      await supabase.from('online_users').update({
-        status: 'in-call',
-        match_id: newMatchId,
-        partner_id: target.id,
-        is_initiator: actuallyInitiator
-      }).eq('id', userId);
-
-      setMatchId(newMatchId);
-      setPartnerId(target.id);
-      setIsInitiator(actuallyInitiator);
-      setStatus('in-call');
-    } else {
-      console.log("Partner taken or update failed, retrying...");
-      setTimeout(findMatch, 2000);
-    }
-  }, [userId, genderFilter, status, supabase]);
+        setMatchId(newMatchId);
+        setPartnerId(target.id);
+        setIsInitiator(true);
+        setStatus('in-call');
+        if (target.gender === 'Male' || target.gender === 'Female') {
+          setLastMatchedGender(target.gender as 'Male' | 'Female');
+        }
+      } else {
+        console.log("Partner taken or update failed, retrying...");
+        setTimeout(findMatch, 2000);
+      }
+    }, [userId, genderFilter, status, lastMatchedGender, supabase]);
 
   const setupPeerConnection = useCallback(async (mId: string, pId: string, initiator: boolean) => {
     console.log("Setting up WebRTC for match:", mId, "Initiator:", initiator);
