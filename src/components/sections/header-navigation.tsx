@@ -23,11 +23,13 @@ export default function HeaderNavigation() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const menuItems = [
-    { label: "Profile", icon: <User size={18} />, href: "/profile" },
-    { label: "Settings", icon: <Settings size={18} />, href: "/settings" },
-    { label: "Contact", icon: <Mail size={18} />, href: "/contact" },
-  ];
+    const menuItems = [
+      { label: "Blog", icon: <MessageSquare size={18} />, href: "/blog" },
+      { label: "Profile", icon: <User size={18} />, href: "/profile" },
+      { label: "Settings", icon: <Settings size={18} />, href: "/settings" },
+      { label: "Contact", icon: <Mail size={18} />, href: "/contact" },
+    ];
+
 
   const navLinks = [
     { href: "/", icon: <Home size={20} strokeWidth={2.5} /> },
