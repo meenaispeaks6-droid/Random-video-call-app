@@ -378,7 +378,7 @@ export const useVideoChat = () => {
   useEffect(() => {
     if (status === 'in-call' && partnerId) {
       supabase.from('online_users').select('country, city').eq('id', partnerId).single().then(({ data }) => {
-        if (data) setPartnerLocation(`${data.country}, ${data.city}`);
+        if (data) setPartnerLocation(`🌍 ${data.country}, 📍 ${data.city}`);
       });
     } else {
       setPartnerLocation(null);
