@@ -7,7 +7,6 @@ import FeaturesGrid from "@/components/sections/features-grid";
 import FAQAccordion from "@/components/sections/faq-accordion";
 import FooterDownload from "@/components/sections/footer-download";
 import { AuthModal } from "@/components/auth-modal";
-import AIAssistant from "@/components/ai-assistant";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <FeaturesGrid />
       <FAQAccordion />
       <FooterDownload />
-      <AIAssistant />
     </main>
   );
 }
