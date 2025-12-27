@@ -55,9 +55,9 @@ export default function BlogPage() {
       <HeaderNavigation />
       
       <div className="container mx-auto px-6 py-24 md:py-32">
-        <header className="text-center mb-16">
-          <Badge className="mb-4 bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-4 py-1">FUNKEY INSIGHTS</Badge>
-          <h1 className="text-white text-4xl md:text-6xl font-[950] tracking-tighter uppercase mb-6">
+          <header className="text-center mb-16">
+            <Badge className="mb-4 bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-4 py-1">MOJCALL INSIGHTS</Badge>
+            <h1 className="text-white text-4xl md:text-6xl font-[950] tracking-tighter uppercase mb-6">
             The Future of <span className="text-yellow-400 italic">Connection</span>
           </h1>
           <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto font-medium">
