@@ -111,10 +111,12 @@ export const useVideoChat = () => {
           const res = await fetch('https://ipapi.co/json/');
           const data = await res.json();
           country = data.country_name || "Unknown";
-          city = data.city || "Unknown";
-        } catch (e) {
-          console.error("Location detection failed", e);
-        }
+            city = data.city || "Unknown";
+            setUserLocation(`🌍 ${country}, 📍 ${city}`);
+          } catch (e) {
+            console.error("Location detection failed", e);
+            setUserLocation("🌍 Location unavailable");
+          }
 
         await supabase.from('online_users').upsert({
           id: userId,
