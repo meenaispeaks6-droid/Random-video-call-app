@@ -151,10 +151,23 @@ export const useVideoChat = () => {
       return;
     }
 
-    // 4. Implement 50/50 Match Ratio Rule (Simplified: Pick random for now, could be improved)
-    const target = candidates[Math.floor(Math.random() * candidates.length)];
-    const newMatchId = `match_${[userId, target.id].sort().join('_')}`;
-    const actuallyInitiator = userId < target.id;
+    // 4. Implement 50/50 Match Ratio Rule (Gender-aware matching)
+    let candidatesToPick = candidates;
+    
+    // Simple 50/50 logic: if genderFilter is Both, try to alternate or pick based on diversity
+    // For now, we'll just respect the gender filter if it's set, or pick truly random if Both.
+    if (genderFilter !== 'Both') {
+      candidatesToPick = candidates.filter(c => c.gender === genderFilter);
+    }
+
+    if (candidatesToPick.length === 0) {
+      console.log("No candidates matching gender filter.");
+      return;
+    }
+
+    const target = candidatesToPick[Math.floor(Math.random() * candidatesToPick.length)];
+    const newMatchId = `match_${userId}_${target.id}`;
+    const actuallyInitiator = true; // We are the one who clicked start and found someone
 
     // 5. Try to claim the partner
     const { data: updatedTarget, error: updateError } = await supabase
