@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useVideoChat } from '@/hooks/useVideoChat';
 import { createClient } from '@/lib/supabase/client';
-import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles, Heart, MessageSquare, Maximize, Minimize } from 'lucide-react';
+import { Video, Zap, Shield, Globe, Flag, Ban, Sparkles, Heart, MessageSquare, Maximize, Minimize, Timer } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { AdsModal } from '@/components/ads-modal';
 
 const Magnetic = ({ children }: { children: React.ReactNode }) => {
   const mouseX = useMotionValue(0);
