@@ -28,55 +28,80 @@ export default function ContactPage() {
               Have questions or feedback? We'd love to hear from you. Our team typically responds within 24 hours.
             </p>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {contactOptions.map((option, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/10 transition-all group"
-                >
-                  <div className={`w-12 h-12 ${option.color} rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
-                    {option.icon}
+              <div className="grid md:grid-cols-3 gap-6">
+                {contactOptions.map((option, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/10 transition-all group"
+                  >
+                    <div className={`w-12 h-12 ${option.color} rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
+                      {option.icon}
+                    </div>
+                    <div className="text-white/50 text-sm font-bold uppercase tracking-wider mb-1">{option.label}</div>
+                    <div className="text-white font-bold break-words">{option.value}</div>
                   </div>
-                  <div className="text-white/50 text-sm font-bold uppercase tracking-wider mb-1">{option.label}</div>
-                  <div className="text-white font-bold break-words">{option.value}</div>
+                ))}
+              </div>
+
+              <div className="mt-12 pt-12 border-t border-white/10 grid lg:grid-cols-2 gap-12">
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-[#FFFF00] p-3 rounded-2xl text-black">
+                      <Sparkles size={24} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-white uppercase tracking-tight">Instant Support</h2>
+                      <p className="text-white/50 text-sm">Our AI assistant is here to help you 24/7</p>
+                    </div>
+                  </div>
+                  <AIAssistant embedded />
                 </div>
-              ))}
+
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-white/10 p-3 rounded-2xl text-white">
+                      <Send size={24} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-white uppercase tracking-tight">Send a Message</h2>
+                      <p className="text-white/50 text-sm">We'll get back to you as soon as possible</p>
+                    </div>
+                  </div>
+                  <form className="grid gap-6">
+                    <div className="grid gap-6">
+                      <div className="space-y-2">
+                        <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Name</label>
+                        <input
+                          type="text"
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors"
+                          placeholder="Your name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Email</label>
+                        <input
+                          type="email"
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors"
+                          placeholder="Your email"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Message</label>
+                      <textarea
+                        rows={4}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors resize-none"
+                        placeholder="Tell us everything..."
+                      />
+                    </div>
+                    <button className="bg-[#FFFF00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:bg-white transition-all transform hover:scale-[1.02] active:scale-95">
+                      Send Message
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-12 pt-12 border-t border-white/10">
-              <form className="grid gap-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Email</label>
-                    <input
-                      type="email"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors"
-                      placeholder="Your email"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-white font-bold text-sm uppercase tracking-wider ml-2">Message</label>
-                  <textarea
-                    rows={4}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#FFFF00] transition-colors resize-none"
-                    placeholder="Tell us everything..."
-                  />
-                </div>
-                <button className="bg-[#FFFF00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:bg-white transition-all transform hover:scale-[1.02] active:scale-95">
-                  Send Message
-                </button>
-              </form>
-            </div>
-          </div>
         </div>
       </div>
     </main>
