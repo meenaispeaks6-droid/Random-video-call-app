@@ -122,19 +122,20 @@ const HeroSplit = () => {
   }, []);
 
   useEffect(() => {
-    if (!db) {
-      console.warn("Firebase Database not initialized. Using static online count.");
-      return;
-    }
-    const onlineUsersRef = ref(db, 'onlineUsers');
-    const unsubscribe = onValue(onlineUsersRef, (snapshot) => {
-      const users = snapshot.val();
-      if (users) {
-        setOnlineCount(Object.keys(users).length + 60000);
+    const supabase = createClient();
+    const fetchCount = async () => {
+      const { count } = await supabase
+        .from('online_users')
+        .select('*', { count: 'exact', head: true });
+      if (count !== null) {
+        setOnlineCount(count + 60000);
       }
-    });
-    return () => unsubscribe();
-  }, [db]);
+    };
+    
+    fetchCount();
+    const interval = setInterval(fetchCount, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="flex flex-col md:flex-row min-h-[100vh] w-full relative overflow-hidden">
