@@ -32,6 +32,8 @@ export const useVideoChat = () => {
   const [userLocation, setUserLocation] = useState<string | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isMutualMatch, setIsMutualMatch] = useState(false);
+  const [hasFilterAccess, setHasFilterAccess] = useState(false);
+  const [filterExpiry, setFilterExpiry] = useState<string | null>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -39,6 +41,38 @@ export const useVideoChat = () => {
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
   const signalChannelRef = useRef<any>(null);
+
+  // Check filter access on load and periodically
+  useEffect(() => {
+    const checkAccess = async () => {
+      if (!userId) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('filter_expiry')
+        .eq('id', userId)
+        .single();
+      
+      if (data?.filter_expiry) {
+        const expiry = new Date(data.filter_expiry).getTime();
+        const now = Date.now();
+        if (expiry > now) {
+          setHasFilterAccess(true);
+          setFilterExpiry(data.filter_expiry);
+        } else {
+          setHasFilterAccess(false);
+          setFilterExpiry(null);
+          setGenderFilter('Both');
+        }
+      } else {
+        setHasFilterAccess(false);
+        setGenderFilter('Both');
+      }
+    };
+
+    checkAccess();
+    const interval = setInterval(checkAccess, 10000);
+    return () => clearInterval(interval);
+  }, [userId]);
 
   const cleanupCall = useCallback(async (informPartner = true) => {
     console.log("Cleaning up call, informPartner:", informPartner);
