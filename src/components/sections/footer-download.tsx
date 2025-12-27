@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
           className="text-white opacity-80 text-[14px] font-sans m-0"
           style={{ fontFamily: 'Montserrat, Inter, sans-serif' }}
         >
-          © 2025 MojCall
+          © 2025 Funkey
         </p>
       </div>
     </footer>
