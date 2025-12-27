@@ -71,7 +71,7 @@ export default function HeaderNavigation() {
         )}
         <div className="hidden sm:flex items-center">
           <Link href="/">
-            <span className="text-white font-black text-xl md:text-2xl tracking-tighter uppercase">MojCall</span>
+            <span className="text-white font-black text-xl md:text-2xl tracking-tighter uppercase">Funkey</span>
           </Link>
         </div>
       </div>
