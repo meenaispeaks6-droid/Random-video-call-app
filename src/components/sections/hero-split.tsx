@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
@@ -502,4 +502,3 @@ const HeroSplit = () => {
 };
 
 export default HeroSplit;
-
