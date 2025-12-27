@@ -161,26 +161,28 @@ export default function AIAssistant({ embedded = false }: { embedded?: boolean }
       </AnimatePresence>
 
       {/* Toggle Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-brand-purple text-white p-4 rounded-full shadow-2xl flex items-center gap-2 hover:bg-brand-purple-dark transition-colors group relative"
-      >
-        {isOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <>
-            <MessageSquare className="w-6 h-6" />
-            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-[100px] transition-all duration-300 font-medium text-sm">
-              Chat Help
-            </span>
-          </>
-        )}
-        {!isOpen && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-        )}
-      </motion.button>
+      {!embedded && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(!isOpen)}
+          className="bg-brand-purple text-white p-4 rounded-full shadow-2xl flex items-center gap-2 hover:bg-brand-purple-dark transition-colors group relative"
+        >
+          {isOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <>
+              <MessageSquare className="w-6 h-6" />
+              <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-[100px] transition-all duration-300 font-medium text-sm">
+                Chat Help
+              </span>
+            </>
+          )}
+          {!isOpen && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+          )}
+        </motion.button>
+      )}
     </div>
   );
 }
