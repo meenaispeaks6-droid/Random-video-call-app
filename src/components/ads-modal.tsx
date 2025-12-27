@@ -26,7 +26,7 @@ export const AdsModal = ({ isOpen, onClose, userId, onSuccess }: AdsModalProps) 
 
   const fetchAdCount = async () => {
     const { data } = await supabase
-      .from('profiles')
+      .from('online_users')
       .select('ad_views')
       .eq('id', userId)
       .single();
@@ -54,7 +54,7 @@ export const AdsModal = ({ isOpen, onClose, userId, onSuccess }: AdsModalProps) 
     if (newCount >= 5) {
       const expiry = new Date(Date.now() + 2 * 60 * 1000).toISOString();
       await supabase
-        .from('profiles')
+        .from('online_users')
         .update({ ad_views: 0, filter_expiry: expiry })
         .eq('id', userId);
       setAdCount(0);
@@ -62,7 +62,7 @@ export const AdsModal = ({ isOpen, onClose, userId, onSuccess }: AdsModalProps) 
       onClose();
     } else {
       await supabase
-        .from('profiles')
+        .from('online_users')
         .update({ ad_views: newCount })
         .eq('id', userId);
       setAdCount(newCount);
