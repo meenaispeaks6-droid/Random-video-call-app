@@ -23,7 +23,7 @@ export function AuthModal() {
     setLoading(true);
     try {
       await signInWithGoogle();
-      toast.success("Welcome to MojCall!");
+      toast.success("Welcome to Funkey!");
     } catch (error: any) {
       toast.error("Login failed: " + error.message);
     } finally {
@@ -41,7 +41,7 @@ export function AuthModal() {
       >
         <DialogHeader className="text-center">
           <DialogTitle className="text-4xl font-black tracking-tighter uppercase mb-2">
-            MojCall
+            Funkey
           </DialogTitle>
           <DialogDescription className="text-white/70 text-lg">
             Connect instantly with people around the world.
@@ -65,7 +65,7 @@ export function AuthModal() {
               )}
             </button>
             <p className="text-center text-xs text-white/40 px-4">
-              By continuing, you agree to MojCall's Terms of Service and Privacy Policy.
+              By continuing, you agree to Funkey's Terms of Service and Privacy Policy.
             </p>
           </div>
         </div>

@@ -50,28 +50,28 @@ const FAQAccordion = () => {
     {
       question: "Are There Any Other Sites Like the New Omegle?",
       answer:
-        "Yes, while the original Omegle has closed, platforms like MojCall have emerged as the premier alternative. MojCall offers a safer, more modern experience for random video chat, connecting users worldwide with advanced features like 2P mode and interest-based matching.",
+        "Yes, while the original Omegle has closed, platforms like Funkey have emerged as the premier alternative. Funkey offers a safer, more modern experience for random video chat, connecting users worldwide with advanced features like 2P mode and interest-based matching.",
     },
     {
-      question: "What Makes MojCall Unique in Social Networking?",
+      question: "What Makes Funkey Unique in Social Networking?",
       answer:
-        "MojCall focuses on 'Social Entertainment.' Unlike traditional social media, it's designed for spontaneous, real-time interactions. With a high-energy vibe, Gen-Z focused design, and lightning-fast video matching, it creates authentic human connections that are rare on static platforms.",
+        "Funkey focuses on 'Social Entertainment.' Unlike traditional social media, it's designed for spontaneous, real-time interactions. With a high-energy vibe, Gen-Z focused design, and lightning-fast video matching, it creates authentic human connections that are rare on static platforms.",
     },
     {
-      question: "Why Choose MojCall for Engaging with New Connections?",
+      question: "Why Choose Funkey for Engaging with New Connections?",
       answer:
-        "MojCall prioritizes speed and security. Our proprietary matching algorithm connects you with relevant peers almost instantly, while our stringent moderation system ensures a safer environment for talking to strangers compared to older platforms.",
+        "Funkey prioritizes speed and security. Our proprietary matching algorithm connects you with relevant peers almost instantly, while our stringent moderation system ensures a safer environment for talking to strangers compared to older platforms.",
     },
       {
-        question: "Can I Use MojCall Anytime and Anywhere?",
+        question: "Can I Use Funkey Anytime and Anywhere?",
         answer:
-          "Absolutely. MojCall is built to be cross-platform. Whether you're at home on a desktop browser or on the go using your mobile device, you can jump into a video chat whenever you want to meet someone new.",
+          "Absolutely. Funkey is built to be cross-platform. Whether you're at home on a desktop browser or on the go using your mobile device, you can jump into a video chat whenever you want to meet someone new.",
       },
 
     {
-      question: "Can I Use MojCall for Free?",
+      question: "Can I Use Funkey for Free?",
       answer:
-        "Yes, the core video chat experience on MojCall is free. We believe in making global human connection accessible to everyone. Some premium features or filters may be available to enhance your experience, but you can start talking to strangers at no cost.",
+        "Yes, the core video chat experience on Funkey is free. We believe in making global human connection accessible to everyone. Some premium features or filters may be available to enhance your experience, but you can start talking to strangers at no cost.",
     },
   ];
 

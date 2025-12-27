@@ -65,7 +65,7 @@ function AuthContent() {
       <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="text-white font-black text-4xl tracking-tighter uppercase">MojCall</span>
+            <span className="text-white font-black text-4xl tracking-tighter uppercase">Funkey</span>
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">
             {isSignUp ? "Create Account" : "Welcome Back"}
