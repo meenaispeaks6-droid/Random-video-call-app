@@ -447,7 +447,10 @@ export const useVideoChat = () => {
   useEffect(() => {
     if (status === 'in-call' && partnerId) {
       supabase.from('online_users').select('country, city').eq('id', partnerId).single().then(({ data }) => {
-        if (data) setPartnerLocation(`🌍 ${data.country}, 📍 ${data.city}`);
+        if (data) {
+          const cityVal = data.city && data.city !== 'Unknown' ? data.city : null;
+          setPartnerLocation(cityVal ? `🌍 ${data.country}, 📍 ${cityVal}` : `🌍 ${data.country}`);
+        }
       });
     } else {
       setPartnerLocation(null);
