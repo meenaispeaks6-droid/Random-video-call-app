@@ -6,20 +6,20 @@ import { PresenceTracker } from "@/components/PresenceTracker";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Funkey | #1 Monkey App & Omegle Alternative | Random Video Chat",
-  description: "Experience the best random video chat on Funkey. The ultimate Monkey app alternative and Omegle replacement for live stranger cam chat. Safe, fast, and Gen-Z friendly.",
-  keywords: ["Monkey app alternative", "Omegle alternative", "Random video call with strangers", "Live stranger cam chat", "best random video chat", "talk to strangers", "Funkey chat"],
+  title: "MojCall – Random Video Chat & Live Stranger Calls",
+  description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
+  keywords: ["monkey app alternative", "omegle alternative", "random video call", "stranger video chat", "chat with strangers", "random live chat", "video chat no login", "meet strangers online", "random cam chat", "live stranger video call India"],
   openGraph: {
-    title: "Funkey | Best Monkey App & Omegle Alternative",
-    description: "Instant random video chat with people around the world. Safe, fast, and fun.",
-    url: "https://funkey.chat",
-    siteName: "Funkey",
+    title: "MojCall – Random Video Chat & Live Stranger Calls",
+    description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
+    url: "https://mojcall.chat",
+    siteName: "MojCall",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Funkey | Random Video Chat with Strangers",
-    description: "The best Monkey app alternative for live stranger cam chat.",
+    title: "MojCall – Random Video Chat & Live Stranger Calls",
+    description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
   },
 };
 
@@ -31,10 +31,10 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Funkey",
+    "name": "MojCall",
     "applicationCategory": "SocialNetworking",
     "operatingSystem": "Web",
-    "description": "Funkey is the premier random video chat platform and the best alternative to Monkey app and Omegle. Connect with strangers globally in seconds.",
+    "description": "MojCall is a free random video chat app to connect with strangers, offering live 1-on-1 video calls and global matching.",
     "offers": {
       "@type": "Offer",
       "price": "0",
