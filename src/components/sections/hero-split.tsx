@@ -79,20 +79,48 @@ const HeroSplit = () => {
     reportUser,
     genderFilter,
     setGenderFilter,
-    localVideoRef,
-      remoteVideoRef,
-      partnerLocation,
-      userLocation,
-      likePartner,
-      isLiked,
-      isMutualMatch,
-      partnerId
-    } = useVideoChat();
-  
+        localVideoRef,
+        remoteVideoRef,
+        partnerLocation,
+        userLocation,
+        likePartner,
+        isLiked,
+        isMutualMatch,
+        partnerId,
+        hasFilterAccess,
+        filterExpiry,
+        userId
+      } = useVideoChat();
+    
       const [onlineCount, setOnlineCount] = useState(0);
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [isSparkleRain, setIsSparkleRain] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
+      const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+      const [isSparkleRain, setIsSparkleRain] = useState(false);
+      const [isFullscreen, setIsFullscreen] = useState(false);
+      const [isAdsModalOpen, setIsAdsModalOpen] = useState(false);
+      const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+
+      useEffect(() => {
+        if (filterExpiry) {
+          const updateTimer = () => {
+            const now = Date.now();
+            const expiry = new Date(filterExpiry).getTime();
+            const diff = expiry - now;
+            if (diff > 0) {
+              const mins = Math.floor(diff / 60000);
+              const secs = Math.floor((diff % 60000) / 1000);
+              setTimeRemaining(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
+            } else {
+              setTimeRemaining(null);
+            }
+          };
+          updateTimer();
+          const interval = setInterval(updateTimer, 1000);
+          return () => clearInterval(interval);
+        } else {
+          setTimeRemaining(null);
+        }
+      }, [filterExpiry]);
+
   
     // 3D Tilt Values
     const x = useMotionValue(0);
