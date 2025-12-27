@@ -1,7 +1,8 @@
 "use client";
 
 import HeaderNavigation from "@/components/sections/header-navigation";
-import { Mail, MessageCircle, Phone, Send } from "lucide-react";
+import { Mail, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
+import AIAssistant from "@/components/ai-assistant";
 
 export default function ContactPage() {
   const contactOptions = [
