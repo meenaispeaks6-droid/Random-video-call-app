@@ -560,6 +560,16 @@ const HeroSplit = () => {
           transform: scaleX(-1);
         }
       `}</style>
+
+      <AdsModal 
+        isOpen={isAdsModalOpen} 
+        onClose={() => setIsAdsModalOpen(false)} 
+        userId={userId} 
+        onSuccess={() => {
+          setIsAdsModalOpen(false);
+          // The hook will pick up the change automatically
+        }}
+      />
     </section>
   );
 };
