@@ -9,8 +9,8 @@ interface Message {
   content: string;
 }
 
-export default function AIAssistant() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AIAssistant({ embedded = false }: { embedded?: boolean }) {
+  const [isOpen, setIsOpen] = useState(embedded);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
