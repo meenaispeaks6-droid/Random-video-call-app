@@ -6,19 +6,19 @@ import { PresenceTracker } from "@/components/PresenceTracker";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "MojCall – Random Video Chat & Live Stranger Calls",
+  title: "Funkey – Random Video Chat & Live Stranger Calls",
   description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
   keywords: ["monkey app alternative", "omegle alternative", "random video call", "stranger video chat", "chat with strangers", "random live chat", "video chat no login", "meet strangers online", "random cam chat", "live stranger video call India"],
   openGraph: {
-    title: "MojCall – Random Video Chat & Live Stranger Calls",
+    title: "Funkey – Random Video Chat & Live Stranger Calls",
     description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
-    url: "https://mojcall.com",
-    siteName: "MojCall",
+    url: "https://funkey.app",
+    siteName: "Funkey",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MojCall – Random Video Chat & Live Stranger Calls",
+    title: "Funkey – Random Video Chat & Live Stranger Calls",
     description: "Free random video chat app to connect with strangers, live 1-on-1 video calls, gender filter rewards, global matching like Monkey and Omegle but smoother and safer.",
   },
 };
@@ -31,10 +31,10 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "MojCall",
+    "name": "Funkey",
     "applicationCategory": "SocialNetworking",
     "operatingSystem": "Web",
-    "description": "MojCall is a free random video chat app to connect with strangers, offering live 1-on-1 video calls and gender filter rewards.",
+    "description": "Funkey is a free random video chat app to connect with strangers, offering live 1-on-1 video calls and gender filter rewards.",
     "offers": {
       "@type": "Offer",
       "price": "0",
