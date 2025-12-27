@@ -310,12 +310,15 @@ const HeroSplit = () => {
           {status === 'idle' || status === 'waiting' ? (
 
           <>
-            <div className="flex flex-col items-center text-center space-y-2 mb-8 md:mb-12">
-              <div className="flex items-center gap-2 text-white/90 text-[16px] md:text-[18px] font-semibold">
-                <span>👩‍🦳👨‍🦳</span>
-                <span>{onlineCount.toLocaleString()} users online</span>
+              <div className="flex flex-col items-center text-center space-y-2 mb-8 md:mb-12">
+                <div className="flex items-center gap-2 text-white/90 text-[16px] md:text-[18px] font-semibold">
+                  <span>👩‍🦳👨‍🦳</span>
+                  <span>{onlineCount.toLocaleString()} users online</span>
+                </div>
+                <div id="locationLabel" className="text-white/60 text-xs md:text-sm font-medium">
+                  {userLocation || "🌍 Detecting location..."}
+                </div>
               </div>
-            </div>
 
             <div className="w-full max-w-[340px] space-y-4 md:space-y-6">
               {status === 'waiting' && (
