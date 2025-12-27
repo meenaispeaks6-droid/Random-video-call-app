@@ -59,14 +59,18 @@ export default function AIAssistant({ embedded = false }: { embedded?: boolean }
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className={embedded ? "w-full" : "fixed bottom-6 right-6 z-[100]"}>
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-brand-purple/20"
+            initial={embedded ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 20 }}
+            animate={embedded ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+            exit={embedded ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 20 }}
+            className={`${
+              embedded
+                ? "w-full h-[600px]"
+                : "mb-4 w-[350px] sm:w-[400px] h-[500px]"
+            } bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-brand-purple/20`}
           >
             {/* Header */}
             <div className="bg-brand-purple p-4 flex items-center justify-between text-white">
@@ -79,12 +83,14 @@ export default function AIAssistant({ embedded = false }: { embedded?: boolean }
                   <span className="text-xs text-white/70">Online & Ready</span>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="hover:bg-white/20 p-2 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              {!embedded && (
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="hover:bg-white/20 p-2 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
             </div>
 
             {/* Messages */}
