@@ -1,12 +1,12 @@
+"use client";
+
 import { useEffect, useState } from "react";
-// Forcing re-evaluation
 import { 
   onAuthStateChanged, 
   signInWithPopup, 
   signOut as firebaseSignOut, 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User 
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 
@@ -73,6 +73,14 @@ export function useAuth() {
     return signInWithEmailAndPassword(auth, email, pass);
   };
 
+  const getIdToken = async () => {
+    if (!auth?.currentUser) {
+      throw new Error("You must be signed in to continue.");
+    }
+
+    return auth.currentUser.getIdToken();
+  };
+
   return {
     user,
     loading,
@@ -80,5 +88,6 @@ export function useAuth() {
     signInWithGoogle,
     signUpWithEmail,
     signInWithEmail,
+    getIdToken,
   };
 }
