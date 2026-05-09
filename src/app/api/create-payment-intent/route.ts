@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { getAdminAuth } from "@/lib/firebase-admin";
 
 export async function POST(request: Request) {
   try {
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeSecretKey) {
+      return NextResponse.json(
+        { error: "Stripe is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
     const authHeader = request.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -20,17 +22,8 @@ export async function POST(request: Request) {
     }
 
     const token = authHeader.split(" ")[1];
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const stripe = new Stripe(stripeSecretKey);
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: 500,
@@ -39,7 +32,8 @@ export async function POST(request: Request) {
         enabled: true,
       },
       metadata: {
-        user_id: user.id,
+        user_id: decodedToken.uid,
+        user_email: decodedToken.email || "",
         product: "funkey_premium",
         plan: "premium_monthly",
       },

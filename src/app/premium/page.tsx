@@ -12,11 +12,9 @@ import { Crown, Check, Sparkles, ArrowLeft, Shield, Zap, AlertCircle } from "luc
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 const features = [
   {
@@ -139,36 +137,52 @@ function SuccessMessage() {
 }
 
 export default function PremiumPage() {
-  const { session, user } = useAuth();
-  const router = useRouter();
+  const { user, getIdToken } = useAuth();
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoadingIntent, setIsLoadingIntent] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [authError, setAuthError] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const handleUpgradeClick = async () => {
-    if (!session) {
+    setCheckoutError(null);
+
+    if (!user) {
       setAuthError(true);
       setTimeout(() => setAuthError(false), 5000);
       return;
     }
 
+    if (!stripePromise) {
+      setCheckoutError("Stripe is not configured yet. Please try again later.");
+      return;
+    }
+
     setIsLoadingIntent(true);
     try {
+      const idToken = await getIdToken();
       const response = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`
+          "Authorization": `Bearer ${idToken}`
         },
       });
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to start checkout.");
+      }
+
       if (data.clientSecret) {
         setClientSecret(data.clientSecret);
         setShowCheckout(true);
+      } else {
+        throw new Error("Checkout did not return a client secret.");
       }
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to create payment intent.";
+      setCheckoutError(message);
       console.error("Failed to create payment intent:", err);
     } finally {
       setIsLoadingIntent(false);
@@ -217,6 +231,17 @@ export default function PremiumPage() {
                         <AlertCircle size={18} />
                         Please login to upgrade to Premium
                         <Link href="/auth" className="underline ml-2">Login here</Link>
+                      </motion.div>
+                    )}
+                    {checkoutError && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="mb-6 flex items-center justify-center gap-2 bg-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-semibold border border-red-500/30"
+                      >
+                        <AlertCircle size={18} />
+                        {checkoutError}
                       </motion.div>
                     )}
                   </AnimatePresence>
